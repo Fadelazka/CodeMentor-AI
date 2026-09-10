@@ -1,0 +1,28 @@
+# Node & build artifact
+node_modules
+.next
+out
+npm-debug.log*
+
+# Env — jangan ikut masuk image. Atur melalui environment/secret.
+.env*
+!.env.example
+
+# Prisma lokal
+prisma/*.db
+prisma/*.db-journal
+
+# Git, IDE, OS
+.git
+.gitignore
+.vscode
+.idea
+*.md
+
+# Test & CI
+coverage
+.github
+
+# Docker itu sendiri
+Dockerfile
+docker-compose*.yml

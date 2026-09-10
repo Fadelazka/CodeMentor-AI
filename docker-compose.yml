@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-codementor}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-codementor_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-codementor_ai}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-codementor} -d ${POSTGRES_DB:-codementor_ai}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Host "db" merujuk ke service PostgreSQL di atas.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-codementor}:${POSTGRES_PASSWORD:-codementor_dev}@db:5432/${POSTGRES_DB:-codementor_ai}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-please-change-me-in-production}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
