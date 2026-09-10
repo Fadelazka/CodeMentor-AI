@@ -397,14 +397,14 @@ export const timData = [
     warna: "from-blue-500 to-indigo-600",
   },
   {
-    nama: "Rafi Ade Nurcahya",
+    nama: "Fadhel Muhammad Azka Islamy",
     peran: "Project Manager",
     singkatan: "PM",
     deskripsi: "Mengelola scope, jadwal, anggaran, dan komunikasi seluruh stakeholder.",
     warna: "from-indigo-500 to-purple-600",
   },
   {
-    nama: "Fadhel Muhammad Azka Islamy",
+    nama: "Rafi Ade Nurcahya",
     peran: "Project Manager",
     singkatan: "PM",
     deskripsi: "Mengelola scope, jadwal, anggaran, dan komunikasi seluruh stakeholder.",
