@@ -40,7 +40,7 @@ export default function CharterPage() {
               { label: "Nomor Kontrak", value: "MP-TI/CMAI/2026/001" },
               { label: "Versi Dokumen", value: "1.0" },
               { label: "Periode", value: "1 Sep – 15 Des 2026" },
-              { label: "Project Manager", value: "Rafi Ade Nurcahya" },
+              { label: "Project Manager", value: "Rafi Ade Nurcahya, Fadhel Muhammad Azka Islamy" },
               { label: "Project Sponsor", value: "Darmawan Lahru Riatma, S.Kom., M.MT." },
               { label: "Tim Pelaksana", value: "Tim CodeMentor AI" },
               { label: "Durasi", value: "16 Minggu" },
