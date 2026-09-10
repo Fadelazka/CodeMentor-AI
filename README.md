@@ -293,7 +293,7 @@ Kelola rekaman knowledge base.
 | Item | Nilai |
 |---|---|
 | Nomor kontrak | MP-TI/CMAI/2026/001 |
-| Project Manager | Fadhel Muhammad Azka Islamy |
+| Project Manager | Rafi Ade Nurcahya |
 | Sponsor | Darmawan Lahru Riatma, S.Kom., M.MT. |
 | Periode | 1 Sep – 15 Des 2026 (16 minggu) |
 | Total anggaran | Rp194.700.000 |

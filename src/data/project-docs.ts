@@ -3,7 +3,7 @@ export const projectInfo = {
   kodeKontrak: "MP-TI/CMAI/2026/001",
   versi: "1.0",
   periode: "1 September 2026 s.d. 15 Desember 2026",
-  pm: "Fadhel Muhammad Azka Islamy",
+  pm: "Rafi Ade Nurcahya",
   sponsor: "Darmawan Lahru Riatma, S.Kom., M.MT.",
   tim: "Tim CodeMentor AI",
   totalMinggu: 16,
@@ -397,7 +397,7 @@ export const timData = [
     warna: "from-blue-500 to-indigo-600",
   },
   {
-    nama: "Fadhel Muhammad Azka Islamy",
+    nama: "Rafi Ade Nurcahya",
     peran: "Project Manager",
     singkatan: "PM",
     deskripsi: "Mengelola scope, jadwal, anggaran, dan komunikasi seluruh stakeholder.",
