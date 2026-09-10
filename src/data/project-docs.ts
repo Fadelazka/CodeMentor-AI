@@ -3,7 +3,7 @@ export const projectInfo = {
   kodeKontrak: "MP-TI/CMAI/2026/001",
   versi: "1.0",
   periode: "1 September 2026 s.d. 15 Desember 2026",
-  pm: "Rafi Ade Nurcahya, Fadhel Muhammad Azka Islamy",
+  pm: "Fadhel Muhammad Azka Islamy",
   sponsor: "Darmawan Lahru Riatma, S.Kom., M.MT.",
   tim: "Tim CodeMentor AI",
   totalMinggu: 16,
