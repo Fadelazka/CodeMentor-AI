@@ -14,7 +14,6 @@ const navLinks = [
   { href: "/cara-kerja", label: "Cara Kerja" },
   { href: "/bahasa", label: "Bahasa" },
   { href: "/knowledge-base", label: "Pengetahuan" },
-  { href: "/dokumentasi", label: "Dokumentasi" },
 ];
 
 export function Navbar() {

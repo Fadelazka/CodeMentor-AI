@@ -9,9 +9,6 @@ const footerLinks = {
     { label: "Knowledge Base", href: "/knowledge-base" },
     { label: "Ekstensi VS Code", href: "/fitur#vscode" },
   ],
-  Perusahaan: [
-    { label: "Dokumentasi", href: "/dokumentasi" },
-  ],
   "Sumber Daya": [
     { label: "Dashboard", href: "/dashboard" },
     { label: "Chat AI", href: "/chat" },
