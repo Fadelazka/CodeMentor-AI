@@ -23,7 +23,6 @@ const adminItems = [
 ];
 
 const bottomItems = [
-  { href: "/project/overview", label: "Dokumentasi Proyek", icon: Settings },
   { href: "/", label: "Kembali ke Beranda", icon: Settings },
 ];
 

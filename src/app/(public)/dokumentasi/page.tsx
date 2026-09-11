@@ -1,22 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FileText, Calendar, Wallet, Shield, Users, GitBranch, ArrowRight, ScrollText, BarChart3 } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, Lightbulb, Rocket } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Dokumentasi",
   description:
-    "Dokumentasi proyek CodeMentor AI: charter, WBS, jadwal, anggaran, risiko, RACI, dan tim.",
+    "Dokumentasi teknis proyek CodeMentor AI: arsitektur, teknologi, dan cara kerja.",
 };
 
 const docsLinks = [
-  { href: "/project/overview", title: "Overview Proyek", desc: "Ringkasan proyek, tujuan, dan sasaran", icon: ScrollText },
-  { href: "/project/charter", title: "Project Charter", desc: "Dokumen resmi kontrak & persetujuan", icon: FileText },
-  { href: "/project/wbs", title: "Work Breakdown Structure", desc: "Pembagian pekerjaan per fase", icon: GitBranch },
-  { href: "/project/jadwal", title: "Jadwal Proyek", desc: "Timeline 16 minggu & milestone", icon: Calendar },
-  { href: "/project/anggaran", title: "Anggaran", desc: "Rincian biaya total Rp194,7 juta", icon: Wallet },
-  { href: "/project/risiko", title: "Manajemen Risiko", desc: "Daftar risiko & strategi mitigasi", icon: Shield },
-  { href: "/project/raci", title: "Matriks RACI", desc: "Pembagian peran & tanggung jawab", icon: BarChart3 },
-  { href: "/project/tim", title: "Tim Proyek", desc: "Susunan tim & struktur organisasi", icon: Users },
+  { href: "/cara-kerja", title: "Cara Kerja", desc: "Alur RAG + Llama 3.1, teknologi yang digunakan", icon: Lightbulb },
+  { href: "/fitur", title: "Fitur", desc: "Detail fitur platform CodeMentor AI", icon: Rocket },
+  { href: "/bahasa", title: "Bahasa Didukung", desc: "5 bahasa pemrograman populer", icon: Code2 },
+  { href: "/knowledge-base", title: "Knowledge Base", desc: "Indeks 200+ pola error", icon: BookOpen },
 ];
 
 export default function DokumentasiPage() {

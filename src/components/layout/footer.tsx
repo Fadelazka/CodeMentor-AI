@@ -11,9 +11,6 @@ const footerLinks = {
   ],
   Perusahaan: [
     { label: "Dokumentasi", href: "/dokumentasi" },
-    { label: "Tim Proyek", href: "/project/tim" },
-    { label: "Kontrak", href: "/project/charter" },
-    { label: "Risiko", href: "/project/risiko" },
   ],
   "Sumber Daya": [
     { label: "Dashboard", href: "/dashboard" },
