@@ -24,11 +24,10 @@ export default function DokumentasiPage() {
             Dokumentasi
           </span>
           <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
-            Dokumentasi <span className="text-gradient">Manajemen Proyek</span>
+            Dokumentasi <span className="text-gradient">CodeMentor AI</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-            Seluruh dokumen manajemen proyek CodeMentor AI tersedia secara
-            transparan untuk stakeholder.
+            Seluruh dokumentasi teknis dan cara kerja platform CodeMentor AI.
           </p>
           <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm dark:border-slate-700 dark:bg-slate-800">
             <code className="font-mono text-blue-600 dark:text-blue-400">MP-TI/CMAI/2026/001</code>
