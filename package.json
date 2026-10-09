@@ -13,7 +13,11 @@
     "test:coverage": "vitest run --coverage",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "intro:check-deps": "node scripts/check-video-deps.mjs",
+    "intro:optimize": "node scripts/optimize-intro-video.mjs",
+    "intro:validate": "node scripts/validate-intro-video.mjs",
+    "intro:placeholder": "cd video && npm run build:all && node ../scripts/copy-intro-output.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
