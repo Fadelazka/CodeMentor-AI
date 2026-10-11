@@ -12,8 +12,10 @@ import {
   Eraser,
   Send,
 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { CodeEditor } from "@/components/chat/code-editor";
 import { FixedCodeBlock } from "@/components/chat/fixed-code-block";
+import { CorrectCodeBanner } from "@/components/chat/correct-code-banner";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
@@ -62,6 +64,10 @@ function parseAIResponse(text: string): ParsedAIResponse {
   const brokenCode = brokenMatch ? brokenMatch[2].trim() : undefined;
 
   return { explanation: remaining.trim(), brokenCode, fixedCode, language };
+}
+
+function isCodeCorrectResponse(text: string): boolean {
+  return /sudah benar|100%|kode benar|tidak ada error/i.test(text.slice(0, 200));
 }
 
 const welcomeMessage: Msg = {
@@ -298,6 +304,7 @@ export function ChatInterface() {
                 msg.role === "assistant"
                   ? parseAIResponse(msg.content)
                   : { explanation: msg.content, fixedCode: undefined, language: undefined };
+              const isCorrect = msg.role === "assistant" && isCodeCorrectResponse(msg.content);
               return (
               <div key={msg.id}>
                 <div className="mb-1.5 flex items-center gap-2">
@@ -312,27 +319,33 @@ export function ChatInterface() {
                       : "rounded-2xl rounded-tl-sm border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white/80"
                   }
                 >
-                  <div className="prose-sm prose-invert max-w-none [&_a]:text-neon-red [&_h2]:text-white [&_h3]:text-white [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-white">
-                    <ReactMarkdown
-                      components={{
-                        code: ({ children }) => (
-                          <code className="rounded-md border border-white/10 bg-[#05060A] px-1.5 py-0.5 font-mono text-xs text-neon-red">
-                            {children}
-                          </code>
-                        ),
-                        pre: ({ children }) => (
-                          <pre className="overflow-x-auto rounded-xl border border-white/10 bg-[#05060A] p-3 font-mono text-xs text-white/85">
-                            {children}
-                          </pre>
-                        ),
-                      }}
-                    >
-                      {parsed.explanation}
-                    </ReactMarkdown>
-                  </div>
+                  {isCorrect ? (
+                    <CorrectCodeBanner explanation={parsed.explanation} />
+                  ) : (
+                    <>
+                      <div className="prose-sm prose-invert max-w-none [&_a]:text-neon-red [&_h2]:text-white [&_h3]:text-white [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-white">
+                        <ReactMarkdown
+                          components={{
+                            code: ({ children }) => (
+                              <code className="rounded-md border border-white/10 bg-[#05060A] px-1.5 py-0.5 font-mono text-xs text-neon-red">
+                                {children}
+                              </code>
+                            ),
+                            pre: ({ children }) => (
+                              <pre className="overflow-x-auto rounded-xl border border-white/10 bg-[#05060A] p-3 font-mono text-xs text-white/85">
+                                {children}
+                              </pre>
+                            ),
+                          }}
+                        >
+                          {parsed.explanation}
+                        </ReactMarkdown>
+                      </div>
 
-                  {msg.role === "assistant" && parsed.fixedCode && (
-                    <FixedCodeBlock code={parsed.fixedCode} language={parsed.language ?? language} />
+                      {msg.role === "assistant" && parsed.fixedCode && (
+                        <FixedCodeBlock code={parsed.fixedCode} language={parsed.language ?? language} />
+                      )}
+                    </>
                   )}
 
                   {msg.confidence && msg.role === "assistant" && (

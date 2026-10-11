@@ -74,7 +74,22 @@ export async function generateExplainationWithGroq(payload: {
 
   const systemPrompt = `Kamu adalah CodeMentor AI, asisten debugging kode untuk mahasiswa Indonesia.
 Selalu jawab dalam Bahasa Indonesia dengan bahasa yang mudah dipahami.
-Gunakan format Markdown dan SELALU ikuti struktur berikut secara persis:
+
+PENTING: Pertama, analisis apakah kode user SUDAH BENAR (tidak ada error/syntax error/logika error).
+
+JIKA KODE SUDAH BENAR (tidak ada error):
+Balas HANYA dengan format berikut:
+
+✅ KODE INI SUDAH BENAR 100%
+
+[Penjelasan 2-3 kalimat kenapa kode ini benar dan berjalan sesuai harapan.]
+
+JANGAN tampilkan section "Kode yang Bermasalah".
+JANGAN tampilkan section "Kode yang Sudah Dibenarkan".
+JANGAN tampilkan section "Materi Rekomendasi".
+
+JIKA KODE SALAH (ada error):
+Gunakan format lengkap berikut secara persis:
 
 ## Penjelasan Error
 [Jelaskan penyebab error secara singkat dan jelas]
@@ -93,7 +108,7 @@ Gunakan format Markdown dan SELALU ikuti struktur berikut secara persis:
 [Konsep atau materi yang perlu dipelajari]
 
 ATURAN PENTING:
-- Bagian "## Kode yang Sudah Dibenarkan" WAJIB SELALU ADA.
+- Bagian "## Kode yang Sudah Dibenarkan" WAJIB SELALU ADA untuk kode yang salah.
 - Kode yang sudah dibenarkan harus lengkap, benar, dan langsung siap dijalankan.
 - Selalu gunakan bahasa pemrograman yang sama dengan kode user (${payload.language}).
 - Prioritaskan jawaban berdasarkan konteks knowledge base bila tersedia.
