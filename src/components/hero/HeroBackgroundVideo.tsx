@@ -58,28 +58,27 @@ export function HeroBackgroundVideo({
         onError={() => setHasError(true)}
         className={`
           absolute inset-0 w-full h-full object-cover
-          scale-105 opacity-0 transition-opacity duration-[2000ms]
-          mix-blend-luminosity
-          ${isLoaded ? 'opacity-15' : 'opacity-0'}
+          scale-105 transition-opacity duration-[2000ms]
+          mix-blend-screen
+          ${isLoaded ? 'opacity-35' : 'opacity-0'}
         `}
         style={{
-          filter: 'blur(1px) saturate(0.4)',
+          filter: 'blur(0.5px) saturate(0.8)',
         }}
       >
         {webmSrc && <source src={webmSrc} type="video/webm" />}
         <source src={src} type="video/mp4" />
       </video>
 
-      {/* Gradient overlay for readability */}
+      {/* Gradient overlay — lebih tipis */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-[#0A0E27]/60 via-[#0A0E27]/70 to-[#0A0E27]/95"
+        className="absolute inset-0 bg-gradient-to-b from-[#0A0E27]/20 via-[#0A0E27]/40 to-[#0A0E27]/70"
       />
 
-      {/* Radial vignette */}
+      {/* Vignette radial — lebih ringan */}
       <div
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0A0E27_100%)] opacity-80"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0A0E27_100%)] opacity-40"
       />
     </div>
   );
 }
-
