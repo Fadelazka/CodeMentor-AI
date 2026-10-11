@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { HeroBackground } from "@/components/hero/HeroBackground";
@@ -34,6 +36,17 @@ const CODE_LINES: CodeToken[][] = [
 ];
 
 export function Hero() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (status === "authenticated" && session) {
+      router.push("/dashboard");
+    } else {
+      router.push("/masuk");
+    }
+  };
+
   return (
     <section className="relative isolate overflow-hidden border-b border-border pt-32 pb-20 sm:pt-40 sm:pb-28">
       <HeroBackground />
@@ -64,13 +77,13 @@ export function Hero() {
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/chat"
-                className="btn-primary"
+              <button
+                onClick={handleClick}
+                className="btn-primary inline-flex items-center gap-2"
               >
                 Coba CodeMentor AI
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </button>
               <Link
                 href="/fitur#vscode"
                 className="btn-secondary"
@@ -94,7 +107,7 @@ export function Hero() {
                 </p>
               </div>
               <div>
-                <p className="font-display text-2xl font-bold">&lt;5s</p>
+                <p className="font-display text-2xl font-bold">{"<5s"}</p>
                 <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                   Waktu respons
                 </p>
@@ -152,3 +165,5 @@ export function Hero() {
     </section>
   );
 }
+
+
