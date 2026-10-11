@@ -51,7 +51,12 @@ export function ChatInterface() {
 
   const activeLanguage = languages.find((l) => l.value === language);
 
-  const handleExplain = () => {
+  const handleExplain = async () => {
+    if (!sourceCode.trim()) {
+      toast.error("Tempel kode terlebih dahulu.");
+      return;
+    }
+
     setMessages((prev) => [
       ...prev,
       {
@@ -65,19 +70,55 @@ export function ChatInterface() {
     ]);
     setIsLoading(true);
 
-    setTimeout(() => {
-      const mockResponse: Msg = {
-        id: `ai-${Date.now()}`,
-        role: "assistant",
-        content:
-          "## Error `ZeroDivisionError`\n\n**Penyebab:**\n\nFungsi `hitung_ratarata()` membagi `total` dengan `len(nilai)`. Ketika `nilai` berupa list kosong `[]`, nilai `len(nilai)` adalah **0**, sehingga terjadi pembagian dengan nol.\n\n**Perbaikan:**\n\n```python\ndef hitung_ratarata(nilai):\n    if not nilai:\n        return 0\n    total = 0\n    for n in nilai:\n        total += n\n    return total / len(nilai)\n```\n\n**Penjelasan tambahan:**\n\n- Validasi `if not nilai` mengecek apakah list kosong.\n- Mengembalikan 0 menghindari pembagian dengan nol.\n\n**Materi rekomendasi:**\n\n- List Comprehension Dasar\n- Validasi Input\n- Operasi Aritmatika",
-        confidence: 92,
-        errorCode: "ZeroDivisionError",
-        createdAt: new Date(),
-      };
-      setMessages((prev) => [...prev, mockResponse]);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify({
+          sourceCode,
+          language,
+          errorMessage: errorInput.trim() || undefined,
+        }),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error((data && data.error) || "Gagal menganalisis kode.");
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `ai-${Date.now()}`,
+          role: "assistant",
+          content: data.explanation ?? "Server tidak mengembalikan penjelasan.",
+          confidence: typeof data.confidence === "number" ? data.confidence : undefined,
+          errorCode: errorInput.trim().split("\n")[0]?.slice(0, 60) || undefined,
+          createdAt: new Date(),
+        },
+      ]);
+
+      if (data.mock) {
+        toast("Jawaban dari knowledge base (API Groq tidak aktif).", { icon: "⚠️" });
+      }
+    } catch (err) {
+      console.error("[chat] Gagal memanggil /api/chat:", err);
+      toast.error(err instanceof Error ? err.message : "Gagal menghubungi server.");
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `err-${Date.now()}`,
+          role: "assistant",
+          content:
+            "**Gagal menganalisis kode.**\n\nServer tidak dapat memproses permintaan ini. Pastikan koneksi aktif lalu coba lagi.",
+          createdAt: new Date(),
+        },
+      ]);
+    } finally {
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
   const handleFeedback = (id: string, feedback: "helpful" | "not-helpful") => {
