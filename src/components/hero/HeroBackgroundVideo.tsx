@@ -34,7 +34,27 @@ export function HeroBackgroundVideo({
     setShouldRender(true);
   }, []);
 
-  if (!shouldRender || hasError) return null;
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[HeroVideo] shouldRender:', shouldRender);
+      console.log('[HeroVideo] isLoaded:', isLoaded);
+      console.log('[HeroVideo] hasError:', hasError);
+    }
+  }, [shouldRender, isLoaded, hasError]);
+
+  if (!shouldRender) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[HeroVideo] Not rendering — shouldRender=false');
+    }
+    return null;
+  }
+
+  if (hasError) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[HeroVideo] Error — hasError=true');
+    }
+    return null;
+  }
 
   return (
     <div
@@ -53,10 +73,11 @@ export function HeroBackgroundVideo({
         className={`
           absolute inset-0 w-full h-full object-cover
           scale-105 transition-opacity duration-[2000ms]
-          ${isLoaded ? 'opacity-70' : 'opacity-0'}
+          mix-blend-screen
+          ${isLoaded ? 'opacity-35' : 'opacity-0'}
         `}
         style={{
-          filter: 'blur(0.3px) saturate(1.05)',
+          filter: 'blur(0.5px) saturate(0.8)',
         }}
       >
         <source src={src} type="video/mp4" />
@@ -64,7 +85,7 @@ export function HeroBackgroundVideo({
 
       {/* Gradient overlay for readability */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-[#0A0E27]/35 via-[#0A0E27]/45 to-[#0A0E27]/75"
+        className="absolute inset-0 bg-gradient-to-b from-[#0A0E27]/20 via-[#0A0E27]/40 to-[#0A0E27]/70"
       />
 
       {/* Radial vignette */}
