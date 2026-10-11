@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { IntroDevTools } from "./intro-dev-tools";
 import { IntroVideo } from "./intro-video";
@@ -9,6 +10,26 @@ import {
   useIntroState,
   type IntroSource,
 } from "@/hooks/use-intro-state";
+
+/**
+ * Rute aplikasi terproteksi (route group `(app)`). Widget dev intro tidak
+ * boleh tampil di sini — hanya di halaman publik/landing.
+ */
+const APP_ROUTE_PREFIXES = [
+  "/dashboard",
+  "/chat",
+  "/riwayat",
+  "/admin",
+  "/profil",
+  "/pengaturan",
+];
+
+function isAppRoute(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return APP_ROUTE_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+}
 
 type IntroContextValue = {
   replayIntro: () => void;
@@ -27,6 +48,8 @@ export function useIntro() {
 
 export function IntroProvider({ children }: { children: React.ReactNode }) {
   const { state, markAsSeen, resetIntro, replayIntro } = useIntroState();
+  const pathname = usePathname();
+  const showDevTools = !isAppRoute(pathname);
 
   // Kunci scroll saat intro tampil.
   React.useEffect(() => {
@@ -70,7 +93,7 @@ export function IntroProvider({ children }: { children: React.ReactNode }) {
       {state === "visible" && (
         <IntroVideo onDone={handleDone} onSkip={() => handleDone("skip")} />
       )}
-      <IntroDevTools />
+      {showDevTools && <IntroDevTools />}
     </IntroContext.Provider>
   );
 }
