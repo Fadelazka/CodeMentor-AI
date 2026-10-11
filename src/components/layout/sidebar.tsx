@@ -267,7 +267,7 @@ export function MobileSidebar() {
   }, [mobileOpen]);
 
   return (
-    <div className={cn("fixed inset-0 z-50 lg:hidden", mobileOpen ? "" : "pointer-events-none")}>
+    <div className={cn("fixed inset-0 z-50 lg:hidden pointer-events-none", mobileOpen ? "pointer-events-auto" : "")}>
       <div
         onClick={() => setMobileOpen(false)}
         className={cn(

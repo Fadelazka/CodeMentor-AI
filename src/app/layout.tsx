@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { IntroProvider } from "@/components/intro/intro-context";
@@ -55,13 +54,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${spaceGrotesk.variable} font-sans`}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <SessionProvider>
-            <ToastProvider>
-              <IntroProvider>{children}</IntroProvider>
-            </ToastProvider>
-          </SessionProvider>
-        </ThemeProvider>
+        <SessionProvider>
+          <ToastProvider>
+            <IntroProvider>{children}</IntroProvider>
+          </ToastProvider>
+        </SessionProvider>
       </body>
     </html>
   );
