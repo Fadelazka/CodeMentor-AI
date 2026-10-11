@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { HeroBackground } from "@/components/hero/HeroBackground";
+import { GlitchText } from "@/components/ui/glitch-text";
 
 export function Hero() {
   return (
@@ -25,11 +26,8 @@ export function Hero() {
             </p>
 
             <h1 className="mt-6 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Paham{" "}
-              <span className="text-accent decoration-accent underline decoration-2 underline-offset-8">
-                Error
-              </span>{" "}
-              Kode Anda, Tanpa Harus Bertanya Ke Mana-Mana.
+              Paham <GlitchText>Error</GlitchText> Kode Anda, Tanpa Harus
+              Bertanya Ke Mana-Mana.
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">

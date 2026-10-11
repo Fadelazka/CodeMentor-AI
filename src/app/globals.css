@@ -129,3 +129,94 @@ code {
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #ffffff44;
 }
+
+/* ── Glitch text (Hero "Error") ─────────────────────────────── */
+.glitch-text .glitch-layer {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.glitch-text[data-glitching="true"] .glitch-layer {
+  opacity: 1;
+}
+
+.glitch-text[data-glitching="true"] .glitch-cyan {
+  animation: glitch-cyan 0.3s infinite;
+}
+
+.glitch-text[data-glitching="true"] .glitch-violet {
+  animation: glitch-violet 0.3s infinite;
+}
+
+.glitch-text[data-glitching="true"] > span:last-child {
+  animation: glitch-base 0.3s infinite;
+}
+
+@keyframes glitch-base {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 1px);
+  }
+  40% {
+    transform: translate(2px, -1px);
+  }
+  60% {
+    transform: translate(-1px, -1px);
+  }
+  80% {
+    transform: translate(1px, 1px);
+  }
+}
+
+@keyframes glitch-cyan {
+  0%,
+  100% {
+    transform: translate(-2px, 0);
+    clip-path: inset(0 0 0 0);
+  }
+  25% {
+    transform: translate(-4px, -1px);
+    clip-path: inset(20% 0 40% 0);
+  }
+  50% {
+    transform: translate(-2px, 1px);
+    clip-path: inset(60% 0 10% 0);
+  }
+  75% {
+    transform: translate(-3px, -1px);
+    clip-path: inset(10% 0 60% 0);
+  }
+}
+
+@keyframes glitch-violet {
+  0%,
+  100% {
+    transform: translate(2px, 0);
+    clip-path: inset(0 0 0 0);
+  }
+  25% {
+    transform: translate(4px, 1px);
+    clip-path: inset(40% 0 20% 0);
+  }
+  50% {
+    transform: translate(2px, -1px);
+    clip-path: inset(10% 0 60% 0);
+  }
+  75% {
+    transform: translate(3px, 1px);
+    clip-path: inset(60% 0 10% 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text .glitch-layer {
+    display: none;
+  }
+  .glitch-text[data-glitching="true"] .glitch-layer,
+  .glitch-text[data-glitching="true"] > span:last-child {
+    animation: none;
+  }
+}
