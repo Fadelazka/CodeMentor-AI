@@ -3,13 +3,20 @@
 import * as React from "react";
 import { SidebarProvider, Sidebar, MobileSidebar, useSidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import { useSettings } from "@/contexts/SettingsContext";
 import { cn } from "@/lib/utils";
 
 function Shell({ children }: { children: React.ReactNode }) {
   const { collapsed } = useSidebar();
+  const { resolvedTheme } = useSettings();
 
   return (
-    <div className="dashboard-shell dark relative min-h-screen text-white">
+    <div
+      className={cn(
+        "dashboard-shell relative min-h-screen",
+        resolvedTheme === "dark" ? "dark text-white" : "theme-light"
+      )}
+    >
       <div className="dashboard-grid-bg pointer-events-none fixed inset-0" aria-hidden />
       <Sidebar />
       <MobileSidebar />

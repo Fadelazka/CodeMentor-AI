@@ -44,6 +44,18 @@ export function ThemeProvider({
     }
   }, [enableSystem]);
 
+  // Stay in sync when the SettingsContext updates the theme.
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key !== "theme" || !e.newValue) return;
+      const next = e.newValue as Theme;
+      setThemeState(next);
+      document.documentElement.classList.toggle("dark", next === "dark");
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
+
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
     localStorage.setItem("theme", newTheme);

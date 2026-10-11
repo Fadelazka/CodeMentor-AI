@@ -23,6 +23,14 @@
     --border: 40 8% 84%;
     --input: 40 8% 84%;
     --ring: 0 0% 4%;
+
+    /* Settings-driven tokens (defaults) */
+    --accent-primary: #FF3B6B;
+    --accent-secondary: #FF6B35;
+    --accent-primary-rgb: 255 59 107;
+    --accent-secondary-rgb: 255 107 53;
+    --editor-font-size: 14px;
+    --shell-bg: #05060a;
   }
 
   .dark {
@@ -98,6 +106,11 @@
 
 code {
   font-family: var(--font-mono), monospace;
+}
+
+/* Code editor respects the "Ukuran Font Editor" preference */
+.cm-editor {
+  font-size: var(--editor-font-size, 14px);
 }
 
 .prose-dark {
@@ -249,7 +262,7 @@ code {
 
 /* â”€â”€ Futuristic dashboard shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .dashboard-shell {
-  background-color: #05060a;
+  background-color: var(--shell-bg, #05060a);
   background-image: none;
   background-attachment: fixed;
 }
@@ -310,4 +323,53 @@ code {
   .animate-spin-slow {
     animation: none;
   }
+}
+
+/* ── Light theme overrides (driven by SettingsContext) ───────── */
+.dashboard-shell.theme-light {
+  color: #16171c;
+}
+
+.dashboard-shell.theme-light .glass-panel {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-shell.theme-light .glass-panel-hover:hover {
+  border-color: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 8px 30px -16px rgba(0, 0, 0, 0.18);
+}
+
+.dashboard-shell.theme-light .dashboard-grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+/* Remap the dark-designed text/surface utilities to light equivalents */
+.dashboard-shell.theme-light [class*="text-white"] {
+  color: #16171c !important;
+}
+
+.dashboard-shell.theme-light [class*="bg-white/["] {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.dashboard-shell.theme-light [class*="border-white/["] {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.dashboard-shell.theme-light [class*="bg-[#05060A]"],
+.dashboard-shell.theme-light [class*="bg-\[#05060A\]"] {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.dashboard-shell.theme-light [class*="bg-[#0A0B14]"] {
+  background-color: #ffffff;
+  box-shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.25);
+}
+
+.dashboard-shell.theme-light .sidebar-scroll::-webkit-scrollbar-thumb,
+.dashboard-shell.theme-light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
 }

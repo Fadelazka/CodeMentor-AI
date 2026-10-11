@@ -74,8 +74,8 @@ const config: Config = {
           pink: "#FF3B6B",
           green: "#3DFFA2",
           amber: "#FFC53D",
-          red: "#FF3B6B",
-          orange: "#FF6B35",
+          red: "rgb(var(--accent-primary-rgb) / <alpha-value>)",
+          orange: "rgb(var(--accent-secondary-rgb) / <alpha-value>)",
         },
         surface: {
           base: "#05060A",

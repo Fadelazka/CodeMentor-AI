@@ -1,39 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import {
-  Palette,
-  Bot,
-  Bell,
-  User,
-  Save,
-  KeyRound,
-  Download,
-  Trash2,
-  Check,
-} from "lucide-react";
+import { Palette, Bot, Bell, User, RotateCcw, KeyRound, Download, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { PageHeader } from "@/components/ui/page-header";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { useSettings } from "@/contexts/SettingsContext";
+import type { UserSettings } from "@/lib/settings";
 import { SettingsSection } from "@/components/settings/settings-section";
 import { RadioGroup } from "@/components/settings/radio-group";
 import { ToggleSwitch } from "@/components/settings/toggle-switch";
-
-const STORAGE_KEY = "codementor_settings";
-
-interface SettingsState {
-  theme: string;
-  accent: string;
-  editorFont: string;
-  aiLanguage: string;
-  detailLevel: string;
-  autoSave: boolean;
-  notifImportantError: boolean;
-  notifNewFeature: boolean;
-  weeklyMaterial: boolean;
-}
 
 function Field({
   label,
@@ -93,37 +70,16 @@ function CheckItem({
 }
 
 export default function PengaturanPage() {
-  const [settings, setSettings] = useState<SettingsState>({
-    theme: "gelap",
-    accent: "merah",
-    editorFont: "sedang",
-    aiLanguage: "id",
-    detailLevel: "sedang",
-    autoSave: true,
-    notifImportantError: false,
-    notifNewFeature: false,
-    weeklyMaterial: true,
-  });
+  const { settings, updateSettings, resetAll } = useSettings();
 
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setSettings((prev) => ({ ...prev, ...JSON.parse(raw) }));
-    } catch {
-      // abaikan data rusak
-    }
-  }, []);
+  const change = (partial: Partial<UserSettings>) => {
+    updateSettings(partial);
+    toast.success("Pengaturan tersimpan", { duration: 1500 });
+  };
 
-  const update = <K extends keyof SettingsState,>(key: K, value: SettingsState[K]) =>
-    setSettings((prev) => ({ ...prev, [key]: value }));
-
-  const handleSave = () => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    } catch {
-      // penyimpanan tidak tersedia
-    }
-    toast.success("Pengaturan tersimpan ✓");
+  const handleReset = () => {
+    resetAll();
+    toast.success("Pengaturan dikembalikan ke default", { duration: 1500 });
   };
 
   return (
@@ -132,6 +88,11 @@ export default function PengaturanPage() {
         eyebrow="// Pengaturan"
         title="Pengaturan"
         description="Kelola preferensi dan tampilan aplikasi Anda"
+        actions={
+          <GradientButton variant="outline" size="sm" icon={RotateCcw} onClick={handleReset}>
+            Kembalikan Default
+          </GradientButton>
+        }
       />
 
       <SettingsSection
@@ -144,11 +105,11 @@ export default function PengaturanPage() {
           <RadioGroup
             name="theme"
             value={settings.theme}
-            onChange={(v) => update("theme", v)}
+            onChange={(v) => change({ theme: v as UserSettings["theme"] })}
             options={[
-              { value: "terang", label: "Terang" },
-              { value: "gelap", label: "Gelap" },
-              { value: "sistem", label: "Sistem" },
+              { value: "light", label: "Terang" },
+              { value: "dark", label: "Gelap" },
+              { value: "system", label: "Sistem" },
             ]}
           />
         </div>
@@ -156,11 +117,11 @@ export default function PengaturanPage() {
         <div className="space-y-2">
           <Field label="Warna Aksen" hint="Warna utama untuk tombol dan highlight." />
           <RadioGroup
-            name="accent"
-            value={settings.accent}
-            onChange={(v) => update("accent", v)}
+            name="accentColor"
+            value={settings.accentColor}
+            onChange={(v) => change({ accentColor: v as UserSettings["accentColor"] })}
             options={[
-              { value: "merah", label: "Merah" },
+              { value: "red", label: "Merah" },
               { value: "orange", label: "Orange" },
               { value: "violet", label: "Violet" },
               { value: "cyan", label: "Cyan" },
@@ -171,13 +132,13 @@ export default function PengaturanPage() {
         <div className="space-y-2">
           <Field label="Ukuran Font Editor" hint="Ukuran teks pada editor kode." />
           <RadioGroup
-            name="editorFont"
-            value={settings.editorFont}
-            onChange={(v) => update("editorFont", v)}
+            name="editorFontSize"
+            value={settings.editorFontSize}
+            onChange={(v) => change({ editorFontSize: v as UserSettings["editorFontSize"] })}
             options={[
-              { value: "kecil", label: "Kecil" },
-              { value: "sedang", label: "Sedang" },
-              { value: "besar", label: "Besar" },
+              { value: "small", label: "Kecil" },
+              { value: "medium", label: "Sedang" },
+              { value: "large", label: "Besar" },
             ]}
           />
         </div>
@@ -193,7 +154,7 @@ export default function PengaturanPage() {
           <RadioGroup
             name="aiLanguage"
             value={settings.aiLanguage}
-            onChange={(v) => update("aiLanguage", v)}
+            onChange={(v) => change({ aiLanguage: v as UserSettings["aiLanguage"] })}
             options={[
               { value: "id", label: "Bahasa Indonesia" },
               { value: "en", label: "English" },
@@ -204,13 +165,13 @@ export default function PengaturanPage() {
         <div className="space-y-2">
           <Field label="Tingkat Detail Jawaban" />
           <RadioGroup
-            name="detailLevel"
-            value={settings.detailLevel}
-            onChange={(v) => update("detailLevel", v)}
+            name="aiDetailLevel"
+            value={settings.aiDetailLevel}
+            onChange={(v) => change({ aiDetailLevel: v as UserSettings["aiDetailLevel"] })}
             options={[
-              { value: "singkat", label: "Singkat" },
-              { value: "sedang", label: "Sedang" },
-              { value: "detail", label: "Detail" },
+              { value: "brief", label: "Singkat" },
+              { value: "medium", label: "Sedang" },
+              { value: "detailed", label: "Detail" },
             ]}
           />
         </div>
@@ -221,8 +182,8 @@ export default function PengaturanPage() {
             hint="Simpan otomatis riwayat percakapan Anda."
           />
           <ToggleSwitch
-            checked={settings.autoSave}
-            onChange={(v) => update("autoSave", v)}
+            checked={settings.autoSaveHistory}
+            onChange={(v) => change({ autoSaveHistory: v })}
             label="Auto-save Chat History"
           />
         </div>
@@ -231,26 +192,26 @@ export default function PengaturanPage() {
       <SettingsSection
         icon={Bell}
         title="Notifikasi"
-        description="Pilih notifikasi yang ingin Anda terima"
+        description="Pilih notifikasi email yang ingin Anda terima"
       >
         <div className="space-y-3">
           <CheckItem
             id="notif-error"
             label="Error penting"
-            checked={settings.notifImportantError}
-            onChange={(v) => update("notifImportantError", v)}
+            checked={settings.emailNotifications.criticalErrors}
+            onChange={(v) => change({ emailNotifications: { ...settings.emailNotifications, criticalErrors: v } })}
           />
           <CheckItem
             id="notif-feature"
             label="Update fitur baru"
-            checked={settings.notifNewFeature}
-            onChange={(v) => update("notifNewFeature", v)}
+            checked={settings.emailNotifications.featureUpdates}
+            onChange={(v) => change({ emailNotifications: { ...settings.emailNotifications, featureUpdates: v } })}
           />
           <CheckItem
             id="notif-material"
             label="Materi rekomendasi mingguan"
-            checked={settings.weeklyMaterial}
-            onChange={(v) => update("weeklyMaterial", v)}
+            checked={settings.emailNotifications.weeklyDigest}
+            onChange={(v) => change({ emailNotifications: { ...settings.emailNotifications, weeklyDigest: v } })}
           />
         </div>
       </SettingsSection>
@@ -285,12 +246,6 @@ export default function PengaturanPage() {
           </button>
         </div>
       </SettingsSection>
-
-      <div className="flex justify-end">
-        <GradientButton icon={Save} onClick={handleSave}>
-          Simpan Pengaturan
-        </GradientButton>
-      </div>
     </div>
   );
 }
