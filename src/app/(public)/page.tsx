@@ -1,4 +1,5 @@
 import { Hero } from "@/components/landing/hero";
+import { HeroMarquee } from "@/components/sections/HeroMarquee";
 import { ProblemSolution } from "@/components/landing/problem-solution";
 import { Features } from "@/components/landing/features";
 import { HowItWorks } from "@/components/landing/how-it-works";
@@ -12,6 +13,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <HeroMarquee />
       <Metrics />
       <ProblemSolution />
       <Features />
