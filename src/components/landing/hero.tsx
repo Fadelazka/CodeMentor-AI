@@ -5,6 +5,33 @@ import { ArrowRight, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { HeroBackground } from "@/components/hero/HeroBackground";
 import { GlitchText } from "@/components/ui/glitch-text";
+import { TypingCodeBlock, type CodeToken } from "@/components/ui/typing-text";
+
+const CODE_LINES: CodeToken[][] = [
+  [
+    { text: "def", className: "text-foreground" },
+    { text: " hitung_ratarata(" },
+    { text: "nilai", className: "text-foreground" },
+    { text: "):" },
+  ],
+  [{ text: "    total = 0" }],
+  [
+    { text: "    " },
+    { text: "for", className: "text-foreground" },
+    { text: " n " },
+    { text: "in", className: "text-foreground" },
+    { text: " nilai:" },
+  ],
+  [{ text: "        total += n" }],
+  [{ text: "    result = total / len(nilai)" }],
+  [
+    { text: "    " },
+    { text: "return", className: "text-foreground" },
+    { text: " result" },
+  ],
+  [],
+  [{ text: "print(hitung_ratarata([]))" }],
+];
 
 export function Hero() {
   return (
@@ -99,15 +126,8 @@ export function Hero() {
               </div>
 
               <div className="p-5 font-mono text-[13px] leading-7 sm:p-6">
-                <p className="text-muted-foreground">1  <span className="text-foreground">def</span> hitung_ratarata(<span className="text-foreground">nilai</span>):</p>
-                <p className="text-muted-foreground">2      total = 0</p>
-                <p className="text-muted-foreground">3      <span className="text-foreground">for</span> n <span className="text-foreground">in</span> nilai:</p>
-                <p className="text-muted-foreground">4          total += n</p>
-                <p className="text-muted-foreground">5      result = total / len(nilai)</p>
-                <p className="text-muted-foreground">6      <span className="text-foreground">return</span> result</p>
-                <p className="text-muted-foreground">7</p>
-                <p className="text-muted-foreground">8  print(hitung_ratarata([]))</p>
-                <p className="mt-2 text-muted-foreground">$ </p>
+                <TypingCodeBlock lines={CODE_LINES} speed={38} lineDelay={260} />
+                <p className="mt-2 whitespace-pre text-muted-foreground">$ </p>
                 <div className="mt-4 border border-accent/40 bg-accent/5 p-4">
                   <p className="flex items-center gap-2 text-accent">
                     <span className="text-foreground">Traceback</span> (most recent call last):
