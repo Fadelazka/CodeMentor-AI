@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -59,11 +59,11 @@ export function HeroBackgroundVideo({
         className={`
           absolute inset-0 w-full h-full object-cover
           scale-105 opacity-0 transition-opacity duration-[2000ms]
-          mix-blend-screen
-          ${isLoaded ? 'opacity-20' : 'opacity-0'}
+          mix-blend-luminosity
+          ${isLoaded ? 'opacity-15' : 'opacity-0'}
         `}
         style={{
-          filter: 'blur(1px) saturate(0.6)',
+          filter: 'blur(1px) saturate(0.4)',
         }}
       >
         {webmSrc && <source src={webmSrc} type="video/webm" />}
@@ -82,3 +82,4 @@ export function HeroBackgroundVideo({
     </div>
   );
 }
+
