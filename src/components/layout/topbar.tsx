@@ -7,7 +7,6 @@ import { useSession, signOut } from "next-auth/react";
 import {
   Menu,
   Search,
-  Bell,
   MessageSquarePlus,
   ChevronRight,
   User,
@@ -15,6 +14,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useSidebar } from "@/components/layout/sidebar";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { GradientButton } from "@/components/ui/gradient-button";
 
@@ -74,13 +74,7 @@ export function Topbar() {
           AI Online
         </BadgePill>
 
-        <button
-          aria-label="Notifikasi"
-          className="relative rounded-xl border border-white/[0.06] bg-white/[0.03] p-2 text-white/60 transition-colors hover:border-white/[0.12] hover:text-white"
-        >
-          <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-neon-pink" />
-        </button>
+        <NotificationBell />
 
         <GradientButton href="/chat" size="sm" icon={MessageSquarePlus} className="hidden md:inline-flex">
           Tanya Baru
