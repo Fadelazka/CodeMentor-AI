@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface HeroBackgroundVideoProps {
   src: string;
@@ -11,26 +11,21 @@ interface HeroBackgroundVideoProps {
 
 export function HeroBackgroundVideo({
   src,
-  webmSrc,
   poster,
   className = '',
 }: HeroBackgroundVideoProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldRender, setShouldRender] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    // Respect reduced motion
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
-    // Skip on mobile (< 768px)
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     if (isMobile) return;
 
-    // Skip on slow connections
-    const conn = (navigator as any).connection;
+    const conn = (navigator as { connection?: { effectiveType?: string } }).connection;
     if (conn?.effectiveType) {
       const slow = ['slow-2g', '2g', '3g'].includes(conn.effectiveType);
       if (slow) return;
@@ -47,7 +42,6 @@ export function HeroBackgroundVideo({
       aria-hidden="true"
     >
       <video
-        ref={videoRef}
         autoPlay
         muted
         loop
@@ -59,23 +53,21 @@ export function HeroBackgroundVideo({
         className={`
           absolute inset-0 w-full h-full object-cover
           scale-105 transition-opacity duration-[2000ms]
-          mix-blend-screen
-          ${isLoaded ? 'opacity-35' : 'opacity-0'}
+          ${isLoaded ? 'opacity-70' : 'opacity-0'}
         `}
         style={{
-          filter: 'blur(0.5px) saturate(0.8)',
+          filter: 'blur(0.3px) saturate(1.05)',
         }}
       >
-        {webmSrc && <source src={webmSrc} type="video/webm" />}
         <source src={src} type="video/mp4" />
       </video>
 
-      {/* Gradient overlay — lebih tipis */}
+      {/* Gradient overlay for readability */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-[#0A0E27]/20 via-[#0A0E27]/40 to-[#0A0E27]/70"
+        className="absolute inset-0 bg-gradient-to-b from-[#0A0E27]/35 via-[#0A0E27]/45 to-[#0A0E27]/75"
       />
 
-      {/* Vignette radial — lebih ringan */}
+      {/* Radial vignette */}
       <div
         className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0A0E27_100%)] opacity-40"
       />
