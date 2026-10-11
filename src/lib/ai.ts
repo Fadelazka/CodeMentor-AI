@@ -124,7 +124,9 @@ ${contextPrompt || "Tidak ada konteks tambahan."}`;
         continue;
       }
 
-      const confidenceMatch = explanation.match(/Confidence[:：]\s*(\d{1,3})%?/i);
+      console.log(`[ai] Groq model "${model}" OK usage=${JSON.stringify(data.usage ?? {})}`);
+
+      const confidenceMatch = explanation.match(/Confidence\D{0,12}?(\d{1,3})\s*%/i);
       const confidence = confidenceMatch ? Math.min(100, parseInt(confidenceMatch[1], 10)) : 85;
 
       return { explanation, confidence, mock: false };
