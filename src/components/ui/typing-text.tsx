@@ -12,6 +12,8 @@ interface TypingTextProps {
   text: string;
   speed?: number;
   delay?: number;
+  loop?: boolean;
+  loopDelay?: number;
   onComplete?: () => void;
   className?: string;
 }
@@ -20,13 +22,18 @@ export function TypingText({
   text,
   speed = 40,
   delay = 0,
+  loop = true,
+  loopDelay = 3000,
   onComplete,
   className,
 }: TypingTextProps) {
   const [displayed, setDisplayed] = useState("");
   const [isComplete, setIsComplete] = useState(false);
-  const [started, setStarted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const indexRef = useRef(0);
+  const firstRunRef = useRef(true);
   const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
@@ -38,13 +45,8 @@ export function TypingText({
     if (!container) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setStarted(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 }
     );
 
     observer.observe(container);
@@ -52,37 +54,48 @@ export function TypingText({
   }, []);
 
   useEffect(() => {
-    if (!started) return;
+    if (!isVisible) return;
 
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) {
+      indexRef.current = text.length;
       setDisplayed(text);
       setIsComplete(true);
       onCompleteRef.current?.();
       return;
     }
 
-    let index = 0;
-    let interval: ReturnType<typeof setInterval> | undefined;
+    if (indexRef.current >= text.length) {
+      if (!loop) return;
+      const restartTimer = setTimeout(() => {
+        indexRef.current = 0;
+        setDisplayed("");
+        setIsComplete(false);
+      }, loopDelay);
+      return () => clearTimeout(restartTimer);
+    }
+
+    const startDelay = firstRunRef.current ? delay : 0;
+    firstRunRef.current = false;
 
     const delayTimer = setTimeout(() => {
-      interval = setInterval(() => {
-        if (index < text.length) {
-          index += 1;
-          setDisplayed(text.slice(0, index));
-        } else {
-          if (interval) clearInterval(interval);
+      intervalRef.current = setInterval(() => {
+        indexRef.current += 1;
+        setDisplayed(text.slice(0, indexRef.current));
+
+        if (indexRef.current >= text.length) {
+          if (intervalRef.current) clearInterval(intervalRef.current);
           setIsComplete(true);
           onCompleteRef.current?.();
         }
       }, speed);
-    }, delay);
+    }, startDelay);
 
     return () => {
       clearTimeout(delayTimer);
-      if (interval) clearInterval(interval);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [started, text, speed, delay]);
+  }, [isVisible, isComplete, text, speed, delay, loop, loopDelay]);
 
   return (
     <span ref={containerRef} className={className}>
@@ -102,6 +115,8 @@ interface TypingCodeBlockProps {
   lines: CodeToken[][];
   speed?: number;
   lineDelay?: number;
+  loop?: boolean;
+  loopDelay?: number;
   className?: string;
 }
 
@@ -109,10 +124,14 @@ export function TypingCodeBlock({
   lines,
   speed = 38,
   lineDelay = 260,
+  loop = true,
+  loopDelay = 3000,
   className,
 }: TypingCodeBlockProps) {
   const [activeLine, setActiveLine] = useState(-1);
+  const [generation, setGeneration] = useState(0);
   const [started, setStarted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [instant, setInstant] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -124,12 +143,7 @@ export function TypingCodeBlock({
     setInstant(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setStarted(true);
-          observer.disconnect();
-        }
-      },
+      ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.3 }
     );
 
@@ -138,9 +152,12 @@ export function TypingCodeBlock({
   }, []);
 
   useEffect(() => {
-    if (!started) return;
-    setActiveLine(instant ? lines.length - 1 : 0);
-  }, [started, instant, lines.length]);
+    if (isVisible && !started) {
+      setStarted(true);
+      setActiveLine(instant ? lines.length - 1 : 0);
+      setGeneration((g) => g + 1);
+    }
+  }, [isVisible, started, instant, lines.length]);
 
   useEffect(
     () => () => {
@@ -151,17 +168,31 @@ export function TypingCodeBlock({
 
   const handleLineComplete = useCallback(
     (index: number) => {
-      if (instant || index >= lines.length - 1) return;
-      const timer = setTimeout(() => setActiveLine(index + 1), lineDelay);
-      timersRef.current.push(timer);
+      if (instant) return;
+
+      if (index < lines.length - 1) {
+        const timer = setTimeout(() => setActiveLine(index + 1), lineDelay);
+        timersRef.current.push(timer);
+        return;
+      }
+
+      if (loop) {
+        const timer = setTimeout(() => {
+          setActiveLine(0);
+          setGeneration((g) => g + 1);
+        }, loopDelay);
+        timersRef.current.push(timer);
+      }
     },
-    [instant, lines.length, lineDelay]
+    [instant, lines.length, lineDelay, loop, loopDelay]
   );
+
+  const paused = !isVisible;
 
   return (
     <div ref={containerRef} className={className}>
       {lines.map((tokens, i) => (
-        <p key={i} className="whitespace-pre text-muted-foreground">
+        <p key={`${generation}-${i}`} className="whitespace-pre text-muted-foreground">
           <span className="select-none">{i + 1}  </span>
           {instant ? (
             <StaticTokens tokens={tokens} />
@@ -170,6 +201,7 @@ export function TypingCodeBlock({
               tokens={tokens}
               speed={speed}
               active={i === activeLine}
+              paused={paused}
               onComplete={() => handleLineComplete(i)}
             />
           ) : (
@@ -199,10 +231,11 @@ interface TypingLineProps {
   tokens: CodeToken[];
   speed: number;
   active: boolean;
+  paused: boolean;
   onComplete: () => void;
 }
 
-function TypingLine({ tokens, speed, active, onComplete }: TypingLineProps) {
+function TypingLine({ tokens, speed, active, paused, onComplete }: TypingLineProps) {
   const total = useMemo(
     () => tokens.reduce((sum, token) => sum + token.text.length, 0),
     [tokens]
@@ -216,7 +249,7 @@ function TypingLine({ tokens, speed, active, onComplete }: TypingLineProps) {
   }, [onComplete]);
 
   useEffect(() => {
-    if (!active || count >= total) return;
+    if (!active || paused || count >= total) return;
 
     const interval = setInterval(() => {
       setCount((current) => {
@@ -228,7 +261,7 @@ function TypingLine({ tokens, speed, active, onComplete }: TypingLineProps) {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, total, speed]);
+  }, [active, paused, total, speed]);
 
   useEffect(() => {
     if (active && count >= total && !firedRef.current) {
