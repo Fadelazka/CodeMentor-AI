@@ -38,3 +38,7 @@ next-env.d.ts
 prisma/*.db
 prisma/*.db-journal
 .vercel
+
+public/hero/*.mp4.bak
+public/hero/*.webm.bak
+public/hero/*.tmp

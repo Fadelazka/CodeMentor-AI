@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { ArrowRight, Download } from "lucide-react";
 import { motion } from "framer-motion";
+import { HeroBackground } from "@/components/hero/HeroBackground";
 
 export function Hero() {
   return (
-    <section className="relative border-b border-border pt-32 pb-20 sm:pt-40 sm:pb-28">
-      <div className="container-editorial">
+    <section className="relative isolate overflow-hidden border-b border-border pt-32 pb-20 sm:pt-40 sm:pb-28">
+      <HeroBackground />
+      <div className="container-editorial relative z-10">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Copy */}
           <motion.div
