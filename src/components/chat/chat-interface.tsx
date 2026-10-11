@@ -13,6 +13,7 @@ import {
   Send,
 } from "lucide-react";
 import { CodeEditor } from "@/components/chat/code-editor";
+import { FixedCodeBlock } from "@/components/chat/fixed-code-block";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
@@ -28,6 +29,35 @@ interface Msg {
   errorCode?: string;
   feedback?: "helpful" | "not-helpful";
   createdAt: Date;
+}
+
+interface ParsedAIResponse {
+  explanation: string;
+  brokenCode?: string;
+  fixedCode?: string;
+  language?: string;
+}
+
+function parseAIResponse(text: string): ParsedAIResponse {
+  let remaining = text;
+  let fixedCode: string | undefined;
+  let language: string | undefined;
+
+  const fixedMatch = remaining.match(
+    /(?:^|\n)#{1,6}\s*Kode yang Sudah Dibenarkan\s*\n+```(\w+)?\n([\s\S]*?)```/i
+  );
+  if (fixedMatch) {
+    language = fixedMatch[1] || undefined;
+    fixedCode = fixedMatch[2].trim();
+    remaining = remaining.replace(fixedMatch[0], "\n");
+  }
+
+  const brokenMatch = remaining.match(
+    /(?:^|\n)#{1,6}\s*Kode yang Bermasalah\s*\n+```(\w+)?\n([\s\S]*?)```/i
+  );
+  const brokenCode = brokenMatch ? brokenMatch[2].trim() : undefined;
+
+  return { explanation: remaining.trim(), brokenCode, fixedCode, language };
 }
 
 const welcomeMessage: Msg = {
@@ -223,7 +253,12 @@ export function ChatInterface() {
           </div>
 
           <div className="chat-scroll flex-1 space-y-5 overflow-y-auto pr-1" style={{ maxHeight: "620px" }}>
-            {messages.map((msg) => (
+            {messages.map((msg) => {
+              const parsed =
+                msg.role === "assistant"
+                  ? parseAIResponse(msg.content)
+                  : { explanation: msg.content, fixedCode: undefined, language: undefined };
+              return (
               <div key={msg.id}>
                 <div className="mb-1.5 flex items-center gap-2">
                   <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">
@@ -252,9 +287,13 @@ export function ChatInterface() {
                         ),
                       }}
                     >
-                      {msg.content}
+                      {parsed.explanation}
                     </ReactMarkdown>
                   </div>
+
+                  {msg.role === "assistant" && parsed.fixedCode && (
+                    <FixedCodeBlock code={parsed.fixedCode} language={parsed.language ?? language} />
+                  )}
 
                   {msg.confidence && msg.role === "assistant" && (
                     <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-white/[0.07] pt-3">
@@ -300,7 +339,8 @@ export function ChatInterface() {
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
 
             {isLoading && (
               <div>
