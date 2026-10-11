@@ -1,8 +1,24 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // Admin user
+  const adminPasswordHash = await bcrypt.hash("admin123", 10);
+  await prisma.user.upsert({
+    where: { email: "admin@codementor.com" },
+    update: {},
+    create: {
+      email: "admin@codementor.com",
+      name: "Admin CodeMentor",
+      passwordHash: adminPasswordHash,
+      role: "ADMIN",
+    },
+  });
+
+  console.log("✓ Admin user seeded");
+
   await prisma.knowledgeBase.deleteMany();
 
   const pengetahuan = [

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Code2, Github, Mail, Building2, LogIn, Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -10,15 +11,32 @@ import toast from "react-hot-toast";
 export default function MasukPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast.error("Email atau kata sandi salah");
+        setIsLoading(false);
+        return;
+      }
+
       toast.success("Berhasil masuk! Mengalihkan ke dashboard...");
       window.location.href = "/dashboard";
-    }, 1200);
+    } catch {
+      toast.error("Terjadi kesalahan. Coba lagi.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,11 +63,18 @@ export default function MasukPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                Email kampus
+                Email
               </label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input type="email" placeholder="nama@kampus.ac.id" className="pl-10" required />
+                <Input
+                  type="email"
+                  placeholder="email@example.com"
+                  className="pl-10"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </div>
 
@@ -64,6 +89,8 @@ export default function MasukPage() {
                   placeholder="••••••••"
                   className="pl-10 pr-10"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
@@ -99,7 +126,7 @@ export default function MasukPage() {
             </div>
           </div>
 
-          <Button variant="outline" className="w-full" type="button">
+          <Button variant="outline" className="w-full" type="button" onClick={() => signIn("github", { callbackUrl: "/dashboard" })}>
             <Github className="h-4 w-4" /> Masuk dengan GitHub
           </Button>
 

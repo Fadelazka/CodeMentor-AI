@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   MessagesSquare,
@@ -34,23 +35,25 @@ export interface NavSection {
   items: NavItem[];
 }
 
-export const navSections: NavSection[] = [
-  {
-    label: "Utama",
-    items: [
-      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/chat", label: "Chat AI", icon: MessagesSquare, badge: "AI" },
-      { href: "/riwayat", label: "Riwayat", icon: History },
-    ],
-  },
-  {
-    label: "Kelola",
-    items: [
-      { href: "/knowledge-base", label: "Pengetahuan", icon: BookOpen },
-      { href: "/admin", label: "Admin", icon: ShieldCheck },
-    ],
-  },
-];
+export function getNavSections(isAdmin: boolean): NavSection[] {
+  return [
+    {
+      label: "Utama",
+      items: [
+        { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { href: "/chat", label: "Chat AI", icon: MessagesSquare, badge: "AI" },
+        { href: "/riwayat", label: "Riwayat", icon: History },
+      ],
+    },
+    {
+      label: "Kelola",
+      items: [
+        { href: "/knowledge-base", label: "Pengetahuan", icon: BookOpen },
+        ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
+      ],
+    },
+  ];
+}
 
 type SidebarContextValue = {
   collapsed: boolean;
@@ -208,6 +211,9 @@ function SidebarFooter({ collapsed, onNavigate }: { collapsed: boolean; onNaviga
 
 export function Sidebar() {
   const { collapsed, toggleCollapsed } = useSidebar();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
+  const sections = getNavSections(isAdmin);
 
   return (
     <aside
@@ -230,7 +236,7 @@ export function Sidebar() {
       </div>
 
       <div className={cn("sidebar-scroll flex-1 overflow-y-auto px-3 py-5", collapsed && "px-2")}>
-        {navSections.map((section) => (
+        {sections.map((section) => (
           <SidebarSection key={section.label} section={section} collapsed={collapsed} />
         ))}
       </div>
@@ -254,6 +260,9 @@ export function Sidebar() {
 export function MobileSidebar() {
   const { mobileOpen, setMobileOpen } = useSidebar();
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
+  const sections = getNavSections(isAdmin);
 
   React.useEffect(() => {
     setMobileOpen(false);
@@ -292,7 +301,7 @@ export function MobileSidebar() {
           </button>
         </div>
         <div className="sidebar-scroll flex-1 overflow-y-auto px-3 py-5">
-          {navSections.map((section) => (
+          {sections.map((section) => (
             <SidebarSection
               key={section.label}
               section={section}
