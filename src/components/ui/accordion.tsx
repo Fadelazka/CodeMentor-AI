@@ -16,28 +16,25 @@ export function Accordion({ items }: AccordionProps) {
   const [openIndex, setOpenIndex] = React.useState<number | null>(0);
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full divide-y divide-border border-y border-border">
       {items.map((item, index) => (
-        <div
-          key={index}
-          className={cn(
-            "overflow-hidden rounded-xl border transition-all",
-            openIndex === index
-              ? "border-blue-500/50 bg-white shadow-lg shadow-blue-500/5 dark:bg-dark-card"
-              : "border-slate-200 bg-white dark:border-slate-800 dark:bg-dark-card"
-          )}
-        >
+        <div key={index}>
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="flex w-full items-center justify-between px-6 py-4 text-left"
+            className="group flex w-full cursor-pointer items-center justify-between py-5 text-left"
           >
-            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {item.title}
-            </span>
+            <div className="flex items-baseline gap-4">
+              <span className="font-mono text-xs text-muted-foreground">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="font-display text-base font-medium text-foreground transition-colors group-hover:text-accent sm:text-lg">
+                {item.title}
+              </span>
+            </div>
             <svg
               className={cn(
-                "h-5 w-5 shrink-0 text-slate-500 transition-transform",
-                openIndex === index && "rotate-180 text-blue-500"
+                "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                openIndex === index && "rotate-180 text-accent"
               )}
               fill="none"
               viewBox="0 0 24 24"
@@ -48,7 +45,7 @@ export function Accordion({ items }: AccordionProps) {
             </svg>
           </button>
           {openIndex === index && (
-            <div className="px-6 pb-6 pt-0 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            <div className="pb-5 pl-0 text-sm leading-relaxed text-muted-foreground sm:pl-10">
               {item.content}
             </div>
           )}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Code2, Github, Mail, User as UserIcon, Building2, LogIn, Eye, EyeOff } from "lucide-react";
+import { Code2, Github, Mail, Building2, LogIn, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -22,43 +22,43 @@ export default function MasukPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-blue-600/5 via-transparent to-transparent pt-16 pb-16">
-      <div className="container-custom max-w-lg">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-dark-card">
+    <div className="flex min-h-screen items-center justify-center bg-background pt-16 pb-16">
+      <div className="container-editorial max-w-lg">
+        <div className="rounded-sm border border-border bg-card p-8">
           <div className="mb-8 text-center">
             <Link href="/" className="mb-6 inline-flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
-                <Code2 className="h-5 w-5 text-white" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-ink">
+                <Code2 className="h-5 w-5 text-paper" />
               </div>
-              <span className="text-lg font-bold text-slate-900 dark:text-white">
-                Code<span className="text-gradient">Mentor</span> AI
+              <span className="text-lg font-bold text-foreground">
+                Code<span className="text-accent">Mentor</span> AI
               </span>
             </Link>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Selamat Datang Kembali
             </h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-sm text-muted-foreground">
               Masuk untuk melanjutkan sesi belajar debugging Anda.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-muted-foreground">
                 Email kampus
               </label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input type="email" placeholder="nama@kampus.ac.id" className="pl-10" required />
               </div>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-muted-foreground">
                 Kata sandi
               </label>
               <div className="relative">
-                <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
@@ -68,7 +68,7 @@ export default function MasukPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -76,11 +76,11 @@ export default function MasukPage() {
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                <input type="checkbox" className="rounded border-slate-300" />
+              <label className="flex items-center gap-2 text-muted-foreground">
+                <input type="checkbox" className="rounded-sm border-border" />
                 Ingat saya
               </label>
-              <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+              <a href="#" className="font-medium text-foreground hover:text-accent">
                 Lupa kata sandi?
               </a>
             </div>
@@ -92,10 +92,10 @@ export default function MasukPage() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-slate-700" />
+              <div className="w-full border-t border-border" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-wider text-slate-400">
-              <span className="bg-white px-3 dark:bg-dark-card">atau lanjutkan dengan</span>
+            <div className="relative flex justify-center text-xs uppercase tracking-wider text-muted-foreground">
+              <span className="bg-card px-3">atau lanjutkan dengan</span>
             </div>
           </div>
 
@@ -103,9 +103,9 @@ export default function MasukPage() {
             <Github className="h-4 w-4" /> Masuk dengan GitHub
           </Button>
 
-          <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Belum punya akun?{" "}
-            <Link href="/daftar" className="font-semibold text-blue-600 hover:underline dark:text-blue-400">
+            <Link href="/daftar" className="font-semibold text-foreground hover:text-accent">
               Daftar gratis
             </Link>
           </p>

@@ -4,12 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Code2, Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun, ArrowRight } from "lucide-react";
 import { useTheme } from "@/components/providers/theme-provider";
+import { Wordmark } from "@/components/ui/wordmark";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
-  { href: "/", label: "Beranda" },
   { href: "/fitur", label: "Fitur" },
   { href: "/cara-kerja", label: "Cara Kerja" },
   { href: "/bahasa", label: "Bahasa" },
@@ -23,46 +23,36 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
 
   React.useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () => setScrolled(window.scrollY > 24);
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname?.startsWith(href);
-  };
+  const isActive = (href: string) => pathname?.startsWith(href);
 
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 w-full transition-all",
-        scrolled
-          ? "border-b border-slate-200/80 bg-white/80 backdrop-blur-lg dark:border-slate-800/80 dark:bg-slate-950/80"
-          : "bg-transparent"
+        "fixed top-0 z-50 w-full bg-background transition-shadow",
+        scrolled ? "border-b border-border shadow-[0_1px_0_0_hsl(var(--border))]" : "border-b border-transparent"
       )}
     >
-      <nav className="container-custom flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
-            <Code2 className="h-5 w-5 text-white" />
-          </div>
-          <span className="text-lg font-bold tracking-tight">
-            Code<span className="text-gradient">Mentor</span> AI
-          </span>
+      <nav className="container-editorial flex h-16 items-center justify-between gap-6">
+        <Link href="/" className="shrink-0" aria-label="Beranda CodeMentor AI">
+          <Wordmark />
         </Link>
 
-        <div className="hidden items-center gap-6 lg:flex">
+        <div className="hidden items-center gap-8 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "text-sm font-medium transition-colors",
+                "font-mono text-xs font-medium uppercase tracking-wider transition-colors",
                 isActive(link.href)
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+                  ? "text-foreground underline decoration-accent decoration-2 underline-offset-8"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {link.label}
@@ -70,13 +60,13 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Ganti tema"
           >
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <Link href="/masuk">
             <Button variant="ghost" size="sm">
@@ -84,38 +74,50 @@ export function Navbar() {
             </Button>
           </Link>
           <Link href="/daftar">
-            <Button size="sm">Daftar Gratis</Button>
+            <Button size="sm">
+              Daftar
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
           </Link>
         </div>
 
-        <button
-          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 lg:hidden"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Menu"
-        >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="cursor-pointer rounded-sm p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+            aria-label="Ganti tema"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+          <button
+            className="cursor-pointer rounded-sm p-2 text-foreground hover:bg-muted lg:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Menu"
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </nav>
 
       {isOpen && (
-        <div className="border-b border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950 lg:hidden">
-          <div className="flex flex-col gap-3">
+        <div className="border-t border-border bg-background lg:hidden">
+          <div className="container-editorial flex flex-col gap-1 py-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "rounded-sm px-3 py-2.5 font-mono text-sm font-medium uppercase tracking-wider",
                   isActive(link.href)
-                    ? "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400"
-                    : "text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground"
                 )}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-2 flex gap-3 border-t border-slate-200 pt-4 dark:border-slate-800">
+            <div className="mt-3 flex gap-3 border-t border-border pt-4">
               <Link href="/masuk" className="flex-1">
                 <Button variant="outline" className="w-full">
                   Masuk

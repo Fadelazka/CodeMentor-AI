@@ -14,31 +14,33 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444"];
+const COLORS = ["#0A0A0A", "#6B6B6B", "#A0A0A0", "#D5D5D0", "#E5484D"];
+const COLORS_DARK = ["#FAFAF7", "#888888", "#666666", "#444444", "#E5484D"];
+
+function useIsDark() {
+  if (typeof window === "undefined") return false;
+  return document.documentElement.classList.contains("dark");
+}
 
 export function UsageChart({ data }: { data: { tanggal: string; jumlah: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#33415533" vertical={false} />
-        <XAxis
-          dataKey="tanggal"
-          tick={{ fill: "#94a3b8", fontSize: 11 }}
-          axisLine={{ stroke: "#33415555" }}
-          tickLine={false}
-        />
-        <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} axisLine={false} tickLine={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#D5D5D022" vertical={false} />
+        <XAxis dataKey="tanggal" tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1e293b",
+            background: "#0A0A0A",
             border: "none",
-            borderRadius: 8,
-            color: "#e2e8f0",
+            borderRadius: 2,
+            color: "#FAFAF7",
             fontSize: 12,
+            fontFamily: "monospace",
           }}
-          cursor={{ fill: "#33415522" }}
+          cursor={{ fill: "#D5D5D011" }}
         />
-        <Bar dataKey="jumlah" fill="#3b82f6" radius={[6, 6, 0, 0]} name="Pertanyaan" maxBarSize={32} />
+        <Bar dataKey="jumlah" fill="#0A0A0A" radius={[2, 2, 0, 0]} name="Pertanyaan" maxBarSize={32} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -48,28 +50,22 @@ export function LanguagePieChart({ data }: { data: { bahasa: string; persen: num
   return (
     <ResponsiveContainer width="100%" height={220}>
       <PieChart>
-        <Pie
-          data={data}
-          dataKey="persen"
-          nameKey="bahasa"
-          innerRadius={50}
-          outerRadius={80}
-          paddingAngle={3}
-        >
+        <Pie data={data} dataKey="persen" nameKey="bahasa" innerRadius={50} outerRadius={80} paddingAngle={2}>
           {data.map((_, i) => (
             <Cell key={i} fill={COLORS[i % COLORS.length]} />
           ))}
         </Pie>
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1e293b",
+            background: "#0A0A0A",
             border: "none",
-            borderRadius: 8,
-            color: "#e2e8f0",
+            borderRadius: 2,
+            color: "#FAFAF7",
             fontSize: 12,
+            fontFamily: "monospace",
           }}
         />
-        <Legend wrapperStyle={{ fontSize: 12 }} />
+        <Legend wrapperStyle={{ fontSize: 10, fontFamily: "monospace" }} />
       </PieChart>
     </ResponsiveContainer>
   );
@@ -79,27 +75,21 @@ export function ErrorBarChart({ data }: { data: { code: string; jumlah: number }
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 60, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#33415533" horizontal={false} />
-        <XAxis type="number" tick={{ fill: "#94a3b8", fontSize: 11 }} axisLine={false} tickLine={false} />
-        <YAxis
-          type="category"
-          dataKey="code"
-          tick={{ fill: "#94a3b8", fontSize: 11 }}
-          axisLine={false}
-          tickLine={false}
-          width={100}
-        />
+        <CartesianGrid strokeDasharray="3 3" stroke="#D5D5D022" horizontal={false} />
+        <XAxis type="number" tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} />
+        <YAxis type="category" dataKey="code" tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} width={100} />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#1e293b",
+            background: "#0A0A0A",
             border: "none",
-            borderRadius: 8,
-            color: "#e2e8f0",
+            borderRadius: 2,
+            color: "#FAFAF7",
             fontSize: 12,
+            fontFamily: "monospace",
           }}
-          cursor={{ fill: "#33415522" }}
+          cursor={{ fill: "#D5D5D011" }}
         />
-        <Bar dataKey="jumlah" fill="#8b5cf6" radius={[0, 6, 6, 0]} name="Jumlah" maxBarSize={16} />
+        <Bar dataKey="jumlah" fill="#E5484D" radius={[0, 2, 2, 0]} name="Jumlah" maxBarSize={16} />
       </BarChart>
     </ResponsiveContainer>
   );

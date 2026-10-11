@@ -1,9 +1,9 @@
 export const languages = [
-  { value: "python", label: "Python", nama: "Python", icon: "🐍", extensions: "py", extensionLabel: "VS Code / .py", deskripsi: "SintaksError, TypeError, IndexError, dan error umum dalam pengembangan Python." },
-  { value: "javascript", label: "JavaScript", nama: "JavaScript", icon: "🟨", extensions: "js, jsx, ts, tsx", extensionLabel: "Node.js / .js", deskripsi: "ReferenceError, SyntaxError, dan error pada lingkungan Node.js & browser." },
-  { value: "java", label: "Java", nama: "Java", icon: "☕", extensions: "java", extensionLabel: "JDK / .java", deskripsi: "NullPointerException, ArrayIndexOutOfBounds, dan penanganan exception Java." },
-  { value: "cpp", label: "C++", nama: "C++", icon: "⚡", extensions: "cpp, c, hpp", extensionLabel: "GCC / .cpp", deskripsi: "Segmentation Fault, compilation error, dan isu manajemen memori." },
-  { value: "php", label: "PHP", nama: "PHP", icon: "🐘", extensions: "php", extensionLabel: "PHP 8+ / .php", deskripsi: "ParseError, undefined variable, dan error pengembangan web PHP." },
+  { value: "python", label: "Python", nama: "Python", icon: "py", extensions: "py", extensionLabel: "VS Code / .py", deskripsi: "SintaksError, TypeError, IndexError, dan error umum dalam pengembangan Python." },
+  { value: "javascript", label: "JavaScript", nama: "JavaScript", icon: "js", extensions: "js, jsx, ts, tsx", extensionLabel: "Node.js / .js", deskripsi: "ReferenceError, SyntaxError, dan error pada lingkungan Node.js & browser." },
+  { value: "java", label: "Java", nama: "Java", icon: "java", extensions: "java", extensionLabel: "JDK / .java", deskripsi: "NullPointerException, ArrayIndexOutOfBounds, dan penanganan exception Java." },
+  { value: "cpp", label: "C++", nama: "C++", icon: "cpp", extensions: "cpp, c, hpp", extensionLabel: "GCC / .cpp", deskripsi: "Segmentation Fault, compilation error, dan isu manajemen memori." },
+  { value: "php", label: "PHP", nama: "PHP", icon: "php", extensions: "php", extensionLabel: "PHP 8+ / .php", deskripsi: "ParseError, undefined variable, dan error pengembangan web PHP." },
 ];
 
 export const sampleErrors = {

@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   Monitor,
 } from "lucide-react";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { SectionTitle } from "@/components/ui/section-title";
 
 export const metadata: Metadata = {
   title: "Fitur",
@@ -111,17 +113,14 @@ const detailFitur = [
 
 export default function FiturPage() {
   return (
-    <div className="pt-16">
-      {/* Hero section */}
-      <section className="border-b border-slate-200 bg-gradient-to-b from-blue-600/5 to-transparent py-20 dark:border-slate-800">
-        <div className="container-custom text-center">
-          <span className="mb-4 inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
-            Fitur
-          </span>
-          <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
-            Fitur Lengkap untuk <span className="text-gradient">Belajar Debugging</span>
+    <div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial text-center">
+          <Eyebrow index="[01]" label="FITUR" className="justify-center" />
+          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            Fitur Lengkap untuk <span className="text-accent">Belajar Debugging</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
             Dua platform, satu tujuan: membuat Anda paham error kode dalam Bahasa
             Indonesia — di VS Code dan di browser.
           </p>
@@ -136,30 +135,27 @@ export default function FiturPage() {
         </div>
       </section>
 
-      {/* VS Code vs Web comparison */}
-      <section id="vscode" className="section-padding">
-        <div className="container-custom">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl dark:text-white">
-              Dua Cara Pakai, Satu Pengalaman
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-              Pilih yang paling nyaman untuk alur kerja Anda.
-            </p>
-          </div>
+      <section id="vscode" className="section-padding border-b border-border">
+        <div className="container-editorial">
+          <SectionTitle
+            eyebrow="KOMPARASI"
+            title="Dua Cara Pakai, Satu Pengalaman"
+            description="Pilih yang paling nyaman untuk alur kerja Anda."
+            center
+          />
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-slate-50 p-8 dark:bg-slate-900">
-              <span className="absolute right-4 top-4 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
+          <div className="grid gap-px border border-border bg-border md:grid-cols-2">
+            <div className="relative bg-background p-8">
+              <span className="mb-6 inline-block font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                 Ditulis untuk developer
               </span>
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600">
-                <Monitor className="h-7 w-7 text-white" />
+              <div className="mb-6 flex h-12 w-12 items-center justify-center">
+                <Monitor className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="mb-2 font-display text-xl font-bold">
                 VS Code Extension
               </h3>
-              <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-6 text-sm text-muted-foreground">
                 Instal langsung di editor Anda. Error terdeteksi otomatis saat Anda mengetik.
               </p>
               <ul className="space-y-3">
@@ -170,31 +166,31 @@ export default function FiturPage() {
                   "Kompatibel dengan VS Code & Cursor",
                   "Ada tombol 'Tanyakan ke CodeMentor AI'",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
+                  <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     {item}
                   </li>
                 ))}
               </ul>
               <Link
                 href="#"
-                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                className="mt-8 inline-flex items-center gap-2 border border-border px-5 py-3 text-sm font-semibold transition-colors hover:bg-muted"
               >
                 <Download className="h-4 w-4" /> Install Ekstensi
               </Link>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-dark-card">
-              <span className="absolute right-4 top-4 rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-600 dark:text-green-400">
+            <div className="relative bg-background p-8">
+              <span className="mb-6 inline-block font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                 Tanpa instalasi
               </span>
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600">
-                <Smartphone className="h-7 w-7 text-white" />
+              <div className="mb-6 flex h-12 w-12 items-center justify-center">
+                <Smartphone className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="mb-2 font-display text-xl font-bold">
                 Aplikasi Web
               </h3>
-              <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
+              <p className="mb-6 text-sm text-muted-foreground">
                 Gunakan langsung dari browser. Cocok untuk latihan dan saat tidak di depan VS Code.
               </p>
               <ul className="space-y-3">
@@ -205,15 +201,15 @@ export default function FiturPage() {
                   "Rekomendasi materi & peta belajar",
                   "Fitur ekspor hasil analisis",
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
+                  <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                     {item}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/chat"
-                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:from-green-700 hover:to-emerald-700"
+                className="mt-8 inline-flex items-center gap-2 bg-ink px-5 py-3 text-sm font-semibold text-paper transition-colors hover:bg-ink/90 dark:bg-paper dark:text-ink dark:hover:bg-paper/90"
               >
                 Buka Chat AI <ArrowRight className="h-4 w-4" />
               </Link>
@@ -222,39 +218,37 @@ export default function FiturPage() {
         </div>
       </section>
 
-      {/* Detailed features grid */}
-      <section className="section-padding border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50">
-        <div className="container-custom">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl dark:text-white">
-              Jelajahi Semua Kemampuan
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-              Setiap fitur dirancang untuk mempercepat pemahaman dan mengurangi frustasi saat debugging.
-            </p>
-          </div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial">
+          <SectionTitle
+            eyebrow="DETAIL"
+            title="Jelajahi Semua Kemampuan"
+            description="Setiap fitur dirancang untuk mempercepat pemahaman dan mengurangi frustasi saat debugging."
+            center
+          />
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {detailFitur.map((f) => (
-              <div key={f.title} className="group rounded-xl border border-slate-200 bg-white p-7 transition-all hover:-translate-y-1 hover:border-blue-500/50 hover:shadow-xl dark:border-slate-800 dark:bg-dark-card">
-                <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10">
-                    <f.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                    {f.kategori}
+          <div className="grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+            {detailFitur.map((f, i) => (
+              <div key={f.title} className="group flex flex-col bg-background p-7 transition-colors hover:bg-muted">
+                <div className="mb-5 flex items-center justify-between">
+                  <f.icon className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-foreground" strokeWidth={1.5} />
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="mb-3 text-lg font-bold text-slate-900 dark:text-white">
+                <span className="mb-3 font-mono text-[11px] uppercase tracking-wider text-accent">
+                  {f.kategori}
+                </span>
+                <h3 className="mb-2 font-display text-lg font-bold">
                   {f.title}
                 </h3>
-                <p className="mb-5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
                   {f.desc}
                 </p>
-                <ul className="space-y-2.5">
+                <ul className="mt-auto space-y-2.5">
                   {f.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
-                      <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
+                    <li key={b} className="flex items-start gap-2 text-sm text-foreground">
+                      <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                       {b}
                     </li>
                   ))}
@@ -265,23 +259,34 @@ export default function FiturPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="section-padding">
-        <div className="container-custom">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 px-8 py-14 text-center text-white">
-            <h2 className="text-2xl font-bold sm:text-3xl">
-              Siap Mulai Debugging dengan Lebih Cerdas?
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-blue-100">
-              Gratis untuk mahasiswa. Setup kurang dari 2 menit.
-            </p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href="/daftar" className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-50">
-                Daftar Gratis
-              </Link>
-              <Link href="/chat" className="rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold backdrop-blur transition-colors hover:bg-white/20">
-                Coba Tanpa Registrasi
-              </Link>
+        <div className="container-editorial">
+          <div className="bg-ink px-8 py-16 text-paper sm:px-16">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="mb-6 font-mono text-xs uppercase tracking-wider text-paper/50">
+                [07] MULAI SEKARANG
+              </p>
+              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                Siap Mulai Debugging dengan Lebih Cerdas?
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-paper/60">
+                Gratis untuk mahasiswa. Setup kurang dari 2 menit.
+              </p>
+              <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link
+                  href="/daftar"
+                  className="inline-flex w-full items-center justify-center gap-2 bg-paper px-8 py-4 text-sm font-semibold text-ink transition-colors hover:bg-paper/90 sm:w-auto"
+                >
+                  Daftar Gratis
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/chat"
+                  className="inline-flex w-full items-center justify-center gap-2 border border-paper/20 px-8 py-4 text-sm font-semibold text-paper transition-colors hover:bg-paper/10 sm:w-auto"
+                >
+                  Coba Tanpa Registrasi
+                </Link>
+              </div>
             </div>
           </div>
         </div>

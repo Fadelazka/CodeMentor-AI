@@ -30,38 +30,38 @@ export function LearningRecommendations() {
     <div className="card-custom p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+          <h3 className="font-display text-base font-semibold text-foreground">
             Rekomendasi Belajar
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="font-mono text-[11px] text-muted-foreground">
             Dipersonalisasi berdasarkan pola error Anda
           </p>
         </div>
-        <BookOpen className="h-5 w-5 text-blue-500" />
+        <BookOpen className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {recommendations.map((r) => (
           <Link
             key={r.title}
             href={r.href}
-            className="group flex items-start gap-4 rounded-xl border border-slate-200 p-4 transition-all hover:border-blue-500/50 hover:bg-blue-500/5 dark:border-slate-800"
+            className="group flex items-start gap-4 border border-border p-4 transition-colors hover:bg-muted"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
-              <r.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-border">
+              <r.icon className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-accent">
                   {r.type}
                 </span>
               </div>
-              <h4 className="mt-1 truncate text-sm font-semibold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+              <h4 className="mt-1 truncate font-display text-sm font-medium text-foreground">
                 {r.title}
               </h4>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{r.context}</p>
+              <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">{r.context}</p>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-all group-hover:translate-x-1 group-hover:text-blue-500" />
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground/30 transition-transform group-hover:translate-x-1 group-hover:text-accent" />
           </Link>
         ))}
       </div>

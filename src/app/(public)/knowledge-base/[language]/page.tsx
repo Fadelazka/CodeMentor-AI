@@ -31,30 +31,29 @@ export default function KnowledgeBaseLanguagePage({ params }: Props) {
 
   return (
     <div className="pt-16">
-      {/* Header */}
-      <section className="border-b border-slate-200 bg-gradient-to-b from-blue-600/5 to-transparent py-16 dark:border-slate-800">
-        <div className="container-custom">
+      <section className="border-b border-border bg-background py-16">
+        <div className="container-editorial">
           <Link
             href="/knowledge-base"
-            className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+            className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> Semua Knowledge Base
           </Link>
           <div className="flex items-center gap-5">
             <span className="text-6xl">{lang.icon}</span>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
                 {lang.nama}
               </h1>
-              <p className="mt-2 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+              <p className="mt-2 max-w-2xl text-lg text-muted-foreground">
                 {lang.deskripsi}
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-                <span className="rounded-full bg-blue-500/10 px-3 py-1 font-medium text-blue-600 dark:text-blue-400">
+                <span className="rounded-sm bg-muted px-3 py-1 font-medium text-foreground">
                   <Database className="mr-1 inline h-3.5 w-3.5" />
                   {languageCounts[lang.value] ?? entries.length} pola error
                 </span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <span className="rounded-sm bg-muted/50 px-3 py-1 text-muted-foreground">
                   Ekstensi: {lang.extensions}
                 </span>
               </div>
@@ -63,9 +62,8 @@ export default function KnowledgeBaseLanguagePage({ params }: Props) {
         </div>
       </section>
 
-      {/* Entries */}
       <section className="section-padding">
-        <div className="container-custom">
+        <div className="container-editorial">
           <KbExplore entries={entries} languageName={lang.nama} />
         </div>
       </section>

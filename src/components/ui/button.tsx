@@ -13,13 +13,13 @@ const Button = React.forwardRef<
 >(({ className, variant = "primary", size = "md", loading, children, disabled, ...props }, ref) => {
   const variants: Record<string, string> = {
     primary:
-      "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-400 shadow-sm",
+      "bg-ink text-paper hover:bg-ink/85 disabled:bg-ink/40 dark:bg-paper dark:text-ink dark:hover:bg-paper/85",
     secondary:
-      "bg-slate-800 text-slate-100 hover:bg-slate-700 border border-slate-700",
+      "bg-secondary text-secondary-foreground hover:bg-secondary/70",
     outline:
-      "border border-slate-300 bg-transparent hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800",
-    ghost: "hover:bg-slate-100 dark:hover:bg-slate-800",
-    danger: "bg-red-600 text-white hover:bg-red-700",
+      "border border-border bg-transparent hover:bg-muted",
+    ghost: "hover:bg-muted",
+    danger: "bg-destructive text-destructive-foreground hover:bg-destructive/85",
   };
   const sizes: Record<string, string> = {
     sm: "h-8 px-3 text-xs",
@@ -31,7 +31,7 @@ const Button = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:focus:ring-offset-slate-900",
+        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:focus:ring-offset-background",
         variants[variant],
         sizes[size],
         className

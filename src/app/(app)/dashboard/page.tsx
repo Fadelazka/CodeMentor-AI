@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { MessageSquare, TrendingUp, Clock, BookOpen } from "lucide-react";
-import { AppSidebar } from "@/components/layout/app-sidebar";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { UsageChart, LanguagePieChart, ErrorBarChart } from "@/components/dashboard/charts";
 import { LearningRecommendations } from "@/components/dashboard/learning-recommendations";
@@ -10,18 +9,20 @@ import { dashboardStats } from "@/data/mock";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Eyebrow } from "@/components/ui/eyebrow";
 
 export default function DashboardPage() {
   return (
-    <div className="lg:pl-64">
-      <div className="container-custom py-8 lg:py-10">
+    <div className="lg:pl-60">
+      <div className="container-editorial py-8 lg:py-10">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Halo, Fadhel! 👋
+            <Eyebrow index="//" label="DASHBOARD" className="mb-3" />
+            <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+              Selamat datang kembali, Fadhel.
             </h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Begini progres belajar debugging Anda. Semangat terus!
+            <p className="mt-1 text-sm text-muted-foreground">
+              Begini progres belajar debugging Anda. Semangat terus.
             </p>
           </div>
           <Link href="/chat">
@@ -40,31 +41,31 @@ export default function DashboardPage() {
             change="+12,4%"
             changePositive
             icon={MessageSquare}
-            iconBg="bg-blue-500/10 text-blue-600 dark:text-blue-400"
+            iconBg="bg-muted"
           />
           <StatCard
-            title="Akurasi Penjelasan AI"
+            title="Akurasi AI"
             value={`${dashboardStats.akurasiRataRata}%`}
             change="+2,1%"
             changePositive
             icon={TrendingUp}
-            iconBg="bg-green-500/10 text-green-600 dark:text-green-400"
+            iconBg="bg-success/10 text-success"
           />
           <StatCard
-            title="Waktu Respons Rata-rata"
+            title="Waktu Respons"
             value={`${dashboardStats.waktuResponsRataRata}s`}
             change="-0,3s"
             changePositive
             icon={Clock}
-            iconBg="bg-purple-500/10 text-purple-600 dark:text-purple-400"
+            iconBg="bg-muted"
           />
           <StatCard
-            title="Error yang Dipecahkan"
+            title="Error Dipecahkan"
             value="1.178"
             change="+8,7%"
             changePositive
             icon={BookOpen}
-            iconBg="bg-amber-500/10 text-amber-600 dark:text-amber-400"
+            iconBg="bg-accent/10 text-accent"
           />
         </div>
 
@@ -73,7 +74,7 @@ export default function DashboardPage() {
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle>Penggunaan 14 Hari Terakhir</CardTitle>
-              <p className="text-sm text-slate-500">Banyaknya pertanyaan yang dikirim</p>
+              <p className="font-mono text-[11px] text-muted-foreground">Banyaknya pertanyaan yang dikirim</p>
             </CardHeader>
             <CardContent>
               <UsageChart data={dashboardStats.penggunaan14Hari} />
@@ -84,7 +85,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Bahasa yang Digunakan</CardTitle>
-              <p className="text-sm text-slate-500">Distribusi penggunaan</p>
+              <p className="font-mono text-[11px] text-muted-foreground">Distribusi penggunaan</p>
             </CardHeader>
             <CardContent>
               <LanguagePieChart data={dashboardStats.bahasaTerbanyak} />
@@ -97,7 +98,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Error Paling Sering</CardTitle>
-              <Badge variant="warning">Lakukan pemantauan</Badge>
+              <Badge variant="warning">Pantau</Badge>
             </CardHeader>
             <CardContent>
               <ErrorBarChart data={dashboardStats.errorTerbanyak} />
@@ -113,9 +114,9 @@ export default function DashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Aktivitas Terakhir</CardTitle>
-              <p className="text-sm text-slate-500">Riwayat interaksi terbaru Anda</p>
+              <p className="font-mono text-[11px] text-muted-foreground">Riwayat interaksi terbaru</p>
             </div>
-            <Link href="/riwayat" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+            <Link href="/riwayat" className="font-mono text-[11px] uppercase tracking-wider text-foreground transition-colors hover:text-accent">
               Lihat semua
             </Link>
           </CardHeader>
@@ -123,32 +124,28 @@ export default function DashboardPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800">
-                    <th className="pb-3 pr-4 font-semibold text-slate-500">Tanggal</th>
-                    <th className="pb-3 pr-4 font-semibold text-slate-500">Bahasa</th>
-                    <th className="pb-3 pr-4 font-semibold text-slate-500">Error</th>
-                    <th className="pb-3 pr-4 font-semibold text-slate-500">Confidence</th>
-                    <th className="pb-3 font-semibold text-slate-500">Status</th>
+                  <tr className="border-b border-border">
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Tanggal</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Bahasa</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Error</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Confidence</th>
+                    <th className="pb-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-border">
                   {[
                     { tgl: "10 Des 2026 09:45", bahasa: "Python", error: "KeyError", conf: 91, status: "Selesai" },
                     { tgl: "9 Des 2026 15:20", bahasa: "JavaScript", error: "TypeError", conf: 87, status: "Selesai" },
                     { tgl: "8 Des 2026 11:03", bahasa: "Java", error: "NullPointerException", conf: 94, status: "Selesai" },
                   ].map((r) => (
                     <tr key={r.tgl}>
-                      <td className="py-3 pr-4 text-slate-600 dark:text-slate-400">{r.tgl}</td>
+                      <td className="py-3 pr-4 font-mono text-[11px] text-muted-foreground">{r.tgl}</td>
                       <td className="py-3 pr-4">
                         <Badge variant="outline">{r.bahasa}</Badge>
                       </td>
-                      <td className="py-3 pr-4 font-mono text-xs text-slate-700 dark:text-slate-300">
-                        {r.error}
-                      </td>
+                      <td className="py-3 pr-4 font-mono text-xs text-foreground">{r.error}</td>
                       <td className="py-3 pr-4">
-                        <Badge variant={r.conf >= 85 ? "success" : "warning"}>
-                          {r.conf}%
-                        </Badge>
+                        <Badge variant={r.conf >= 85 ? "success" : "warning"}>{r.conf}%</Badge>
                       </td>
                       <td className="py-3">
                         <Badge variant="success">{r.status}</Badge>

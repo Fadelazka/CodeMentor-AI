@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Code, Search, Cpu, Sparkles, BookOpenCheck, Terminal, FileText, Rss, Database } from "lucide-react";
+import { Code, Search, Cpu, Terminal, BookOpenCheck, FileText, Rss, Database } from "lucide-react";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { SectionTitle } from "@/components/ui/section-title";
 
 export const metadata: Metadata = {
   title: "Cara Kerja",
@@ -34,7 +36,7 @@ const tahapAlur = [
     desc: "Groq Llama 3.1 menggabungkan konteks kode + hasil retrieval untuk menyusun penjelasan dalam Bahasa Indonesia.",
   },
   {
-    icon: Sparkles,
+    icon: Terminal,
     nomor: "05",
     title: "Confidence Score",
     desc: "Setiap jawaban diberi skor keyakinan (confidence) berdasarkan kecocokan retrieval dan validasi internal.",
@@ -104,55 +106,42 @@ const alurLangkahPraktis = [
 
 export default function CaraKerjaPage() {
   return (
-    <div className="pt-16">
-      {/* Hero */}
-      <section className="border-b border-slate-200 bg-gradient-to-b from-blue-600/5 to-transparent py-20 dark:border-slate-800">
-        <div className="container-custom text-center">
-          <span className="mb-4 inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
-            Cara Kerja
-          </span>
-          <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
-            Di Balik Layar <span className="text-gradient">Penjelasan Error</span>
+    <div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial text-center">
+          <Eyebrow index="[03]" label="CARA KERJA" className="justify-center" />
+          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            Di Balik Layar <span className="text-accent">Penjelasan Error</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
             Dari kode yang Anda tempel hingga penjelasan Bahasa Indonesia yang
             mudah dipahami — begini alurnya bekerja.
           </p>
         </div>
       </section>
 
-      {/* Pipeline */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl dark:text-white">
-              Alur Analisis Error
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-              Enam tahap yang mengubah pesan error membingungkan menjadi penjelasan bermakna.
-            </p>
-          </div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial">
+          <SectionTitle
+            eyebrow="ALUR ANALISIS"
+            title="Enam Tahap Analisis Error"
+            description="Enam tahap yang mengubah pesan error membingungkan menjadi penjelasan bermakna."
+            center
+          />
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {tahapAlur.map((t, i) => (
-              <div key={t.nomor} className="relative rounded-xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-dark-card">
-                {i < tahapAlur.length - 1 && (
-                  <div className="absolute right-0 top-1/2 hidden h-px w-6 -translate-y-1/2 bg-blue-500/30 lg:block"
-                    style={{ display: i % 3 === 2 ? "none" : "block" }}
-                  />
-                )}
+          <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+            {tahapAlur.map((t) => (
+              <div key={t.nomor} className="flex flex-col bg-background p-7">
                 <div className="mb-4 flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600">
-                    <t.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <span className="text-4xl font-bold text-slate-100 dark:text-slate-800">
+                  <t.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} />
+                  <span className="font-mono text-[11px] text-muted-foreground">
                     {t.nomor}
                   </span>
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="mb-2 font-display text-lg font-bold">
                   {t.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                <p className="mt-auto text-sm leading-relaxed text-muted-foreground">
                   {t.desc}
                 </p>
               </div>
@@ -161,32 +150,29 @@ export default function CaraKerjaPage() {
         </div>
       </section>
 
-      {/* Teknologi */}
-      <section className="section-padding border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50">
-        <div className="container-custom">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl dark:text-white">
-              Teknologi di Belakangnya
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-              Kombinasi model AI modern dan knowledge base yang dikurasi dengan teliti.
-            </p>
-          </div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial">
+          <SectionTitle
+            eyebrow="TEKNOLOGI"
+            title="Teknologi di Belakangnya"
+            description="Kombinasi model AI modern dan knowledge base yang dikurasi dengan teliti."
+            center
+          />
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-px border border-border bg-border md:grid-cols-2">
             {teknologi.map((t) => (
-              <div key={t.nama} className="flex gap-4 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-dark-card">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10">
-                  <t.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div key={t.nama} className="flex gap-4 bg-background p-6">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center">
+                  <t.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5} />
                 </div>
                 <div>
                   <div className="mb-1 flex items-center gap-2">
-                    <h3 className="font-bold text-slate-900 dark:text-white">{t.nama}</h3>
-                    <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+                    <h3 className="font-display font-bold">{t.nama}</h3>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-accent">
                       {t.peran}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{t.desc}</p>
+                  <p className="text-sm text-muted-foreground">{t.desc}</p>
                 </div>
               </div>
             ))}
@@ -194,28 +180,25 @@ export default function CaraKerjaPage() {
         </div>
       </section>
 
-      {/* Langkah praktis */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl dark:text-white">
-              Pengalaman Penggunaan Sehari-hari
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-              Beginilah alur penggunaan CodeMentor AI dari sudut pandang mahasiswa.
-            </p>
-          </div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial">
+          <SectionTitle
+            eyebrow="PANDUAN"
+            title="Pengalaman Penggunaan Sehari-hari"
+            description="Beginilah alur penggunaan CodeMentor AI dari sudut pandang mahasiswa."
+            center
+          />
 
           <div className="mx-auto max-w-2xl">
-            <div className="relative space-y-8 before:absolute before:left-6 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-blue-500 before:to-purple-500">
+            <div className="relative space-y-8 before:absolute before:left-5 before:top-2 before:bottom-2 before:w-px before:bg-border">
               {alurLangkahPraktis.map((l) => (
                 <div key={l.langkah} className="relative flex gap-6">
-                  <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-blue-500/20">
-                    {l.langkah}
+                  <div className="z-10 flex h-10 w-10 shrink-0 items-center justify-center bg-ink font-mono text-xs font-bold text-paper dark:bg-paper dark:text-ink">
+                    {String(l.langkah).padStart(2, "0")}
                   </div>
-                  <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-dark-card">
-                    <h3 className="mb-1 font-bold text-slate-900 dark:text-white">{l.judul}</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">{l.detail}</p>
+                  <div className="flex-1 border border-border bg-background p-5">
+                    <h3 className="mb-1 font-display font-bold">{l.judul}</h3>
+                    <p className="text-sm text-muted-foreground">{l.detail}</p>
                   </div>
                 </div>
               ))}
@@ -224,13 +207,12 @@ export default function CaraKerjaPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="pb-20">
-        <div className="container-custom text-center">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl dark:text-white">
+      <section className="section-padding">
+        <div className="container-editorial text-center">
+          <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Coba Langsung Sekarang
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             Rasakan sendiri bagaimana CodeMentor AI menjelaskan error kode Anda.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">

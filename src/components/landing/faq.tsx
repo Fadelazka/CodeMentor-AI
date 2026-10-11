@@ -1,4 +1,5 @@
 import { Accordion } from "@/components/ui/accordion";
+import { Eyebrow } from "@/components/ui/eyebrow";
 
 const faqItems = [
   {
@@ -45,18 +46,16 @@ const faqItems = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="section-padding">
-      <div className="container-custom">
+    <section id="faq" className="section-padding border-b border-border">
+      <div className="container-editorial">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-12 text-center">
-            <span className="mb-3 inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
-              FAQ
-            </span>
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
-              Pertanyaan yang Sering Diajukan
-            </h2>
+          <Eyebrow index="[08]" label="FAQ" className="justify-center" />
+          <h2 className="mt-5 text-center font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            Pertanyaan yang Sering Diajukan
+          </h2>
+          <div className="mt-12">
+            <Accordion items={faqItems} />
           </div>
-          <Accordion items={faqItems} />
         </div>
       </div>
     </section>

@@ -1,5 +1,5 @@
-import { AlertCircle, HelpCircle, Users, Lightbulb, CheckCircle2 } from "lucide-react";
-import { SectionTitle } from "@/components/ui/section-title";
+import { AlertCircle, HelpCircle, Users, Lightbulb, CheckCircle2, ArrowDown } from "lucide-react";
+import { Eyebrow } from "@/components/ui/eyebrow";
 
 const masalah = [
   {
@@ -39,51 +39,50 @@ const solusi = [
 
 export function ProblemSolution() {
   return (
-    <section className="section-padding border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50">
-      <div className="container-custom">
-        <SectionTitle
-          eyebrow="Masalah"
-          title="Belajar Pemrograman Sering Terhambat oleh Error"
-          description="Selama ini, mahasiswa terjebak di tengah-tengah: kode error, tapi tidak tahu harus mulai dari mana untuk memperbaikinya."
-        />
+    <section className="section-padding border-b border-border">
+      <div className="container-editorial">
+        <Eyebrow index="[02]" label="MASALAH" />
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {masalah.map((item) => (
-            <div key={item.title} className="card-custom p-6">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10">
-                <item.icon className="h-6 w-6 text-red-500" />
-              </div>
-              <h3 className="mb-2 text-base font-semibold text-slate-900 dark:text-slate-100">
-                {item.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                {item.desc}
+        <div className="mb-12 mt-5 max-w-2xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            Belajar Pemrograman Sering Terhambat oleh Error
+          </h2>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+            Selama ini, mahasiswa terjebak di tengah-tengah: kode error, tapi
+            tidak tahu harus mulai dari mana untuk memperbaikinya.
+          </p>
+        </div>
+
+        <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+          {masalah.map((item, i) => (
+            <div key={item.title} className="bg-background p-8">
+              <p className="kicker mb-8">
+                <span className="text-accent">M-{String(i + 1).padStart(2, "0")}</span>
               </p>
+              <item.icon className="mb-4 h-6 w-6 text-accent" strokeWidth={1.5} />
+              <h3 className="mb-2 font-display text-lg font-semibold">{item.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-16">
-          <div className="mb-8 flex items-center justify-center gap-3">
-            <div className="h-px w-24 bg-gradient-to-r from-transparent to-blue-500/50" />
-            <span className="text-sm font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-              Solusi Kami
-            </span>
-            <div className="h-px w-24 bg-gradient-to-l from-transparent to-blue-500/50" />
+        <div className="mt-16 flex flex-col items-center gap-8">
+          <div className="flex items-center gap-4">
+            <span className="h-px w-16 bg-border" />
+            <ArrowDown className="h-4 w-4 text-muted-foreground" />
+            <span className="h-px w-16 bg-border" />
           </div>
+          <Eyebrow index="[03]" label="SOLUSI KAMI" className="justify-center" />
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {solusi.map((item) => (
-              <div key={item.title} className="rounded-xl border border-green-500/20 bg-gradient-to-b from-green-500/5 to-transparent p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
-                  <item.icon className="h-6 w-6 text-green-500" />
-                </div>
-                <h3 className="mb-2 text-base font-semibold text-slate-900 dark:text-slate-100">
-                  {item.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                  {item.desc}
+          <div className="grid w-full gap-px border border-border bg-border md:grid-cols-3">
+            {solusi.map((item, i) => (
+              <div key={item.title} className="bg-background p-8">
+                <p className="kicker mb-8">
+                  <span className="text-accent">S-{String(i + 1).padStart(2, "0")}</span>
                 </p>
+                <item.icon className="mb-4 h-6 w-6 text-foreground" strokeWidth={1.5} />
+                <h3 className="mb-2 font-display text-lg font-semibold">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
               </div>
             ))}
           </div>

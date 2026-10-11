@@ -36,7 +36,7 @@ export function Tabs({ defaultValue, value, onValueChange, className, children }
 
 export function TabsList({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={cn("flex gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-800", className)}>
+    <div className={cn("flex gap-1 border-b border-border", className)}>
       {children}
     </div>
   );
@@ -58,10 +58,10 @@ export function TabsTrigger({
     <button
       onClick={() => setValue(value)}
       className={cn(
-        "rounded-md px-3 py-2 text-sm font-medium transition-all",
+        "cursor-pointer border-b-2 px-4 py-2.5 font-mono text-xs font-medium uppercase tracking-wider transition-colors",
         active
-          ? "bg-white text-blue-600 shadow-sm dark:bg-slate-900 dark:text-blue-400"
-          : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300",
+          ? "border-ink text-foreground dark:border-paper"
+          : "border-transparent text-muted-foreground hover:text-foreground",
         className
       )}
     >
@@ -81,5 +81,5 @@ export function TabsContent({
 }) {
   const { value: current } = React.useContext(TabsContext);
   if (current !== value) return null;
-  return <div className={cn("mt-4", className)}>{children}</div>;
+  return <div className={cn("mt-6", className)}>{children}</div>;
 }

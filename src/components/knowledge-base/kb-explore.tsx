@@ -41,7 +41,7 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
       {/* Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={query}
@@ -50,7 +50,7 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
               setShown(8);
             }}
             placeholder="Cari kode error, judul, atau tag… (mis. TypeError, segfault)"
-            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="w-full rounded-sm border border-input bg-transparent py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-ink focus:outline-none focus:ring-2 focus:ring-ring/20 dark:focus:border-paper"
           />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -62,10 +62,10 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
                 setShown(8);
               }}
               className={cn(
-                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                "rounded-sm border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors",
                 tingkat === t
-                  ? "border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                  : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+                  ? "border-ink bg-ink text-paper dark:border-paper dark:bg-paper dark:text-ink"
+                  : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               {t}
@@ -75,10 +75,10 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
       </div>
 
       {/* Result meta */}
-      <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+      <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
         <span>
-          {languageName ? `Knowledge base ${languageName}` : "Semua error"} ·{" "}
-          <span className="font-semibold text-slate-700 dark:text-slate-200">{filtered.length}</span>{" "}
+          {languageName ? `KB ${languageName}` : "Semua error"} ·{" "}
+          <span className="font-semibold text-foreground">{filtered.length}</span>{" "}
           pola ditemukan
         </span>
         <button
@@ -87,7 +87,7 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
             setTingkat("Semua");
             setShown(8);
           }}
-          className="rounded-lg text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="cursor-pointer text-accent transition-colors hover:underline"
         >
           Reset filter
         </button>
@@ -96,10 +96,10 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
       {/* Cards */}
       <div className="grid gap-4">
         {filtered.length === 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center dark:border-slate-800 dark:bg-dark-card">
-            <BookOpen className="mx-auto mb-3 h-10 w-10 text-slate-300 dark:text-slate-600" />
-            <p className="font-medium text-slate-700 dark:text-slate-200">Tidak ada hasil ditemukan</p>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <div className="rounded-sm border border-border bg-card p-12 text-center">
+            <BookOpen className="mx-auto mb-3 h-10 w-10 text-muted-foreground/40" strokeWidth={1.5} />
+            <p className="font-medium text-foreground">Tidak ada hasil ditemukan</p>
+            <p className="mt-1 text-sm text-muted-foreground">
               Coba kata kunci lain, misalnya nama exception (IndexError, segfault) atau topik (array, memori).
             </p>
           </div>
@@ -112,10 +112,10 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
             <div
               key={id}
               className={cn(
-                "overflow-hidden rounded-2xl border bg-white transition-colors dark:bg-dark-card",
+                "overflow-hidden rounded-sm border bg-card transition-colors",
                 isOpen
-                  ? "border-blue-500/40 shadow-lg shadow-blue-500/5"
-                  : "border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700"
+                  ? "border-foreground"
+                  : "border-border hover:border-muted-foreground"
               )}
             >
               <button
@@ -123,19 +123,19 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
                 className="flex w-full flex-col gap-3 p-5 text-left sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-red-500/10 p-2.5">
-                    <AlertTriangle className="h-5 w-5 text-red-500" />
+                  <div className="rounded-sm bg-accent/10 p-2.5">
+                    <AlertTriangle className="h-5 w-5 text-accent" strokeWidth={1.5} />
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-sm font-bold text-red-500">{e.errorCode}</span>
+                      <span className="font-mono text-sm font-semibold text-accent">{e.errorCode}</span>
                       {showLanguageFilter && (
-                        <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                        <span className="rounded-sm bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                           {e.language}
                         </span>
                       )}
                     </div>
-                    <h3 className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    <h3 className="mt-1 text-sm font-semibold text-foreground">
                       {e.title}
                     </h3>
                   </div>
@@ -143,7 +143,7 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
                 <div className="flex shrink-0 items-center gap-3">
                   <span
                     className={cn(
-                      "rounded-full px-2.5 py-0.5 text-xs font-medium",
+                      "rounded-sm px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider",
                       tingkatBadgeColor[e.tingkat]
                     )}
                   >
@@ -151,29 +151,29 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
                   </span>
                   <ChevronDown
                     className={cn(
-                      "h-4 w-4 text-slate-400 transition-transform",
-                      isOpen && "rotate-180 text-blue-500"
+                      "h-4 w-4 text-muted-foreground transition-transform",
+                      isOpen && "rotate-180 text-foreground"
                     )}
                   />
                 </div>
               </button>
 
               {isOpen && (
-                <div className="border-t border-slate-100 p-5 dark:border-slate-800">
-                  <p className="mb-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <div className="border-t border-border p-5">
+                  <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                     {e.description}
                   </p>
 
-                  <div className="mb-4 rounded-xl bg-green-500/5 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
+                  <div className="mb-4 rounded-sm border border-success/20 bg-success/5 p-4">
+                    <div className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-success">
                       <Lightbulb className="h-4 w-4" /> Solusi
                     </div>
-                    <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                    <p className="text-sm leading-relaxed text-foreground">
                       {e.solution}
                     </p>
                   </div>
 
-                  <pre className="overflow-x-auto rounded-xl bg-slate-950 p-4 text-xs leading-relaxed text-slate-100">
+                  <pre className="overflow-x-auto rounded-sm bg-ink p-4 text-xs leading-relaxed text-paper">
                     <code>{e.contoh}</code>
                   </pre>
 
@@ -181,7 +181,7 @@ export function KbExplore({ entries, showLanguageFilter = false, languageName }:
                     {e.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                        className="rounded-sm bg-muted px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
                       >
                         #{tag}
                       </span>

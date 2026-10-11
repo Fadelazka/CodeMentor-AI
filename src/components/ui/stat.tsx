@@ -10,11 +10,11 @@ export function Stat({
   className?: string;
 }) {
   return (
-    <div className={cn("text-center", className)}>
-      <div className="text-3xl font-bold tracking-tight text-gradient sm:text-4xl">
+    <div className={cn("border-l border-border pl-5", className)}>
+      <div className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
         {value}
       </div>
-      <div className="mt-2 text-sm text-slate-500 dark:text-slate-400">{label}</div>
+      <div className="mt-2 text-sm text-muted-foreground">{label}</div>
     </div>
   );
 }

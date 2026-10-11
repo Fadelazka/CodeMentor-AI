@@ -17,16 +17,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { AdminUsageTrendChart, AdminPerformanceChart } from "@/components/admin/admin-charts";
 import { adminKpi, adminUsageTrend, adminAiPerformance, adminTopErrors, knowledgeBaseRows } from "@/data/admin";
 import { getLanguageLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 const kpiCards = [
-  { title: "Total Permintaan API", value: adminKpi.totalRequest, icon: Activity, color: "bg-blue-500/10 text-blue-600 dark:text-blue-400", change: "+18% bulan lalu" },
-  { title: "Permintaan Hari Ini", value: adminKpi.requestHariIni, icon: TrendingUp, color: "bg-green-500/10 text-green-600 dark:text-green-400", change: "+23% vs kemarin" },
-  { title: "Rekam Knowledge Base", value: adminKpi.aktifRekamKB, icon: Database, color: "bg-purple-500/10 text-purple-600 dark:text-purple-400", change: "5 bahasa" },
-  { title: "Uptime Layanan", value: adminKpi.uptime, icon: Globe, color: "bg-amber-500/10 text-amber-600 dark:text-amber-400", change: "30 hari terakhir" },
+  { title: "Total Permintaan API", value: adminKpi.totalRequest, icon: Activity, color: "bg-muted text-muted-foreground", change: "+18% bulan lalu" },
+  { title: "Permintaan Hari Ini", value: adminKpi.requestHariIni, icon: TrendingUp, color: "bg-success/10 text-success", change: "+23% vs kemarin" },
+  { title: "Rekam Knowledge Base", value: adminKpi.aktifRekamKB, icon: Database, color: "bg-muted text-muted-foreground", change: "5 bahasa" },
+  { title: "Uptime Layanan", value: adminKpi.uptime, icon: Globe, color: "bg-muted text-muted-foreground", change: "30 hari terakhir" },
 ];
 
 export default function AdminPage() {
@@ -52,24 +53,25 @@ export default function AdminPage() {
 
   const getLangBadge = (lang: string) => {
     const colors: Record<string, string> = {
-      python: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
-      javascript: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-      java: "bg-red-500/10 text-red-600 dark:text-red-400",
-      cpp: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-      php: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
+      python: "bg-muted text-muted-foreground",
+      javascript: "bg-muted text-muted-foreground",
+      java: "bg-muted text-muted-foreground",
+      cpp: "bg-muted text-muted-foreground",
+      php: "bg-muted text-muted-foreground",
     };
-    return colors[lang] ?? "bg-slate-500/10 text-slate-600";
+    return colors[lang] ?? "bg-muted text-muted-foreground";
   };
 
   return (
-    <div className="lg:pl-64">
-      <div className="container-custom py-8 lg:py-10">
+    <div className="lg:pl-60">
+      <div className="container-editorial py-8 lg:py-10">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <Eyebrow index="//" label="ADMIN" className="mb-3" />
+            <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
               Dashboard Admin
             </h1>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-sm text-muted-foreground">
               Monitoring penggunaan, performa AI, dan knowledge base CodeMentor AI.
             </p>
           </div>
@@ -78,19 +80,18 @@ export default function AdminPage() {
           </Badge>
         </div>
 
-        {/* KPI cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {kpiCards.map((k) => (
             <Card key={k.title} className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{k.title}</p>
-                  <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  <p className="text-sm font-medium text-muted-foreground">{k.title}</p>
+                  <p className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground">
                     {k.value}
                   </p>
-                  <p className="mt-2 text-xs text-slate-400">{k.change}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">{k.change}</p>
                 </div>
-                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${k.color}`}>
+                <div className={`flex h-11 w-11 items-center justify-center rounded-sm ${k.color}`}>
                   <k.icon className="h-5 w-5" />
                 </div>
               </div>
@@ -98,12 +99,11 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* Charts */}
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Tren Penggunaan</CardTitle>
-              <p className="text-sm text-slate-500">Permintaan API & pengguna aktif per bulan</p>
+              <p className="text-sm text-muted-foreground">Permintaan API & pengguna aktif per bulan</p>
             </CardHeader>
             <CardContent>
               <AdminUsageTrendChart data={adminUsageTrend} />
@@ -113,7 +113,7 @@ export default function AdminPage() {
           <Card>
             <CardHeader>
               <CardTitle>Performa AI vs Target</CardTitle>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 Akurasi ≥85% • Respons &lt;5 detik • Kepuasan UAT ≥80% • Penurunan tanya &gt;30%
               </p>
             </CardHeader>
@@ -123,7 +123,6 @@ export default function AdminPage() {
           </Card>
         </div>
 
-        {/* Top errors */}
         <Card className="mt-6">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Error Paling Sering Dikonsultasikan</CardTitle>
@@ -133,27 +132,27 @@ export default function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 dark:border-slate-800">
-                    <th className="pb-3 pr-4 font-semibold">Ranking</th>
-                    <th className="pb-3 pr-4 font-semibold">Error</th>
-                    <th className="pb-3 pr-4 font-semibold">Bahasa</th>
-                    <th className="pb-3 pr-4 font-semibold">Jumlah</th>
-                    <th className="pb-3 font-semibold">Tren</th>
+                  <tr className="border-b border-border">
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Ranking</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Error</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Bahasa</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Jumlah</th>
+                    <th className="pb-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Tren</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-border">
                   {adminTopErrors.map((e) => (
                     <tr key={e.rank}>
                       <td className="py-3 pr-4">
-                        <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
+                        <span className={`inline-flex h-6 w-6 items-center justify-center rounded-sm text-xs font-bold ${
                           e.rank === 1
-                            ? "bg-amber-500/20 text-amber-600 dark:text-amber-400"
-                            : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                            ? "bg-muted text-foreground"
+                            : "bg-muted text-muted-foreground"
                         }`}>
                           {e.rank}
                         </span>
                       </td>
-                      <td className="py-3 pr-4 font-mono text-xs font-medium text-slate-800 dark:text-slate-200">
+                      <td className="py-3 pr-4 font-mono text-xs font-medium text-foreground">
                         {e.error}
                       </td>
                       <td className="py-3 pr-4">
@@ -161,7 +160,7 @@ export default function AdminPage() {
                           {e.bahasa}
                         </Badge>
                       </td>
-                      <td className="py-3 pr-4 font-semibold text-slate-800 dark:text-slate-200">
+                      <td className="py-3 pr-4 font-semibold text-foreground">
                         {e.jumlah}
                       </td>
                       <td className="py-3">
@@ -177,16 +176,15 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Knowledge Base */}
         <Card className="mt-6">
           <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle>Kelola Knowledge Base</CardTitle>
-              <p className="text-sm text-slate-500">Rekaman error yang tersedia untuk RAG retrieval</p>
+              <p className="text-sm text-muted-foreground">Rekaman error yang tersedia untuk RAG retrieval</p>
             </div>
             <div className="flex gap-2">
               <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Cari rekaman..."
                   value={search}
@@ -203,37 +201,37 @@ export default function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 dark:border-slate-800">
-                    <th className="pb-3 pr-4 font-semibold">ID</th>
-                    <th className="pb-3 pr-4 font-semibold">Bahasa</th>
-                    <th className="pb-3 pr-4 font-semibold">Error</th>
-                    <th className="pb-3 pr-4 font-semibold">Judul</th>
-                    <th className="pb-3 pr-4 font-semibold">Diperbarui</th>
-                    <th className="pb-3 pr-4 font-semibold">Status</th>
-                    <th className="pb-3 font-semibold">Aksi</th>
+                  <tr className="border-b border-border">
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">ID</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Bahasa</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Error</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Judul</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Diperbarui</th>
+                    <th className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Status</th>
+                    <th className="pb-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Aksi</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-border">
                   {filteredKb.map((r) => (
                     <tr key={r.id}>
-                      <td className="py-3 pr-4 font-mono text-xs text-slate-500 dark:text-slate-400">{r.id}</td>
+                      <td className="py-3 pr-4 font-mono text-xs text-muted-foreground">{r.id}</td>
                       <td className="py-3 pr-4">
                         <Badge className={getLangBadge(r.language)}>
                           {getLanguageLabel(r.language)}
                         </Badge>
                       </td>
-                      <td className="py-3 pr-4 font-mono text-xs font-medium text-slate-800 dark:text-slate-200">
+                      <td className="py-3 pr-4 font-mono text-xs font-medium text-foreground">
                         {r.errorCode}
                       </td>
-                      <td className="py-3 pr-4 text-slate-600 dark:text-slate-300">{r.title}</td>
-                      <td className="py-3 pr-4 text-xs text-slate-500">{r.updated}</td>
+                      <td className="py-3 pr-4 text-muted-foreground">{r.title}</td>
+                      <td className="py-3 pr-4 text-xs text-muted-foreground">{r.updated}</td>
                       <td className="py-3 pr-4">
                         <button
                           onClick={() => toggleActive(r.id)}
-                          className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                          className={`rounded-sm px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-wider transition-colors ${
                             r.isActive
-                              ? "bg-green-500/10 text-green-600 dark:text-green-400"
-                              : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                              ? "bg-success/10 text-success"
+                              : "bg-muted text-muted-foreground"
                           }`}
                         >
                           {r.isActive ? "Aktif" : "Nonaktif"}
@@ -243,7 +241,7 @@ export default function AdminPage() {
                         <div className="flex gap-1">
                           <button
                             onClick={() => toast("Form edit akan dibuka (demo).")}
-                            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                            className="rounded-sm p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                           >
                             <Pencil className="h-4 w-4" />
                           </button>
@@ -252,7 +250,7 @@ export default function AdminPage() {
                               setKbRows((prev) => prev.filter((x) => x.id !== r.id));
                               toast.success("Rekaman dihapus.");
                             }}
-                            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800"
+                            className="rounded-sm p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Sparkles, ThumbsUp, ThumbsDown, Loader2, ClipboardCopy, Check, BookOpen, AlertTriangle } from "lucide-react";
+import { Loader2, ClipboardCopy, Check, BookOpen, AlertTriangle, Terminal } from "lucide-react";
 import { CodeEditor } from "@/components/chat/code-editor";
 import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { languages } from "@/data/mock";
 import toast from "react-hot-toast";
 
@@ -25,7 +26,7 @@ const welcomeMessage: Msg = {
   id: "welcome",
   role: "assistant",
   content:
-    "Halo! Saya adalah **CodeMentor AI** 👋\n\nTempel kode Anda pada editor di samping, lalu klik **'Jelaskan Error'**.\n\nSaya akan menganalisis error dan menjelaskan penyebab serta solusinya dalam **Bahasa Indonesia**.",
+    "Halo! Saya adalah **CodeMentor AI**\n\nTempel kode Anda pada editor di samping, lalu klik **'Jelaskan Error'**.\n\nSaya akan menganalisis error dan menjelaskan penyebab serta solusinya dalam **Bahasa Indonesia**.",
   confidence: 100,
   createdAt: new Date(),
 };
@@ -89,19 +90,20 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="container-custom py-8">
+    <div className="container-editorial py-8">
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Chat AI Debugging
+          <Eyebrow index="//" label="CHAT AI DEBUGGING" className="mb-3" />
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+            Jelaskan Error
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             Tempel kode, pilih bahasa, dan klik jelaskan error untuk mendapatkan penjelasan dalam Bahasa Indonesia.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <div className="flex items-center gap-2">
           <Badge variant="info">
-            <Sparkles className="mr-1 h-3 w-3" />
+            <Terminal className="mr-1.5 h-3 w-3" />
             Groq Llama 3.1 + RAG
           </Badge>
         </div>
@@ -123,7 +125,7 @@ export function ChatInterface() {
                   className="w-44"
                 />
               </div>
-              <span className="text-xs text-slate-400">
+              <span className="font-mono text-[11px] text-muted-foreground">
                 {languages.find((l) => l.value === language)?.extensions}
               </span>
             </div>
@@ -135,21 +137,20 @@ export function ChatInterface() {
               height="320px"
             />
 
-            <div className="mt-4">
-              <label className="mb-1.5 block text-xs font-medium text-slate-500 dark:text-slate-400">
+            <div className="mt-4 border-t border-border pt-4">
+              <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                 Pesan error (opsional)
               </label>
               <input
                 value={errorInput}
                 onChange={(e) => setErrorInput(e.target.value)}
                 placeholder="Tempel pesan error di sini..."
-                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-mono text-xs outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-sm border border-input bg-transparent px-3 py-2 font-mono text-xs outline-none focus:border-foreground dark:focus:border-paper"
               />
             </div>
 
             <div className="mt-4 flex gap-3">
               <Button onClick={handleExplain} loading={isLoading} className="flex-1">
-                {!isLoading && <Sparkles className="h-4 w-4" />}
                 Jelaskan Error
               </Button>
               <Button variant="outline" onClick={() => { setSourceCode(""); toast.success("Editor dikosongkan."); }}>
@@ -160,12 +161,12 @@ export function ChatInterface() {
 
           <Card>
             <div className="mb-3 flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <AlertTriangle className="h-4 w-4 text-accent" strokeWidth={1.5} />
+              <h3 className="font-mono text-[11px] uppercase tracking-wider text-foreground">
                 Tips Penggunaan
               </h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-slate-600 dark:text-slate-400">
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li>• Tempel pesan error lengkap beserta stack trace untuk hasil yang lebih akurat.</li>
               <li>• Sertakan kode di sekeliling baris yang errornya.</li>
               <li>• Beri feedback setelah jawaban untuk membantu AI semakin baik.</li>
@@ -175,39 +176,41 @@ export function ChatInterface() {
 
         {/* Right: Chat panel */}
         <Card className="flex flex-col lg:sticky lg:top-20 lg:h-fit lg:max-h-[80vh]">
-          <div className="mb-4 flex items-center gap-2 border-b border-slate-200 pb-4 dark:border-slate-800">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
-              <Sparkles className="h-4 w-4 text-white" />
+          <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-ink text-paper dark:bg-paper dark:text-ink">
+              <Terminal className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Jawaban CodeMentor AI</h2>
-              <p className="text-xs text-slate-500">Respons dalam Bahasa Indonesia</p>
+              <p className="font-mono text-[11px] uppercase tracking-wider text-foreground">OUTPUT</p>
+              <p className="font-mono text-[10px] text-muted-foreground">Respons dalam Bahasa Indonesia</p>
             </div>
           </div>
 
           <div className="chat-scroll flex-1 space-y-4 overflow-y-auto pr-1" style={{ maxHeight: "560px" }}>
             {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+              <div key={msg.id}>
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {msg.role === "user" ? "> input_" : "// output_"}
+                  </span>
+                </div>
                 <div
-                  className={`max-w-[90%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                  className={`rounded-sm px-4 py-3 text-sm leading-relaxed ${
                     msg.role === "user"
-                      ? "rounded-br-md bg-blue-600 text-white"
-                      : "rounded-bl-md border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"
+                      ? "bg-ink text-paper dark:bg-paper dark:text-ink"
+                      : "border border-border bg-card text-foreground"
                   }`}
                 >
                   <div className="prose-sm prose dark:prose-invert">
                     <ReactMarkdown
                       components={{
                         code: ({ children }) => (
-                          <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs dark:bg-slate-900">
+                          <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
                             {children}
                           </code>
                         ),
                         pre: ({ children }) => (
-                          <pre className="overflow-x-auto rounded-lg bg-slate-900 p-3 font-mono text-xs text-slate-100">
+                          <pre className="overflow-x-auto rounded-sm bg-ink p-3 font-mono text-xs text-paper">
                             {children}
                           </pre>
                         ),
@@ -218,16 +221,8 @@ export function ChatInterface() {
                   </div>
 
                   {msg.confidence && msg.role === "assistant" && (
-                    <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <Badge
-                        variant={
-                          msg.confidence >= 80
-                            ? "success"
-                            : msg.confidence >= 60
-                              ? "warning"
-                              : "danger"
-                        }
-                      >
+                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
+                      <Badge variant={msg.confidence >= 80 ? "success" : "warning"}>
                         Confidence: {msg.confidence}%
                       </Badge>
                       {msg.errorCode && (
@@ -237,45 +232,42 @@ export function ChatInterface() {
                   )}
 
                   {msg.role === "assistant" && msg.id !== "welcome" && (
-                    <div className="mt-3 flex items-center gap-2 border-t border-slate-200 pt-3 dark:border-slate-700">
-                      <span className="mr-1 text-xs text-slate-400">Feedback:</span>
+                    <div className="mt-3 flex items-center gap-2 border-t border-border pt-3">
+                      <span className="mr-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Feedback:</span>
                       <button
                         onClick={() => handleFeedback(msg.id, "helpful")}
-                        className={`rounded-lg p-1.5 transition-colors ${
+                        className={`rounded-sm px-2 py-1 font-mono text-[10px] transition-colors cursor-pointer ${
                           msg.feedback === "helpful"
-                            ? "bg-green-500/10 text-green-500"
-                            : "text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                            ? "bg-success/10 text-success"
+                            : "text-muted-foreground hover:bg-muted"
                         }`}
-                        title="Bermanfaat"
                       >
-                        <ThumbsUp className="h-4 w-4" />
+                        Bermanfaat
                       </button>
                       <button
                         onClick={() => handleFeedback(msg.id, "not-helpful")}
-                        className={`rounded-lg p-1.5 transition-colors ${
+                        className={`rounded-sm px-2 py-1 font-mono text-[10px] transition-colors cursor-pointer ${
                           msg.feedback === "not-helpful"
-                            ? "bg-red-500/10 text-red-500"
-                            : "text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                            ? "bg-accent/10 text-accent"
+                            : "text-muted-foreground hover:bg-muted"
                         }`}
-                        title="Tidak bermanfaat"
                       >
-                        <ThumbsDown className="h-4 w-4" />
+                        Tidak membantu
                       </button>
                       <button
                         onClick={() => copyCode(msg.content)}
-                        className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-200 dark:hover:bg-slate-700"
+                        className="ml-auto rounded-sm px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:bg-muted cursor-pointer"
                         title="Salin jawaban"
                       >
                         {copied === msg.content.slice(0, 20) ? (
-                          <Check className="h-4 w-4 text-green-500" />
+                          <span className="text-success">Tersalin ✓</span>
                         ) : (
-                          <ClipboardCopy className="h-4 w-4" />
+                          <span className="inline-flex items-center gap-1">
+                            <ClipboardCopy className="h-3 w-3" />
+                            Salin
+                          </span>
                         )}
                       </button>
-                      <span className="ml-auto flex items-center gap-1 text-xs text-slate-400">
-                        <BookOpen className="h-3 w-3" />
-                        Materi terkait
-                      </span>
                     </div>
                   )}
                 </div>
@@ -283,19 +275,21 @@ export function ChatInterface() {
             ))}
 
             {isLoading && (
-              <div className="flex items-start gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600">
-                  <Sparkles className="h-4 w-4 text-white" />
+              <div>
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {"// processing"}
+                  </span>
                 </div>
-                <div className="rounded-2xl rounded-tl-md border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-800/50">
-                  <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
-                  <p className="mt-1 text-xs text-slate-500">Menganalisis kode &amp; mencari solusi...</p>
+                <div className="inline-flex items-center gap-2 border border-border bg-card px-4 py-3">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  <span className="font-mono text-xs text-muted-foreground">Menganalisis kode &amp; mencari solusi...</span>
                 </div>
               </div>
             )}
 
             {messages.length === 1 && (
-              <p className="py-8 text-center text-sm text-slate-400">
+              <p className="py-8 text-center font-mono text-[11px] text-muted-foreground">
                 Belum ada percakapan. Tempel kode dan klik &quot;Jelaskan Error&quot; untuk memulai.
               </p>
             )}

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { getLanguageLabel, formatDate } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -31,21 +32,21 @@ export default function RiwayatPage() {
   };
 
   return (
-    <div className="lg:pl-64">
-      <div className="container-custom py-8 lg:py-10">
+    <div className="lg:pl-60">
+      <div className="container-editorial py-8 lg:py-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <Eyebrow index="//" label="RIWAYAT" className="mb-3" />
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
             Riwayat Analisis
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             Semua error yang pernah Anda tanyakan, tersimpan rapi untuk dipelajari kembali.
           </p>
         </div>
 
-        {/* Filters */}
         <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_200px_auto]">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Cari error, atau kata kunci dalam kode..."
               value={search}
@@ -58,11 +59,11 @@ export default function RiwayatPage() {
             onChange={(e) => setLangFilter(e.target.value)}
             options={[
               { value: "all", label: "Semua Bahasa" },
-              { value: "python", label: "🐍 Python" },
-              { value: "javascript", label: "🟨 JavaScript" },
-              { value: "java", label: "☕ Java" },
-              { value: "cpp", label: "⚡ C++" },
-              { value: "php", label: "🐘 PHP" },
+              { value: "python", label: "Python" },
+              { value: "javascript", label: "JavaScript" },
+              { value: "java", label: "Java" },
+              { value: "cpp", label: "C++" },
+              { value: "php", label: "PHP" },
             ]}
           />
           <Button variant="outline">
@@ -70,13 +71,12 @@ export default function RiwayatPage() {
           </Button>
         </div>
 
-        {/* List */}
         <div className="space-y-4">
           {filtered.length === 0 && (
             <Card className="flex flex-col items-center justify-center py-16 text-center">
-              <History className="mb-4 h-12 w-12 text-slate-300 dark:text-slate-600" />
-              <h3 className="font-semibold text-slate-900 dark:text-white">Belum ada riwayat</h3>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              <History className="mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="font-display font-semibold text-foreground">Belum ada riwayat</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
                 Coba tanyakan error pertama Anda di halaman Chat AI.
               </p>
             </Card>
@@ -99,12 +99,12 @@ export default function RiwayatPage() {
                         {r.feedback === "helpful" ? "✓ Bermanfaat" : "✗ Tidak membantu"}
                       </Badge>
                     )}
-                    <span className="text-xs text-slate-400">{formatDate(r.createdAt)}</span>
+                    <span className="text-xs text-muted-foreground">{formatDate(r.createdAt)}</span>
                   </div>
-                  <p className="mb-3 line-clamp-2 font-mono text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                  <p className="mb-3 line-clamp-2 font-mono text-xs leading-relaxed text-muted-foreground">
                     {r.sourceCode}
                   </p>
-                  <p className="line-clamp-2 text-sm text-slate-600 dark:text-slate-400">
+                  <p className="line-clamp-2 text-sm text-muted-foreground">
                     {r.aiResponse.slice(0, 200)}...
                   </p>
                 </div>
@@ -115,7 +115,7 @@ export default function RiwayatPage() {
                   <Button size="sm" variant="outline" onClick={() => toast.success("Riwayat diekspor (demo).")}>
                     <Download className="h-3.5 w-3.5" /> Ekspor
                   </Button>
-                  <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => handleDelete(r.id)}>
+                  <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => handleDelete(r.id)}>
                     <Trash2 className="h-3.5 w-3.5" /> Hapus
                   </Button>
                 </div>
@@ -125,8 +125,8 @@ export default function RiwayatPage() {
         </div>
 
         {rows.length > 0 && filtered.length > 0 && (
-          <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-4 text-sm dark:border-slate-800">
-            <span className="text-slate-500 dark:text-slate-400">
+          <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
+            <span className="text-muted-foreground">
               Menampilkan {filtered.length} dari {rows.length} riwayat
             </span>
             <div className="flex gap-2">

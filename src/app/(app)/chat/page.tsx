@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ChatPage() {
   return (
-    <div className="lg:pl-64">
+    <div className="lg:pl-60">
       <ChatInterface />
     </div>
   );

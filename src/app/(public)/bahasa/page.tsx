@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, Code2, FileCode2, BookOpen, ArrowRight } from "lucide-react";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { SectionTitle } from "@/components/ui/section-title";
 import { languages, sampleErrors } from "@/data/mock";
 
 export const metadata: Metadata = {
@@ -44,81 +46,77 @@ const detailBahasa = [
 
 export default function BahasaPage() {
   return (
-    <div className="pt-16">
-      {/* Hero */}
-      <section className="border-b border-slate-200 bg-gradient-to-b from-blue-600/5 to-transparent py-20 dark:border-slate-800">
-        <div className="container-custom text-center">
-          <span className="mb-4 inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
-            Bahasa Didukung
-          </span>
-          <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
-            5 Bahasa Pemrograman, <span className="text-gradient">200+ Error</span> Dipahami
+    <div>
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial text-center">
+          <Eyebrow index="[02]" label="BAHASA DIDUKUNG" className="justify-center" />
+          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            5 Bahasa Pemrograman, <span className="text-accent">200+ Error</span> Dipahami
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
             Basis pengetahuan yang terus bertumbuh, dikurasi khusus untuk pola
             error yang paling sering ditemui mahasiswa Indonesia.
           </p>
         </div>
       </section>
 
-      {/* Language detail cards */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="grid gap-6">
+      <section className="section-padding border-b border-border">
+        <div className="container-editorial">
+          <div className="grid gap-px border border-border bg-border">
             {detailBahasa.map((b, i) => (
               <div
                 key={b.nama}
-                className={`grid gap-8 rounded-2xl border border-slate-200 bg-white p-8 lg:grid-cols-[1fr_1.5fr] dark:border-slate-800 dark:bg-dark-card ${
-                  i % 2 === 1 ? "lg:bg-slate-50 dark:lg:bg-slate-900/40" : ""
-                }`}
+                className="grid gap-8 bg-background p-8 lg:grid-cols-[1fr_1.5fr]"
               >
                 <div>
                   <div className="mb-3 flex items-center gap-3">
-                    <span className="text-4xl">{b.icon}</span>
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-accent">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     <div>
-                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                      <h2 className="font-display text-2xl font-bold">
                         {b.nama}
                       </h2>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                      <p className="text-sm text-muted-foreground">
                         {b.extensionLabel}
                       </p>
                     </div>
                   </div>
-                  <p className="mb-4 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                     {b.deskripsi}
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500 dark:text-slate-400">Ekosistem populer</span>
-                      <span className="font-medium text-slate-700 dark:text-slate-200">{b.stack}</span>
+                      <span className="text-muted-foreground">Ekosistem populer</span>
+                      <span className="font-medium text-foreground">{b.stack}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500 dark:text-slate-400">Pola error di KB</span>
-                      <span className="font-medium text-blue-600 dark:text-blue-400">{b.kapasitasKB} error</span>
+                      <span className="text-muted-foreground">Pola error di KB</span>
+                      <span className="font-medium text-accent">{b.kapasitasKB} error</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500 dark:text-slate-400">Ekstensi file</span>
-                      <span className="font-mono text-xs text-slate-700 dark:text-slate-200">{b.extensions}</span>
+                      <span className="text-muted-foreground">Ekstensi file</span>
+                      <span className="font-mono text-xs text-foreground">{b.extensions}</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <h3 className="mb-4 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                     Contoh error yang dikenal
                   </h3>
                   <div className="mb-6 flex flex-wrap gap-2">
                     {b.contohError.map((e) => (
                       <span
                         key={e}
-                        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                        className="border border-border bg-muted px-3 py-1.5 font-mono text-xs text-foreground"
                       >
                         {e}
                       </span>
                     ))}
                   </div>
 
-                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <h3 className="mb-4 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                     Contoh penjelasan singkat
                   </h3>
                   <div className="space-y-3">
@@ -127,15 +125,15 @@ export default function BahasaPage() {
                       .map((e) => (
                         <div
                           key={e.code}
-                          className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60"
+                          className="border border-border bg-muted p-4"
                         >
-                          <div className="mb-1 font-mono text-sm font-semibold text-red-500">
+                          <div className="mb-1 font-mono text-sm font-semibold text-accent">
                             {e.code}
                           </div>
-                          <p className="mb-2 font-mono text-xs text-slate-600 dark:text-slate-400">
+                          <p className="mb-2 font-mono text-xs text-muted-foreground">
                             {e.contoh}
                           </p>
-                          <div className="flex items-center gap-2 text-xs font-medium text-green-600 dark:text-green-400">
+                          <div className="flex items-center gap-2 text-xs font-medium text-success">
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             Solusi: {e.solusi}
                           </div>
@@ -149,14 +147,13 @@ export default function BahasaPage() {
         </div>
       </section>
 
-      {/* Searching for a specific language */}
-      <section className="section-padding border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50">
-        <div className="container-custom text-center">
-          <FileCode2 className="mx-auto mb-4 h-12 w-12 text-blue-500" />
-          <h2 className="mx-auto max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl dark:text-white">
+      <section className="section-padding">
+        <div className="container-editorial text-center">
+          <FileCode2 className="mx-auto mb-4 h-12 w-12 text-muted-foreground" strokeWidth={1.5} />
+          <h2 className="mx-auto max-w-2xl font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Bahasa Anda belum ada di daftar?
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
             Knowledge base terus diperluas. Beri tahu kami bahasa apa yang Anda
             butuhkan melalui form feedback di aplikasi.
           </p>

@@ -9,18 +9,18 @@ interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Badge({ className, variant = "default", children, ...props }: BadgeProps) {
   const variants: Record<string, string> = {
-    default: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
-    success: "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400",
-    warning: "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
-    danger: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400",
-    info: "bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
-    outline: "border border-slate-300 text-slate-600 dark:border-slate-700 dark:text-slate-300",
+    default: "bg-accent text-accent-foreground",
+    success: "bg-success text-success-foreground",
+    warning: "bg-warning text-warning-foreground",
+    danger: "bg-destructive text-destructive-foreground",
+    info: "bg-muted text-muted-foreground",
+    outline: "border border-border text-muted-foreground",
   };
 
   return (
     <div
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center rounded-sm px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider",
         variants[variant],
         className
       )}

@@ -719,7 +719,7 @@ export const languageCounts = (() => {
 })();
 
 export const tingkatBadgeColor: Record<string, string> = {
-  Mudah: "bg-green-500/10 text-green-600 dark:text-green-400",
-  Sedang: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  Sulit: "bg-red-500/10 text-red-600 dark:text-red-400",
+  Mudah: "bg-success/10 text-success",
+  Sedang: "bg-warning/10 text-warning",
+  Sulit: "bg-accent/10 text-accent",
 };
