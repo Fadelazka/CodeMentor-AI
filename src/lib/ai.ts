@@ -41,6 +41,14 @@ export async function retrieveRelevantErrors(language: string, query: string) {
   }
 }
 
+/**
+ * Daftar model Groq yang dicoba berurutan. Groq rutin menonaktifkan model,
+ * jadi kita tidak pernah mematok satu model tanpa fallback.
+ */
+const GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"];
+
+type FallbackReason = "no-key" | "unauthorized" | "api-error";
+
 export async function generateExplainationWithGroq(payload: {
   language: string;
   sourceCode: string;
@@ -51,7 +59,7 @@ export async function generateExplainationWithGroq(payload: {
 
   if (!apiKey) {
     return {
-      explanation: buildFallbackExplanation(payload),
+      explanation: buildFallbackExplanation(payload, "no-key"),
       confidence: 80,
       mock: true,
     };
@@ -80,52 +88,78 @@ Pesan error (jika ada): ${payload.errorMessage ?? "Tidak ada, silakan analisis"}
 Konteks knowledge base yang relevan:
 ${contextPrompt || "Tidak ada konteks tambahan."}`;
 
-  try {
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "llama-3.1-70b-versatile",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        temperature: 0.2,
-        max_tokens: 1200,
-      }),
-    });
+  let lastStatus = 0;
 
-    if (!res.ok) {
-      return { explanation: buildFallbackExplanation(payload), confidence: 80, mock: true };
+  for (const model of GROQ_MODELS) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 1200,
+        }),
+      });
+
+      if (!res.ok) {
+        lastStatus = res.status;
+        const errBody = await res.text().catch(() => "");
+        console.error(`[ai] Groq model "${model}" gagal (HTTP ${res.status}): ${errBody.slice(0, 300)}`);
+        continue;
+      }
+
+      const data = await res.json();
+      const explanation: string | undefined = data.choices?.[0]?.message?.content;
+      if (!explanation) {
+        console.error(`[ai] Groq model "${model}" mengembalikan respons kosong.`);
+        continue;
+      }
+
+      const confidenceMatch = explanation.match(/Confidence[:：]\s*(\d{1,3})%?/i);
+      const confidence = confidenceMatch ? Math.min(100, parseInt(confidenceMatch[1], 10)) : 85;
+
+      return { explanation, confidence, mock: false };
+    } catch (err) {
+      console.error(`[ai] Groq model "${model}" error:`, err);
     }
-
-    const data = await res.json();
-    const explanation = data.choices?.[0]?.message?.content ?? buildFallbackExplanation(payload);
-    const confidenceMatch = explanation.match(/Confidence[:：]\s*(\d{1,3})%?/i);
-    const confidence = confidenceMatch ? Math.min(100, parseInt(confidenceMatch[1], 10)) : 85;
-
-    return { explanation, confidence, mock: false };
-  } catch {
-    return { explanation: buildFallbackExplanation(payload), confidence: 80, mock: true };
   }
+
+  const reason: FallbackReason = lastStatus === 401 ? "unauthorized" : "api-error";
+  return { explanation: buildFallbackExplanation(payload, reason), confidence: 80, mock: true };
 }
 
-function buildFallbackExplanation(payload: {
-  language: string;
-  sourceCode: string;
-  errorMessage?: string;
-  ragContext: RagContext;
-}): string {
+function buildFallbackExplanation(
+  payload: {
+    language: string;
+    sourceCode: string;
+    errorMessage?: string;
+    ragContext: RagContext;
+  },
+  reason: FallbackReason
+): string {
+  const note =
+    reason === "no-key"
+      ? "*(Jawaban ini dihasilkan dari knowledge base karena kunci API Groq belum dikonfigurasi. Konfigurasi `GROQ_API_KEY` di `.env.local` untuk jawaban AI penuh.)*"
+      : reason === "unauthorized"
+        ? "*(API Groq menolak permintaan: `GROQ_API_KEY` tidak valid / kedaluwarsa (401 Unauthorized). Buat kunci baru di https://console.groq.com/keys lalu perbarui `.env.local`, kemudian restart dev server.)*"
+        : "*(Jawaban ini dihasilkan dari knowledge base karena panggilan ke API Groq gagal. Periksa log server untuk detail.)*";
+
   const top = payload.ragContext.matches[0];
   if (top) {
-    return `## Error: ${top.errorCode}\n\n**Judul:** ${top.title}\n\n**Deskripsi:**\n${top.description}\n\n**Cara memperbaiki:**\n${top.solution}\n\n*(Jawaban ini dihasilkan dari knowledge base karena kunci API Groq belum dikonfigurasi. Konfigurasi \`GROQ_API_KEY\` di \`.env.local\` untuk jawaban AI penuh.)*\n\n**Confidence:** 80%`;
+    return `## Error: ${top.errorCode}\n\n**Judul:** ${top.title}\n\n**Deskripsi:**\n${top.description}\n\n**Cara memperbaiki:**\n${top.solution}\n\n${note}\n\n**Confidence:** 80%`;
   }
 
   const errorMatch = payload.sourceCode.match(/Error[:\n].{0,80}/i);
   const guessError = errorMatch?.[0] ?? payload.errorMessage ?? "Error yang dikenal";
 
-  return `## Analisis Error\n\n**Penyebab:**\n\nTerjadi kesalahan yang tampaknya berkaitan dengan "${guessError}". Analisis lengkap memerlukan konfigurasi API atau pencocokan dengan knowledge base.\n\n**Langkah debugging:**\n1. Baca pesan error dari baris paling bawah stack trace.\n2. Periksa variabel yang terlibat di baris tersebut.\n3. Validasi input sebelum digunakan dalam operasi.\n\n*(Mode demo — atur \`GROQ_API_KEY\` untuk jawaban AI penuh.)*\n\n**Confidence:** 80%`;
+  return `## Analisis Error\n\n**Penyebab:**\n\nTerjadi kesalahan yang tampaknya berkaitan dengan "${guessError}". Analisis lengkap memerlukan koneksi ke API Groq atau pencocokan dengan knowledge base.\n\n**Langkah debugging:**\n1. Baca pesan error dari baris paling bawah stack trace.\n2. Periksa variabel yang terlibat di baris tersebut.\n3. Validasi input sebelum digunakan dalam operasi.\n\n${note}\n\n**Confidence:** 80%`;
 }
