@@ -4,8 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Menu, X, Moon, Sun, ArrowRight } from "lucide-react";
-import { useTheme } from "@/components/providers/theme-provider";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { Wordmark } from "@/components/ui/wordmark";
 import { Button } from "@/components/ui/button";
 
@@ -20,7 +19,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
 
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 24);
@@ -61,13 +59,6 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Ganti tema"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
           <Link href="/masuk">
             <Button variant="ghost" size="sm">
               Masuk
@@ -82,13 +73,6 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="cursor-pointer rounded-sm p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label="Ganti tema"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
           <button
             className="cursor-pointer rounded-sm p-2 text-foreground hover:bg-muted lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
