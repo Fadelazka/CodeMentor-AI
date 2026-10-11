@@ -60,6 +60,37 @@ const config: Config = {
           border: "#222222",
           surface: "#1A1A1A",
         },
+        navy: {
+          DEFAULT: "#0A0E27",
+          950: "#060819",
+          900: "#0A0E27",
+          800: "#0F1433",
+          700: "#1A0B3D",
+          600: "#241257",
+        },
+        neon: {
+          cyan: "#00E5FF",
+          violet: "#7C4DFF",
+          pink: "#FF3B6B",
+          green: "#3DFFA2",
+          amber: "#FFC53D",
+          red: "#FF3B6B",
+          orange: "#FF6B35",
+        },
+        surface: {
+          base: "#05060A",
+          elevated: "rgba(255,255,255,0.02)",
+          overlay: "rgba(255,255,255,0.04)",
+          border: "rgba(255,255,255,0.06)",
+          "border-hover": "rgba(255,255,255,0.12)",
+        },
+      },
+      boxShadow: {
+        "glow-cyan": "0 0 24px -6px rgba(0,229,255,0.55)",
+        "glow-violet": "0 0 24px -6px rgba(124,77,255,0.55)",
+        "glow-red": "0 0 24px -6px rgba(255,59,107,0.45)",
+        "glow-orange": "0 0 24px -6px rgba(255,107,53,0.45)",
+        "glow-soft": "0 8px 40px -12px rgba(0,0,0,0.5)",
       },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
@@ -76,6 +107,11 @@ const config: Config = {
       animation: {
         "slide-up": "slideUp 0.4s ease-out",
         "fade-in": "fadeIn 0.4s ease-out",
+        "shimmer": "shimmer 2.2s linear infinite",
+        "glow-pulse": "glowPulse 3s ease-in-out infinite",
+        "float": "float 6s ease-in-out infinite",
+        "gradient-x": "gradientX 6s ease infinite",
+        "spin-slow": "spin 12s linear infinite",
       },
       keyframes: {
         slideUp: {
@@ -85,6 +121,22 @@ const config: Config = {
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        glowPulse: {
+          "0%, 100%": { opacity: "0.55" },
+          "50%": { opacity: "1" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        gradientX: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
         },
       },
     },

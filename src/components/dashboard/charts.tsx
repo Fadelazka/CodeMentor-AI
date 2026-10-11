@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Bar,
@@ -12,60 +12,73 @@ import {
   Pie,
   Cell,
   Legend,
+  Area,
+  AreaChart,
 } from "recharts";
 
-const COLORS = ["#0A0A0A", "#6B6B6B", "#A0A0A0", "#D5D5D0", "#E5484D"];
-const COLORS_DARK = ["#FAFAF7", "#888888", "#666666", "#444444", "#E5484D"];
+// Brand colors per language (order matches dashboardStats.bahasaTerbanyak)
+const PIE_COLORS = ["#FF3B6B", "#F7DF1E", "#EA2D2E", "#00599C", "#FF6B35"];
 
-function useIsDark() {
-  if (typeof window === "undefined") return false;
-  return document.documentElement.classList.contains("dark");
-}
+const axisTick = { fill: "#71717A", fontSize: 10, fontFamily: "monospace" };
+
+const tooltipStyle = {
+  background: "rgba(15,20,51,0.96)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 12,
+  color: "#fff",
+  fontSize: 12,
+  fontFamily: "monospace",
+};
 
 export function UsageChart({ data }: { data: { tanggal: string; jumlah: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
-      <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#D5D5D022" vertical={false} />
-        <XAxis dataKey="tanggal" tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} />
-        <Tooltip
-          contentStyle={{
-            background: "#0A0A0A",
-            border: "none",
-            borderRadius: 2,
-            color: "#FAFAF7",
-            fontSize: 12,
-            fontFamily: "monospace",
-          }}
-          cursor={{ fill: "#D5D5D011" }}
+      <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        <defs>
+          <linearGradient id="usageFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FF3B6B" stopOpacity={0.18} />
+            <stop offset="100%" stopColor="#FF3B6B" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+        <XAxis dataKey="tanggal" tick={axisTick} axisLine={false} tickLine={false} />
+        <YAxis tick={axisTick} axisLine={false} tickLine={false} />
+        <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: "rgba(255,255,255,0.12)", strokeWidth: 1 }} />
+        <Area
+          type="monotone"
+          dataKey="jumlah"
+          stroke="#FF3B6B"
+          strokeWidth={2}
+          fill="url(#usageFill)"
+          name="Pertanyaan"
+          dot={false}
+          activeDot={{ r: 4, fill: "#FF3B6B", stroke: "#05060A", strokeWidth: 2 }}
         />
-        <Bar dataKey="jumlah" fill="#0A0A0A" radius={[2, 2, 0, 0]} name="Pertanyaan" maxBarSize={32} />
-      </BarChart>
+      </AreaChart>
     </ResponsiveContainer>
   );
 }
 
 export function LanguagePieChart({ data }: { data: { bahasa: string; persen: number }[] }) {
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" height={240}>
       <PieChart>
-        <Pie data={data} dataKey="persen" nameKey="bahasa" innerRadius={50} outerRadius={80} paddingAngle={2}>
+        <Pie
+          data={data}
+          dataKey="persen"
+          nameKey="bahasa"
+          innerRadius={54}
+          outerRadius={84}
+          paddingAngle={2}
+          stroke="#05060A"
+          strokeWidth={2}
+        >
           {data.map((_, i) => (
-            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
           ))}
         </Pie>
-        <Tooltip
-          contentStyle={{
-            background: "#0A0A0A",
-            border: "none",
-            borderRadius: 2,
-            color: "#FAFAF7",
-            fontSize: 12,
-            fontFamily: "monospace",
-          }}
-        />
-        <Legend wrapperStyle={{ fontSize: 10, fontFamily: "monospace" }} />
+        <Tooltip contentStyle={tooltipStyle} />
+        <Legend wrapperStyle={{ fontSize: 11, fontFamily: "monospace", color: "#A1A1AA" }} />
       </PieChart>
     </ResponsiveContainer>
   );
@@ -74,22 +87,19 @@ export function LanguagePieChart({ data }: { data: { bahasa: string; persen: num
 export function ErrorBarChart({ data }: { data: { code: string; jumlah: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height={240}>
-      <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 60, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#D5D5D022" horizontal={false} />
-        <XAxis type="number" tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} />
-        <YAxis type="category" dataKey="code" tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }} axisLine={false} tickLine={false} width={100} />
-        <Tooltip
-          contentStyle={{
-            background: "#0A0A0A",
-            border: "none",
-            borderRadius: 2,
-            color: "#FAFAF7",
-            fontSize: 12,
-            fontFamily: "monospace",
-          }}
-          cursor={{ fill: "#D5D5D011" }}
+      <BarChart data={data} layout="vertical" margin={{ top: 5, right: 24, left: 48, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
+        <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} />
+        <YAxis type="category" dataKey="code" tick={axisTick} axisLine={false} tickLine={false} width={96} />
+        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+        <Bar
+          dataKey="jumlah"
+          fill="#FF3B6B"
+          fillOpacity={0.65}
+          radius={[0, 6, 6, 0]}
+          name="Jumlah"
+          maxBarSize={16}
         />
-        <Bar dataKey="jumlah" fill="#E5484D" radius={[0, 2, 2, 0]} name="Jumlah" maxBarSize={16} />
       </BarChart>
     </ResponsiveContainer>
   );

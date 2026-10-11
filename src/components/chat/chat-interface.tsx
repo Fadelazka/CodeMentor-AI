@@ -1,14 +1,22 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Loader2, ClipboardCopy, Check, BookOpen, AlertTriangle, Terminal } from "lucide-react";
+import {
+  Loader2,
+  ClipboardCopy,
+  MessagesSquare,
+  AlertTriangle,
+  Terminal,
+  Sparkles,
+  Eraser,
+  Send,
+} from "lucide-react";
 import { CodeEditor } from "@/components/chat/code-editor";
-import { Select } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Eyebrow } from "@/components/ui/eyebrow";
+import { PageHeader } from "@/components/ui/page-header";
+import { GlassCard } from "@/components/ui/glass-card";
+import { BadgePill } from "@/components/ui/badge-pill";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { languages } from "@/data/mock";
 import toast from "react-hot-toast";
 
@@ -41,176 +49,163 @@ export function ChatInterface() {
   const [errorInput, setErrorInput] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
 
-  const handleExplain = async () => {
-    if (!sourceCode.trim()) {
-      toast.error("Mohon tempel atau tulis kode terlebih dahulu.");
-      return;
-    }
+  const activeLanguage = languages.find((l) => l.value === language);
 
+  const handleExplain = () => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `user-${Date.now()}`,
+        role: "user",
+        content: `**${activeLanguage?.label ?? language}**\n\n\`\`\`${language}\n${sourceCode}\n\`\`\`${
+          errorInput ? `\n\n> ${errorInput}` : ""
+        }`,
+        createdAt: new Date(),
+      },
+    ]);
     setIsLoading(true);
-    const userMsg: Msg = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      content: `**${languages.find((l) => l.value === language)?.label ?? language}**${
-        errorInput ? ` — Error: \`${errorInput}\`` : ""
-      }\n\n\`\`\`${language}\n${sourceCode}\n\`\`\``,
-      createdAt: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
 
     setTimeout(() => {
       const mockResponse: Msg = {
         id: `ai-${Date.now()}`,
         role: "assistant",
         content:
-          "## Error `ZeroDivisionError`\n\n**Penyebab:**\n\nFungsi `hitung_ratarata()` membagi `total` dengan `len(nilai)`. Ketika `nilai` berupa list kosong `[]`, nilai `len(nilai)` adalah **0**, sehingga terjadi pembagian dengan nol.\n\n**Perbaikan:**\n\n```python\ndef hitung_ratarata(nilai):\n    if not nilai:\n        return 0\n    total = 0\n    for n in nilai:\n        total += n\n    return total / len(nilai)\n```\n\n**Penjelasan tambahan:**\n\n- Validasi `if not nilai` mengecek apakah list kosong.\n- Mengembalikan 0 menghindari pembagian dengan nol.\n\n**Materi rekomendasi:**\n1. List Comprehension Dasar\n2. Validasi Input\n3. Operasi Aritmatika",
+          "## Error `ZeroDivisionError`\n\n**Penyebab:**\n\nFungsi `hitung_ratarata()` membagi `total` dengan `len(nilai)`. Ketika `nilai` berupa list kosong `[]`, nilai `len(nilai)` adalah **0**, sehingga terjadi pembagian dengan nol.\n\n**Perbaikan:**\n\n```python\ndef hitung_ratarata(nilai):\n    if not nilai:\n        return 0\n    total = 0\n    for n in nilai:\n        total += n\n    return total / len(nilai)\n```\n\n**Penjelasan tambahan:**\n\n- Validasi `if not nilai` mengecek apakah list kosong.\n- Mengembalikan 0 menghindari pembagian dengan nol.\n\n**Materi rekomendasi:**\n\n- List Comprehension Dasar\n- Validasi Input\n- Operasi Aritmatika",
         confidence: 92,
         errorCode: "ZeroDivisionError",
         createdAt: new Date(),
       };
       setMessages((prev) => [...prev, mockResponse]);
       setIsLoading(false);
-    }, 1500);
+    }, 1200);
   };
 
-  const handleFeedback = (msgId: string, feedback: "helpful" | "not-helpful") => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === msgId ? { ...m, feedback } : m))
-    );
-    toast.success(
-      feedback === "helpful" ? "Terima kasih atas feedback Anda!" : "Feedback Anda dicatat untuk perbaikan."
-    );
+  const handleFeedback = (id: string, feedback: "helpful" | "not-helpful") => {
+    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, feedback } : m)));
+    toast.success(feedback === "helpful" ? "Terima kasih atas feedbacknya!" : "Catatanmu membantu AI belajar.");
   };
 
-  const copyCode = (content: string) => {
+  const handleCopy = (content: string) => {
     navigator.clipboard.writeText(content);
     setCopied(content.slice(0, 20));
-    setTimeout(() => setCopied(null), 2000);
+    toast.success("Jawaban disalin.");
+    setTimeout(() => setCopied(null), 1600);
   };
 
   return (
-    <div className="container-editorial py-8">
-      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <Eyebrow index="//" label="CHAT AI DEBUGGING" className="mb-3" />
-          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-            Jelaskan Error
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Tempel kode, pilih bahasa, dan klik jelaskan error untuk mendapatkan penjelasan dalam Bahasa Indonesia.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="info">
-            <Terminal className="mr-1.5 h-3 w-3" />
-            Groq Llama 3.1 + RAG
-          </Badge>
-        </div>
-      </div>
+    <div className="animate-fade-in">
+      <PageHeader
+        eyebrow="Chat AI"
+        icon={MessagesSquare}
+        title="Asisten Debug"
+        description="Tempel kode Anda, jelaskan error, dan dapatkan analisis lengkap dalam Bahasa Indonesia."
+        actions={<BadgePill tone="cyan" icon={Terminal}>Groq LLM + RAG</BadgePill>}
+      />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Left: Code editor */}
-        <div className="space-y-4">
-          <Card>
-            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-3">
-                <Select
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {/* Left: editor */}
+        <div className="space-y-6">
+          <GlassCard>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="relative">
+                <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  options={languages.map((l) => ({
-                    value: l.value,
-                    label: `${l.icon} ${l.label}`,
-                  }))}
-                  className="w-44"
-                />
+                  className="h-10 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 pr-8 text-sm text-white outline-none transition-colors focus:border-neon-red/40 [&>option]:bg-[#0A0B14]"
+                >
+                  {languages.map((l) => (
+                    <option key={l.value} value={l.value}>
+                      {l.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <span className="font-mono text-[11px] text-muted-foreground">
-                {languages.find((l) => l.value === language)?.extensions}
-              </span>
+              <span className="font-mono text-[11px] text-white/35">.{activeLanguage?.extensions}</span>
             </div>
 
-            <CodeEditor
-              value={sourceCode}
-              onChange={setSourceCode}
-              language={language}
-              height="320px"
-            />
+            <div className="overflow-hidden rounded-xl border border-white/10">
+              <CodeEditor value={sourceCode} onChange={setSourceCode} language={language} height="320px" />
+            </div>
 
-            <div className="mt-4 border-t border-border pt-4">
-              <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+            <div className="mt-4 border-t border-white/[0.07] pt-4">
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-white/40">
                 Pesan error (opsional)
               </label>
               <input
                 value={errorInput}
                 onChange={(e) => setErrorInput(e.target.value)}
                 placeholder="Tempel pesan error di sini..."
-                className="w-full rounded-sm border border-input bg-transparent px-3 py-2 font-mono text-xs outline-none focus:border-foreground dark:focus:border-paper"
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 font-mono text-xs text-white placeholder:text-white/30 outline-none transition-colors focus:border-neon-red/40"
               />
             </div>
 
             <div className="mt-4 flex gap-3">
-              <Button onClick={handleExplain} loading={isLoading} className="flex-1">
+              <GradientButton onClick={handleExplain} loading={isLoading} icon={Send} className="flex-1">
                 Jelaskan Error
-              </Button>
-              <Button variant="outline" onClick={() => { setSourceCode(""); toast.success("Editor dikosongkan."); }}>
+              </GradientButton>
+              <GradientButton
+                variant="outline"
+                icon={Eraser}
+                onClick={() => {
+                  setSourceCode("");
+                  toast.success("Editor dikosongkan.");
+                }}
+              >
                 Bersihkan
-              </Button>
+              </GradientButton>
             </div>
-          </Card>
+          </GlassCard>
 
-          <Card>
+          <GlassCard>
             <div className="mb-3 flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-accent" strokeWidth={1.5} />
-              <h3 className="font-mono text-[11px] uppercase tracking-wider text-foreground">
-                Tips Penggunaan
-              </h3>
+              <AlertTriangle className="h-4 w-4 text-neon-amber" strokeWidth={1.75} />
+              <h3 className="font-mono text-[10px] uppercase tracking-wider text-white/60">Tips Penggunaan</h3>
             </div>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li>• Tempel pesan error lengkap beserta stack trace untuk hasil yang lebih akurat.</li>
-              <li>• Sertakan kode di sekeliling baris yang errornya.</li>
-              <li>• Beri feedback setelah jawaban untuk membantu AI semakin baik.</li>
+            <ul className="space-y-2 text-sm text-white/50">
+              <li className="flex gap-2"><span className="text-neon-red">â€¢</span> Tempel pesan error lengkap beserta stack trace.</li>
+              <li className="flex gap-2"><span className="text-neon-red">â€¢</span> Sertakan kode di sekitar baris yang error.</li>
+              <li className="flex gap-2"><span className="text-neon-red">â€¢</span> Beri feedback agar AI semakin akurat.</li>
             </ul>
-          </Card>
+          </GlassCard>
         </div>
 
-        {/* Right: Chat panel */}
-        <Card className="flex flex-col lg:sticky lg:top-20 lg:h-fit lg:max-h-[80vh]">
-          <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-ink text-paper dark:bg-paper dark:text-ink">
-              <Terminal className="h-4 w-4" />
-            </div>
+        {/* Right: chat panel */}
+        <GlassCard className="flex flex-col lg:sticky lg:top-24 lg:h-fit lg:max-h-[80vh]">
+          <div className="mb-4 flex items-center gap-3 border-b border-white/[0.07] pb-4">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#FF3B6B,#FF6B35)] text-[#050818]">
+              <Sparkles className="h-4 w-4" strokeWidth={2.25} />
+            </span>
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-wider text-foreground">OUTPUT</p>
-              <p className="font-mono text-[10px] text-muted-foreground">Respons dalam Bahasa Indonesia</p>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-white">Output</p>
+              <p className="font-mono text-[10px] text-white/35">Respons dalam Bahasa Indonesia</p>
             </div>
           </div>
 
-          <div className="chat-scroll flex-1 space-y-4 overflow-y-auto pr-1" style={{ maxHeight: "560px" }}>
+          <div className="chat-scroll flex-1 space-y-5 overflow-y-auto pr-1" style={{ maxHeight: "620px" }}>
             {messages.map((msg) => (
               <div key={msg.id}>
                 <div className="mb-1.5 flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">
                     {msg.role === "user" ? "> input_" : "// output_"}
                   </span>
                 </div>
                 <div
-                  className={`rounded-sm px-4 py-3 text-sm leading-relaxed ${
+                  className={
                     msg.role === "user"
-                      ? "bg-ink text-paper dark:bg-paper dark:text-ink"
-                      : "border border-border bg-card text-foreground"
-                  }`}
+                      ? "rounded-2xl rounded-tr-sm border border-neon-red/20 bg-[linear-gradient(135deg,rgba(255,59,107,0.12),rgba(255,107,53,0.10))] px-4 py-3 text-sm leading-relaxed text-white/90"
+                      : "rounded-2xl rounded-tl-sm border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white/80"
+                  }
                 >
-                  <div className="prose-sm prose dark:prose-invert">
+                  <div className="prose-sm prose-invert max-w-none [&_a]:text-neon-red [&_h2]:text-white [&_h3]:text-white [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-white">
                     <ReactMarkdown
                       components={{
                         code: ({ children }) => (
-                          <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
+                          <code className="rounded-md border border-white/10 bg-[#05060A] px-1.5 py-0.5 font-mono text-xs text-neon-red">
                             {children}
                           </code>
                         ),
                         pre: ({ children }) => (
-                          <pre className="overflow-x-auto rounded-sm bg-ink p-3 font-mono text-xs text-paper">
+                          <pre className="overflow-x-auto rounded-xl border border-white/10 bg-[#05060A] p-3 font-mono text-xs text-white/85">
                             {children}
                           </pre>
                         ),
@@ -221,51 +216,43 @@ export function ChatInterface() {
                   </div>
 
                   {msg.confidence && msg.role === "assistant" && (
-                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
-                      <Badge variant={msg.confidence >= 80 ? "success" : "warning"}>
-                        Confidence: {msg.confidence}%
-                      </Badge>
-                      {msg.errorCode && (
-                        <Badge variant="outline">{msg.errorCode}</Badge>
-                      )}
+                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-white/[0.07] pt-3">
+                      <BadgePill tone={msg.confidence >= 80 ? "green" : "amber"}>
+                        Confidence {msg.confidence}%
+                      </BadgePill>
+                      {msg.errorCode && <BadgePill tone="pink">{msg.errorCode}</BadgePill>}
                     </div>
                   )}
 
                   {msg.role === "assistant" && msg.id !== "welcome" && (
-                    <div className="mt-3 flex items-center gap-2 border-t border-border pt-3">
-                      <span className="mr-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Feedback:</span>
+                    <div className="mt-3 flex items-center gap-2 border-t border-white/[0.07] pt-3">
+                      <span className="mr-1 font-mono text-[10px] uppercase tracking-wider text-white/35">Feedback:</span>
                       <button
                         onClick={() => handleFeedback(msg.id, "helpful")}
-                        className={`rounded-sm px-2 py-1 font-mono text-[10px] transition-colors cursor-pointer ${
-                          msg.feedback === "helpful"
-                            ? "bg-success/10 text-success"
-                            : "text-muted-foreground hover:bg-muted"
+                        className={`rounded-lg px-2.5 py-1 font-mono text-[10px] transition-colors ${
+                          msg.feedback === "helpful" ? "bg-neon-green/15 text-neon-green" : "text-white/45 hover:bg-white/[0.06]"
                         }`}
                       >
                         Bermanfaat
                       </button>
                       <button
                         onClick={() => handleFeedback(msg.id, "not-helpful")}
-                        className={`rounded-sm px-2 py-1 font-mono text-[10px] transition-colors cursor-pointer ${
-                          msg.feedback === "not-helpful"
-                            ? "bg-accent/10 text-accent"
-                            : "text-muted-foreground hover:bg-muted"
+                        className={`rounded-lg px-2.5 py-1 font-mono text-[10px] transition-colors ${
+                          msg.feedback === "not-helpful" ? "bg-neon-pink/15 text-[#FF7C9C]" : "text-white/45 hover:bg-white/[0.06]"
                         }`}
                       >
                         Tidak membantu
                       </button>
                       <button
-                        onClick={() => copyCode(msg.content)}
-                        className="ml-auto rounded-sm px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:bg-muted cursor-pointer"
-                        title="Salin jawaban"
+                        onClick={() => handleCopy(msg.content)}
+                        className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[10px] text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
                       >
                         {copied === msg.content.slice(0, 20) ? (
-                          <span className="text-success">Tersalin ✓</span>
+                          <span className="text-neon-green">Tersalin âœ“</span>
                         ) : (
-                          <span className="inline-flex items-center gap-1">
-                            <ClipboardCopy className="h-3 w-3" />
-                            Salin
-                          </span>
+                          <>
+                            <ClipboardCopy className="h-3 w-3" /> Salin
+                          </>
                         )}
                       </button>
                     </div>
@@ -276,25 +263,26 @@ export function ChatInterface() {
 
             {isLoading && (
               <div>
-                <div className="mb-1.5 flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {"// processing"}
-                  </span>
-                </div>
-                <div className="inline-flex items-center gap-2 border border-border bg-card px-4 py-3">
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                  <span className="font-mono text-xs text-muted-foreground">Menganalisis kode &amp; mencari solusi...</span>
+                <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-white/35">{"// processing"}</div>
+                <div className="inline-flex items-center gap-2.5 rounded-2xl rounded-tl-sm border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+                  <Loader2 className="h-4 w-4 animate-spin text-neon-red" />
+                  <span className="font-mono text-xs text-white/50">Menganalisis kode &amp; mencari solusi...</span>
                 </div>
               </div>
             )}
 
             {messages.length === 1 && (
-              <p className="py-8 text-center font-mono text-[11px] text-muted-foreground">
-                Belum ada percakapan. Tempel kode dan klik &quot;Jelaskan Error&quot; untuk memulai.
-              </p>
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-neon-red">
+                  <Sparkles className="h-5 w-5" strokeWidth={1.75} />
+                </span>
+                <p className="max-w-xs font-mono text-[11px] text-white/40">
+                  Belum ada percakapan. Tempel kode lalu klik &quot;Jelaskan Error&quot; untuk memulai.
+                </p>
+              </div>
             )}
           </div>
-        </Card>
+        </GlassCard>
       </div>
     </div>
   );

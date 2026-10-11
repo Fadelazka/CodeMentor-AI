@@ -1,19 +1,12 @@
 
 > codementor-ai@1.0.0 dev
-> next dev
+> next dev -p 3000
 
   ▲ Next.js 14.2.35
   - Local:        http://localhost:3000
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 2.5s
- ○ Compiling / ...
- ✓ Compiled / in 9.2s (1361 modules)
- ✓ Compiled in 890ms (648 modules)
- GET / 200 in 10193ms
- ○ Compiling /knowledge-base ...
- ✓ Compiled /knowledge-base in 851ms (1345 modules)
- ✓ Compiled /fitur in 423ms (1353 modules)
- ○ Compiling /chat ...
- ✓ Compiled /chat in 3.8s (1806 modules)
+ ✓ Ready in 3.1s
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 13.2s (1714 modules)

@@ -1,14 +1,9 @@
-import { Navbar } from "@/components/layout/navbar";
+import { DashboardLayout } from "@/components/layout/dashboard-layout";
 
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Navbar />
-      <main className="flex-1 pt-16">{children}</main>
-    </div>
-  );
+  return <DashboardLayout>{children}</DashboardLayout>;
 }

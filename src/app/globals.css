@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -130,7 +130,7 @@ code {
   background: #ffffff44;
 }
 
-/* ── Glitch text (Hero "Error") ─────────────────────────────── */
+/* â”€â”€ Glitch text (Hero "Error") â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .glitch-text .glitch-layer {
   pointer-events: none;
   opacity: 0;
@@ -221,7 +221,7 @@ code {
   }
 }
 
-/* ── Hero marquee divider ───────────────────────────────────── */
+/* â”€â”€ Hero marquee divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes marquee {
   0% {
     transform: translateX(0);
@@ -243,6 +243,71 @@ code {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-pulse {
+    animation: none;
+  }
+}
+
+/* â”€â”€ Futuristic dashboard shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.dashboard-shell {
+  background-color: #05060a;
+  background-image: none;
+  background-attachment: fixed;
+}
+
+.dashboard-grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.glass-panel-hover {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 30px -16px rgba(0, 0, 0, 0.6);
+}
+
+.neon-text {
+  background: linear-gradient(92deg, #FF3B6B 0%, #FF6B35 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sidebar-scroll {
+  scrollbar-width: thin;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-shell ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
+.dashboard-shell ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .animate-glow-pulse,
+  .animate-float,
+  .animate-gradient-x,
+  .animate-spin-slow {
     animation: none;
   }
 }
