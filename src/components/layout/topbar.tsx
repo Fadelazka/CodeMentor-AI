@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
   Menu,
-  Search,
   MessageSquarePlus,
   ChevronRight,
   User,
@@ -58,18 +57,6 @@ export function Topbar() {
       </nav>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
-        <div className="relative hidden sm:block">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
-          <input
-            type="text"
-            placeholder="Cari error, bahasa, riwayat..."
-            className="h-9 w-44 rounded-xl border border-white/[0.06] bg-white/[0.03] pl-9 pr-14 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:w-60 focus:border-white/[0.12] focus:bg-white/[0.05] lg:w-56"
-          />
-          <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded-md border border-white/[0.06] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[10px] text-white/40 lg:block">
-            Ctrl K
-          </kbd>
-        </div>
-
         <BadgePill tone="green" dot className="hidden xl:inline-flex">
           AI Online
         </BadgePill>
