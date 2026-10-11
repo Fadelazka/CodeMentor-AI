@@ -19,7 +19,11 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { languages } from "@/data/mock";
+import { useSettings } from "@/contexts/SettingsContext";
+import { addNotification } from "@/lib/notifications";
 import toast from "react-hot-toast";
+
+const USED_LANGUAGES_KEY = "codementor_used_languages";
 
 interface Msg {
   id: string;
@@ -70,6 +74,7 @@ const welcomeMessage: Msg = {
 };
 
 export function ChatInterface() {
+  const { settings } = useSettings();
   const [sourceCode, setSourceCode] = useState<string>(
     "# Tempel kode Anda di sini\n\ndef hitung_ratarata(nilai):\n    total = 0\n    for n in nilai:\n        total += n\n    return total / len(nilai)\n\nprint(hitung_ratarata([]))"
   );
@@ -81,11 +86,31 @@ export function ChatInterface() {
 
   const activeLanguage = languages.find((l) => l.value === language);
 
+  const trackLanguageTip = () => {
+    try {
+      const raw = window.localStorage.getItem(USED_LANGUAGES_KEY);
+      const used: string[] = raw ? JSON.parse(raw) : [];
+      if (!used.includes(language)) {
+        used.push(language);
+        window.localStorage.setItem(USED_LANGUAGES_KEY, JSON.stringify(used));
+        addNotification({
+          type: "info",
+          title: `Pertama kali pakai ${activeLanguage?.label ?? language}`,
+          message: "Tips: sertakan pesan error lengkap agar analisis lebih akurat.",
+        });
+      }
+    } catch {
+      /* ignore */
+    }
+  };
+
   const handleExplain = async () => {
     if (!sourceCode.trim()) {
       toast.error("Tempel kode terlebih dahulu.");
       return;
     }
+
+    trackLanguageTip();
 
     setMessages((prev) => [
       ...prev,
@@ -109,6 +134,7 @@ export function ChatInterface() {
           sourceCode,
           language,
           errorMessage: errorInput.trim() || undefined,
+          saveHistory: settings.autoSaveHistory,
         }),
       });
 
@@ -130,12 +156,26 @@ export function ChatInterface() {
         },
       ]);
 
+      addNotification({
+        type: "success",
+        title: "Analisis selesai",
+        message: `Error ${
+          errorInput.trim().split("\n")[0]?.slice(0, 40) || activeLanguage?.label || language
+        } berhasil dijelaskan.`,
+        actionUrl: "/riwayat",
+      });
+
       if (data.mock) {
         toast("Jawaban dari knowledge base (API Groq tidak aktif).", { icon: "⚠️" });
       }
     } catch (err) {
       console.error("[chat] Gagal memanggil /api/chat:", err);
       toast.error(err instanceof Error ? err.message : "Gagal menghubungi server.");
+      addNotification({
+        type: "error",
+        title: "Gagal menganalisis",
+        message: "Tidak dapat terhubung ke AI. Coba lagi.",
+      });
       setMessages((prev) => [
         ...prev,
         {

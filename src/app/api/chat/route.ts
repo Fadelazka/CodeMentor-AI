@@ -10,7 +10,7 @@ export const runtime = "nodejs";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { sourceCode, language = "python", errorMessage } = body;
+    const { sourceCode, language = "python", errorMessage, saveHistory } = body;
 
     if (!sourceCode || typeof sourceCode !== "string" || sourceCode.trim().length === 0) {
       return NextResponse.json({ error: "sourceCode wajib diisi." }, { status: 400 });
@@ -38,11 +38,9 @@ export async function POST(req: NextRequest) {
       `[api/chat] lang=${language} codeLen=${sourceCode.length} errMsg=${(errorMessage ?? "").slice(0, 80) || "-"} ragMatches=${ragContext.matches.length} mock=${result.mock}`
     );
 
-    // Simpan riwayat jika user terautentikasi
+    // Simpan riwayat hanya jika diizinkan oleh preferensi user (auto-save).
     try {
-      const authHeader = req.headers.get("authorization");
-      if (authHeader) {
-        // Dalam produksi: verifikasi sesi NextAuth & simpan dengan userId.
+      if (saveHistory !== false) {
         await prisma.chatHistory.create({
           data: {
             userId: "demo-user",
