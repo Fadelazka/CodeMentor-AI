@@ -12,7 +12,6 @@ import {
   Eraser,
   Send,
 } from "lucide-react";
-import { CheckCircle2 } from "lucide-react";
 import { CodeEditor } from "@/components/chat/code-editor";
 import { FixedCodeBlock } from "@/components/chat/fixed-code-block";
 import { CorrectCodeBanner } from "@/components/chat/correct-code-banner";
@@ -67,7 +66,22 @@ function parseAIResponse(text: string): ParsedAIResponse {
 }
 
 function isCodeCorrectResponse(text: string): boolean {
-  return /sudah benar|100%|kode benar|tidak ada error/i.test(text.slice(0, 200));
+  return /sudah benar|100%|kode benar|tidak ada error/i.test(text.slice(0, 300));
+}
+
+function extractCorrectExplanation(text: string): string {
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+  const startIdx = lines.findIndex((l) => /SUDAH BENAR|sudah benar|kode ini benar|100%/i.test(l));
+  const body = startIdx >= 0 ? lines.slice(startIdx + 1) : lines;
+
+  const stopIdx = body.findIndex((l) => /^\*\*?\s*confidence/i.test(l));
+  const explanation = (stopIdx >= 0 ? body.slice(0, stopIdx) : body).join(" ").trim();
+
+  return explanation || "Kode sudah benar dan berjalan sesuai harapan tanpa error.";
 }
 
 const welcomeMessage: Msg = {
@@ -320,7 +334,7 @@ export function ChatInterface() {
                   }
                 >
                   {isCorrect ? (
-                    <CorrectCodeBanner explanation={parsed.explanation} />
+                    <CorrectCodeBanner explanation={extractCorrectExplanation(msg.content)} />
                   ) : (
                     <>
                       <div className="prose-sm prose-invert max-w-none [&_a]:text-neon-red [&_h2]:text-white [&_h3]:text-white [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-white">
