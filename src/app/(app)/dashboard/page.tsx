@@ -73,7 +73,13 @@ export default function DashboardPage() {
   useEffect(() => {
     if (status === "loading") return;
 
-    if (!session?.user) return;
+    if (!session?.user) {
+      // No authenticated user: stop loading so the page never hangs on the
+      // skeleton. The (app) middleware normally redirects unauthenticated
+      // visitors before this renders.
+      setIsLoading(false);
+      return;
+    }
 
     const isAdminUser = session.user.role === "ADMIN";
     setIsAdmin(isAdminUser);
