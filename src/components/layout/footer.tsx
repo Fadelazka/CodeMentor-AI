@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 import { Wordmark } from "@/components/ui/wordmark";
 import { ReplayIntroButton } from "@/components/intro/replay-intro-button";
+import { FadeUp, StaggerContainer, StaggerItem } from "@/components/landing/animations";
 
 const footerLinks = {
   Produk: [
@@ -29,8 +30,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container-editorial py-16">
-        <div className="grid gap-12 lg:grid-cols-5">
-          <div className="lg:col-span-2">
+        <StaggerContainer className="grid gap-12 lg:grid-cols-5">
+          <StaggerItem className="lg:col-span-2">
             <Wordmark />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
               AI mentor pemrograman yang menjelaskan error kode dalam Bahasa
@@ -51,35 +52,36 @@ export function Footer() {
                 <Mail className="h-4 w-4" />
               </a>
             </div>
-          </div>
+          </StaggerItem>
 
           {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
+            <StaggerItem key={title}>
               <h3 className="kicker mb-5">{title}</h3>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      className="group relative inline-block text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.label}
+                      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-foreground transition-all duration-300 group-hover:w-full" />
                     </Link>
                   </li>
                 ))}
               </ul>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
+        <FadeUp className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="font-mono text-xs text-muted-foreground">
             © 2026 TIM CODEMENTOR AI — MP-TI/CMAI/2026/001
           </p>
           <p className="font-mono text-xs text-muted-foreground">
             AKURASI ≥85% · UAT ≥80% · RESPONS &lt;5S
           </p>
-        </div>
+        </FadeUp>
 
         <div className="flex justify-center pt-4">
           <ReplayIntroButton />

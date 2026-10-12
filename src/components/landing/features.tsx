@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, MessageSquare, Database, History, BookOpen, BarChart3, ShieldCheck, PencilRuler, Zap } from "lucide-react";
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { FadeUp, FadeRight, StaggerContainer, StaggerItem } from "@/components/landing/animations";
 
 const fiturUtama = [
   { icon: MessageSquare, title: "Chat Debugging Real-time", desc: "Chat dengan AI untuk konsultasi error kode, dibalas instan dalam Bahasa Indonesia." },
@@ -18,21 +19,23 @@ export function Features() {
     <section id="fitur" className="section-padding border-b border-border">
       <div className="container-editorial">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
+          <FadeRight>
             <Eyebrow index="[04]" label="FITUR UNGGULAN" />
             <h2 className="mt-5 max-w-2xl font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               Semua yang Anda Butuhkan untuk Belajar &amp; Debugging
             </h2>
-          </div>
-          <p className="max-w-sm text-base leading-relaxed text-muted-foreground">
-            Dirancang khusus untuk membantu mahasiswa Indonesia memahami error
-            kode secara mandiri.
-          </p>
+          </FadeRight>
+          <FadeUp delay={0.1} className="max-w-sm">
+            <p className="text-base leading-relaxed text-muted-foreground">
+              Dirancang khusus untuk membantu mahasiswa Indonesia memahami error
+              kode secara mandiri.
+            </p>
+          </FadeUp>
         </div>
 
-        <div className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerContainer className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {fiturUtama.map((fitur, i) => (
-            <div key={fitur.title} className="group flex flex-col bg-background p-8 transition-colors hover:bg-muted">
+            <StaggerItem key={fitur.title} lift className="group flex flex-col bg-background p-8 transition-colors hover:bg-muted">
               <div className="mb-8 flex items-center justify-between">
                 <fitur.icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-foreground" strokeWidth={1.5} />
                 <p className="font-mono text-[11px] text-muted-foreground">
@@ -41,11 +44,11 @@ export function Features() {
               </div>
               <h3 className="mb-2 font-display text-base font-semibold">{fitur.title}</h3>
               <p className="text-sm leading-relaxed text-muted-foreground">{fitur.desc}</p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
-        <div className="mt-12">
+        <FadeUp className="mt-12">
           <Link
             href="/fitur"
             className="group inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-foreground"
@@ -53,7 +56,7 @@ export function Features() {
             Lihat semua fitur secara detail
             <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-1" />
           </Link>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );

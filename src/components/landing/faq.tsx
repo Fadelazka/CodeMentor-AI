@@ -1,5 +1,6 @@
 import { Accordion } from "@/components/ui/accordion";
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { FadeUp, FadeRight } from "@/components/landing/animations";
 
 const faqItems = [
   {
@@ -49,13 +50,17 @@ export function FAQ() {
     <section id="faq" className="section-padding border-b border-border">
       <div className="container-editorial">
         <div className="mx-auto max-w-3xl">
-          <Eyebrow index="[08]" label="FAQ" className="justify-center" />
-          <h2 className="mt-5 text-center font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            Pertanyaan yang Sering Diajukan
-          </h2>
-          <div className="mt-12">
+          <FadeUp>
+            <Eyebrow index="[08]" label="FAQ" className="justify-center" />
+          </FadeUp>
+          <FadeRight>
+            <h2 className="mt-5 text-center font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              Pertanyaan yang Sering Diajukan
+            </h2>
+          </FadeRight>
+          <FadeUp delay={0.1} className="mt-12">
             <Accordion items={faqItems} />
-          </div>
+          </FadeUp>
         </div>
       </div>
     </section>

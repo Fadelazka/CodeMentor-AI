@@ -1,4 +1,5 @@
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { FadeUp, FadeRight, StaggerContainer, StaggerItem } from "@/components/landing/animations";
 
 const testimoni = [
   {
@@ -25,14 +26,18 @@ export function Testimonials() {
   return (
     <section className="section-padding border-b border-border">
       <div className="container-editorial">
-        <Eyebrow index="[07]" label="TESTIMONI" />
-        <h2 className="mt-5 max-w-2xl font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-          Apa Kata Pengguna Kami
-        </h2>
+        <FadeUp>
+          <Eyebrow index="[07]" label="TESTIMONI" />
+        </FadeUp>
+        <FadeRight>
+          <h2 className="mt-5 max-w-2xl font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            Apa Kata Pengguna Kami
+          </h2>
+        </FadeRight>
 
-        <div className="mt-12 grid gap-px border border-border bg-border md:grid-cols-3">
+        <StaggerContainer className="mt-12 grid gap-px border border-border bg-border md:grid-cols-3">
           {testimoni.map((t) => (
-            <div key={t.nama} className="flex flex-col bg-background p-8">
+            <StaggerItem key={t.nama} lift className="flex flex-col bg-background p-8">
               <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">
                 &ldquo;{t.komentar}&rdquo;
               </p>
@@ -40,9 +45,9 @@ export function Testimonials() {
                 <p className="font-display text-sm font-semibold">{t.nama}</p>
                 <p className="font-mono text-[11px] text-muted-foreground">{t.peran}</p>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
