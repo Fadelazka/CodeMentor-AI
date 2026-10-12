@@ -21,6 +21,7 @@ import { MetricCard } from "@/components/ui/metric-card";
 import { AdminUsageTrendChart, AdminPerformanceChart } from "@/components/admin/admin-charts";
 import { KbModal } from "@/components/admin/kb-modal";
 import { DeleteConfirmModal } from "@/components/admin/delete-confirm-modal";
+import { UserModal, type AdminUser } from "@/components/admin/user-modal";
 import { adminKpi, adminUsageTrend, adminAiPerformance, adminTopErrors } from "@/data/admin";
 import { getLanguageLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -100,6 +101,16 @@ export default function AdminPage() {
   const [deleting, setDeleting] = useState<KnowledgeBaseRow | null>(null);
   const [deletingLoading, setDeletingLoading] = useState(false);
 
+  // User management
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [userSearch, setUserSearch] = useState("");
+  const [userPage, setUserPage] = useState(1);
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  const [deletingUser, setDeletingUser] = useState<AdminUser | null>(null);
+  const [deletingUserLoading, setDeletingUserLoading] = useState(false);
+
   const fetchRows = useCallback(async () => {
     try {
       setLoading(true);
@@ -119,6 +130,26 @@ export default function AdminPage() {
   useEffect(() => {
     fetchRows();
   }, [fetchRows]);
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      setUsersLoading(true);
+      const res = await fetch("/api/admin/users", { cache: "no-store" });
+      if (!res.ok) throw new Error("Gagal memuat user.");
+      const json = await res.json();
+      setUsers(json.users ?? []);
+    } catch (err) {
+      console.error("Gagal memuat user:", err);
+      toast.error("Gagal memuat daftar user.");
+      setUsers([]);
+    } finally {
+      setUsersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const filteredKb = rows.filter((r) => {
     const q = search.toLowerCase();
@@ -174,6 +205,47 @@ export default function AdminPage() {
       setDeletingLoading(false);
     }
   };
+
+  const handleUserSaved = () => {
+    setUserModalOpen(false);
+    setEditingUser(null);
+    fetchUsers();
+  };
+
+  const handleUserDelete = async () => {
+    if (!deletingUser) return;
+    setDeletingUserLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users/${deletingUser.id}`, { method: "DELETE" });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) {
+        toast.success(json.message ?? "User berhasil dihapus.");
+        setDeletingUser(null);
+        fetchUsers();
+      } else {
+        toast.error(json.error ?? "Gagal menghapus user.");
+      }
+    } catch {
+      toast.error("Terjadi kesalahan saat menghapus user.");
+    } finally {
+      setDeletingUserLoading(false);
+    }
+  };
+
+  const USER_PAGE_SIZE = 10;
+  const filteredUsers = users.filter((u) => {
+    const q = userSearch.toLowerCase();
+    return (
+      (u.name ?? "").toLowerCase().includes(q) ||
+      (u.email ?? "").toLowerCase().includes(q)
+    );
+  });
+  const userPageCount = Math.max(1, Math.ceil(filteredUsers.length / USER_PAGE_SIZE));
+  const safeUserPage = Math.min(userPage, userPageCount);
+  const pagedUsers = filteredUsers.slice(
+    (safeUserPage - 1) * USER_PAGE_SIZE,
+    safeUserPage * USER_PAGE_SIZE
+  );
 
   return (
     <div className="animate-fade-in">
@@ -369,6 +441,135 @@ export default function AdminPage() {
         </div>
       </GlassCard>
 
+      <GlassCard className="mt-6">
+        <GlassCardHeader className="flex-col gap-4 sm:flex-row sm:items-center">
+          <div>
+            <GlassCardTitle>Kelola User</GlassCardTitle>
+            <p className="mt-0.5 text-xs text-white/45">Kelola akun pengguna CodeMentor AI</p>
+          </div>
+          <div className="flex w-full gap-2 sm:w-auto">
+            <div className="relative flex-1 sm:flex-none">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+              <input
+                value={userSearch}
+                onChange={(e) => {
+                  setUserSearch(e.target.value);
+                  setUserPage(1);
+                }}
+                placeholder="Cari nama atau email..."
+                className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-4 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-neon-red/40 focus:bg-white/[0.06] sm:w-56"
+              />
+            </div>
+            <GradientButton
+              size="md"
+              icon={Plus}
+              onClick={() => {
+                setEditingUser(null);
+                setUserModalOpen(true);
+              }}
+            >
+              Tambah
+            </GradientButton>
+          </div>
+        </GlassCardHeader>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-white/[0.07]">
+                {["Nama", "Email", "Role", "Terdaftar", "Aksi"].map((h) => (
+                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-white/40 last:pr-0">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {usersLoading ? (
+                <tr>
+                  <td colSpan={5} className="py-10 text-center text-sm text-white/40">
+                    <Loader2 className="mx-auto mb-2 h-5 w-5 animate-spin text-[#FF3B6B]" />
+                    Memuat daftar user...
+                  </td>
+                </tr>
+              ) : pagedUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-10 text-center text-sm text-white/40">
+                    {userSearch ? "Tidak ada user yang cocok." : "Belum ada user."}
+                  </td>
+                </tr>
+              ) : (
+                pagedUsers.map((u) => (
+                  <tr key={u.id} className="transition-colors hover:bg-white/[0.02]">
+                    <td className="py-3.5 pr-4 text-white/85">{u.name ?? "-"}</td>
+                    <td className="py-3.5 pr-4 font-mono text-xs text-white/55">{u.email ?? "-"}</td>
+                    <td className="py-3.5 pr-4">
+                      <span
+                        className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider ${
+                          u.role === "ADMIN"
+                            ? "bg-violet-500/10 text-violet-400 border-violet-500/20"
+                            : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                        }`}
+                      >
+                        {u.role}
+                      </span>
+                    </td>
+                    <td className="py-3.5 pr-4 text-xs text-white/40">{formatUpdatedAt(u.createdAt)}</td>
+                    <td className="py-3.5">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => {
+                            setEditingUser(u);
+                            setUserModalOpen(true);
+                          }}
+                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+                          aria-label="Edit user"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeletingUser(u)}
+                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-[#FF3B6B]"
+                          aria-label="Hapus user"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {filteredUsers.length > USER_PAGE_SIZE && (
+          <div className="mt-4 flex items-center justify-between border-t border-white/[0.07] pt-4">
+            <p className="font-mono text-[11px] text-white/40">
+              Menampilkan {pagedUsers.length} dari {filteredUsers.length} user
+            </p>
+            <div className="flex gap-2">
+              <GradientButton
+                variant="outline"
+                size="sm"
+                disabled={safeUserPage <= 1}
+                onClick={() => setUserPage((p) => Math.max(1, p - 1))}
+              >
+                Sebelumnya
+              </GradientButton>
+              <GradientButton
+                variant="outline"
+                size="sm"
+                disabled={safeUserPage >= userPageCount}
+                onClick={() => setUserPage((p) => Math.min(userPageCount, p + 1))}
+              >
+                Berikutnya
+              </GradientButton>
+            </div>
+          </div>
+        )}
+      </GlassCard>
+
       <KbModal
         isOpen={createOpen}
         record={null}
@@ -392,6 +593,29 @@ export default function AdminPage() {
         description={
           deleting
             ? `Rekaman "${deleting.errorCode} — ${deleting.title}" akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.`
+            : "Tindakan ini tidak dapat dibatalkan."
+        }
+      />
+
+      <UserModal
+        isOpen={userModalOpen}
+        user={editingUser}
+        onClose={() => {
+          setUserModalOpen(false);
+          setEditingUser(null);
+        }}
+        onSaved={handleUserSaved}
+      />
+
+      <DeleteConfirmModal
+        isOpen={Boolean(deletingUser)}
+        onClose={() => setDeletingUser(null)}
+        onConfirm={handleUserDelete}
+        isLoading={deletingUserLoading}
+        title="Hapus User?"
+        description={
+          deletingUser
+            ? `Akun "${deletingUser.name ?? deletingUser.email ?? "user"}" akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.`
             : "Tindakan ini tidak dapat dibatalkan."
         }
       />
