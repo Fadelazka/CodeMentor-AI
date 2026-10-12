@@ -41,7 +41,9 @@ export function getNavSections(isAdmin: boolean): NavSection[] {
     {
       label: "Utama",
       items: [
-        { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        ...(isAdmin
+          ? [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }]
+          : []),
         { href: "/chat", label: "Chat AI", icon: MessagesSquare, badge: "AI" },
         { href: "/riwayat", label: "Riwayat", icon: History },
       ],
