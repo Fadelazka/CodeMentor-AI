@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getLanguageLabel, formatDate } from "@/lib/utils";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const langTone: Record<string, "cyan" | "violet" | "pink" | "green" | "amber"> = {
   python: "cyan",
@@ -221,14 +222,13 @@ export default function RiwayatPage() {
                 <p className="line-clamp-2 text-sm text-white/50">{r.aiResponse.slice(0, 200)}...</p>
               </div>
               <div className="flex shrink-0 gap-2 sm:flex-col">
-                <GradientButton
-                  size="sm"
-                  variant="outline"
-                  icon={Eye}
-                  onClick={() => toast("Buka detail analisis (demo).")}
-                >
-                  Buka
-                </GradientButton>
+                <Link href={`/riwayat/${r.id}`}>
+                  <button
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 px-3 py-2 text-xs text-white/45 transition-colors hover:border-neon-red/40 hover:text-white"
+                  >
+                    <Eye className="h-3.5 w-3.5" /> Buka
+                  </button>
+                </Link>
                 <button
                   onClick={() => {
                     const confirmed = confirm("Hapus riwayat ini?");

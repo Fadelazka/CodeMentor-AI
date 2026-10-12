@@ -13,6 +13,18 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const language = searchParams.get("language");
     const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10), 200);
+    const id = searchParams.get("id");
+
+    // Single history detail
+    if (id) {
+      const history = await prisma.chatHistory.findFirst({
+        where: { id, userId: session.user.id },
+      });
+      if (!history) {
+        return NextResponse.json({ error: "Riwayat tidak ditemukan" }, { status: 404 });
+      }
+      return NextResponse.json({ data: history });
+    }
 
     const histories = await prisma.chatHistory.findMany({
       where: {

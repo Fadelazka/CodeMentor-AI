@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
             userId: session.user.id,
             language,
             errorCode: ragContext.errorCode,
+            errorMessage: errorMessage ?? null,
             sourceCode,
             aiResponse: result.explanation,
             confidence: result.confidence,

@@ -62,6 +62,7 @@ model ChatHistory {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   language    String
   errorCode   String?
+  errorMessage String?
   sourceCode  String
   aiResponse  String
   confidence  Float?
