@@ -17,13 +17,36 @@ interface SessionUser {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    
+    // If not authenticated, return default empty stats (not 401)
+    // This allows the dashboard to show empty state gracefully
     if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({
+        dbTersedia: true,
+        totalQuestions: 0,
+        aiAccuracy: 0,
+        avgResponseTime: 0,
+        errorsSolved: 0,
+        usageByLanguage: {},
+        usagePerDay: [],
+        recentActivity: [],
+        _note: "Belum login",
+      });
     }
 
     const user = session.user as SessionUser;
     if (!user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({
+        dbTersedia: true,
+        totalQuestions: 0,
+        aiAccuracy: 0,
+        avgResponseTime: 0,
+        errorsSolved: 0,
+        usageByLanguage: {},
+        usagePerDay: [],
+        recentActivity: [],
+        _note: "Invalid session",
+      });
     }
 
     const userId = user.id;
@@ -98,6 +121,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("[dashboard/stats] Error:", error);
+    // Return fallback 0 stats instead of 500
     return NextResponse.json({
       dbTersedia: false,
       totalQuestions: 0,
@@ -107,6 +131,7 @@ export async function GET() {
       usageByLanguage: {},
       usagePerDay: [],
       recentActivity: [],
+      _error: "Internal fallback",
     });
   }
 }

@@ -53,18 +53,45 @@ interface MetricData {
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setIsLoading(true);
         const res = await fetch("/api/dashboard/stats", { cache: "no-store" });
-        if (!res.ok) throw new Error("Gagal memuat statistik");
+        
+        // Handle 401 or other errors gracefully
+        if (!res.ok) {
+          console.warn("Stats API returned:", res.status);
+          // Set default empty stats instead of throwing
+          setStats({
+            dbTersedia: false,
+            totalQuestions: 0,
+            aiAccuracy: 0,
+            avgResponseTime: 0,
+            errorsSolved: 0,
+            usageByLanguage: {},
+            usagePerDay: [],
+            recentActivity: [],
+          });
+          return;
+        }
+        
         const data = await res.json();
         setStats(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+        console.error("Failed to fetch stats:", err);
+        // Set default empty stats on error
+        setStats({
+          dbTersedia: false,
+          totalQuestions: 0,
+          aiAccuracy: 0,
+          avgResponseTime: 0,
+          errorsSolved: 0,
+          usageByLanguage: {},
+          usagePerDay: [],
+          recentActivity: [],
+        });
       } finally {
         setIsLoading(false);
       }
@@ -109,30 +136,6 @@ export default function DashboardPage() {
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <LoadingSkeleton key="chart3" className="h-64" />
           <LoadingSkeleton key="chart4" className="h-64" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="animate-fade-in">
-        <PageHeader
-          eyebrow="Dashboard"
-          icon={LayoutDashboard}
-          title="Selamat datang kembali, Fadhel."
-          description="Begini progres belajar debugging Anda. Semangat terus."
-        />
-        <div className="mt-8">
-          <EmptyState
-            title="Gagal memuat statistik"
-            description={error}
-            action={
-              <GradientButton href="/dashboard" variant="outline">
-                Coba lagi
-              </GradientButton>
-            }
-          />
         </div>
       </div>
     );

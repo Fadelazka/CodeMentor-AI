@@ -39,6 +39,23 @@ export function Hero() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  // Show a simple loading state while session is loading to prevent hydration issues
+  if (status === "loading") {
+    return (
+      <section className="relative isolate overflow-hidden border-b border-border pt-32 pb-20 sm:pt-40 sm:pb-28">
+        <HeroBackground />
+        <div className="container-editorial relative z-10">
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="animate-pulse text-center text-muted-foreground">
+              <div className="w-12 h-12 border-2 border-accent border-t-transparent rounded-full mx-auto mb-4" />
+              <p className="font-mono text-sm">Memuat...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const handleClick = () => {
     if (status === "authenticated" && session) {
       router.push("/dashboard");
