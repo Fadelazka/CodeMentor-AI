@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Code2, Github, Mail, Building2, LogIn, Eye, EyeOff } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
@@ -31,8 +31,14 @@ export default function MasukPage() {
         return;
       }
 
-      toast.success("Berhasil masuk! Mengalihkan ke dashboard...");
-      window.location.href = "/dashboard";
+      const session = await getSession();
+      const isAdmin = session?.user?.role === "ADMIN";
+      toast.success(
+        isAdmin
+          ? "Berhasil masuk! Mengalihkan ke dashboard..."
+          : "Berhasil masuk! Mengalihkan ke chat..."
+      );
+      window.location.href = isAdmin ? "/dashboard" : "/chat";
     } catch {
       toast.error("Terjadi kesalahan. Coba lagi.");
       setIsLoading(false);

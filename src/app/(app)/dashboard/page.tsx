@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
@@ -66,6 +67,7 @@ interface MetricData {
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -78,6 +80,12 @@ export default function DashboardPage() {
       // skeleton. The (app) middleware normally redirects unauthenticated
       // visitors before this renders.
       setIsLoading(false);
+      return;
+    }
+
+    // Dashboard is admin-only. Regular users go straight to chat.
+    if (session.user.role !== "ADMIN") {
+      router.replace("/chat");
       return;
     }
 
@@ -163,7 +171,7 @@ export default function DashboardPage() {
 
       return () => clearInterval(interval);
     }
-  }, [session, status]);
+  }, [session, status, router]);
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
