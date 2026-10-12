@@ -116,18 +116,21 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({
+    // Generate empty sparklines (7 points)
+const emptySparkline = [0, 0, 0, 0, 0, 0, 0];
+
+return NextResponse.json({
       isAdminView: true,
       summary: {
         totalQuestions,
         aiAccuracy,
         avgResponseTime: Math.round(avgConfidence), // gunakan confidence sebagai proxy
         errorsSolved: distinctErrors.length,
-        trends: {
-          totalQuestions: 0,
-          aiAccuracy: 0,
-          avgResponseTime: 0,
-          errorsSolved: 0,
+        sparklines: {
+          totalQuestions: emptySparkline,
+          aiAccuracy: emptySparkline,
+          avgResponseTime: emptySparkline,
+          errorsSolved: emptySparkline,
         },
       },
       charts: {

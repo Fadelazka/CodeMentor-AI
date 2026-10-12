@@ -247,7 +247,7 @@ export default function DashboardPage() {
     {
       label: isAdmin ? "Total Pertanyaan (Semua User)" : "Total Pertanyaan",
       value: "0",
-      change: isAdmin ? "Belum ada data global" : "Belum ada aktivitas",
+      change: "—",
       trending: "flat",
       positive: true,
       icon: isAdmin ? Users : MessageSquare,
@@ -257,7 +257,7 @@ export default function DashboardPage() {
     {
       label: "Akurasi AI",
       value: "0%",
-      change: "Belum ada data",
+      change: "0%",
       trending: "flat",
       positive: true,
       icon: TrendingUp,
@@ -267,7 +267,7 @@ export default function DashboardPage() {
     {
       label: "Waktu Respons",
       value: "0%",
-      change: "Belum ada data",
+      change: "0%",
       trending: "flat",
       positive: true,
       icon: Clock,
@@ -277,7 +277,7 @@ export default function DashboardPage() {
     {
       label: isAdmin ? "Error Dipecahkan (Global)" : "Error Dipecahkan",
       value: "0",
-      change: "Belum ada data",
+      change: "—",
       trending: "flat" as const,
       positive: true,
       icon: BookOpen,
