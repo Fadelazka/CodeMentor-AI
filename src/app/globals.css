@@ -54,6 +54,28 @@
     --input: 0 0% 16%;
     --ring: 48 33% 97%;
   }
+
+  /* Semantic tokens (additive helpers for surfaces/text). The app's core
+     tokens above are HSL and consumed via hsl(var(--...)); these extra
+     variables are dark-first defaults for custom surfaces. The `.light`
+     class is added to <html> by SettingsContext when the user picks "Terang". */
+  :root {
+    --surface: rgba(255, 255, 255, 0.02);
+    --surface-hover: rgba(255, 255, 255, 0.04);
+    --border-soft: rgba(255, 255, 255, 0.06);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+  }
+
+  :root.light {
+    --surface: #ffffff;
+    --surface-hover: #f1f3f9;
+    --border-soft: rgba(0, 0, 0, 0.08);
+    --text-primary: #0a0e27;
+    --text-secondary: #52525b;
+    --text-muted: #71717a;
+  }
 }
 
 @layer base {
@@ -378,6 +400,32 @@ code {
 
 .dashboard-shell.theme-light .border-white\/\[0\.12\] {
   border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.dashboard-shell.theme-light .border-white\/\[0\.07\] {
+  border-color: rgba(0, 0, 0, 0.09) !important;
+}
+
+.dashboard-shell.theme-light .bg-white\/\[0\.07\] {
+  background-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* Soft dark panel with opacity (sidebar, code chips, email previews) */
+.dashboard-shell.theme-light .bg-\[#05060A\]\/60 {
+  background-color: rgba(244, 245, 247, 0.6) !important;
+}
+
+.dashboard-shell.theme-light .bg-\[#05060A\]\/80 {
+  background-color: rgba(244, 245, 247, 0.8) !important;
+}
+
+.dashboard-shell.theme-light .text-white\/20,
+.dashboard-shell.theme-light .text-white\/30 {
+  color: #71717a !important;
+}
+
+.dashboard-shell.theme-light .text-white\/65 {
+  color: #52525b !important;
 }
 
 .dashboard-shell.theme-light .bg-white\/\[0\.02\] {
