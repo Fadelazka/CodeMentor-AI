@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const searchParams = req.nextUrl.searchParams;
     const language = searchParams.get("language");
     const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10), 200);
 
     const histories = await prisma.chatHistory.findMany({
-      where: language ? { language } : undefined,
+      where: {
+        userId: session.user.id,
+        ...(language ? { language } : {}),
+      },
       orderBy: { createdAt: "desc" },
       take: limit,
     });
@@ -22,8 +32,20 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const searchParams = req.nextUrl.searchParams;
     const id = searchParams.get("id");
+    const all = searchParams.get("all");
+
+    if (all === "1") {
+      // Delete all history for this user
+      await prisma.chatHistory.deleteMany({ where: { userId: session.user.id } });
+      return NextResponse.json({ success: true, message: "Semua riwayat dihapus." });
+    }
 
     if (!id) {
       return NextResponse.json(
@@ -32,7 +54,14 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    await prisma.chatHistory.deleteMany({ where: { id } });
+    // Delete specific history item, but only if it belongs to this user
+    const deleted = await prisma.chatHistory.deleteMany({
+      where: { id, userId: session.user.id },
+    });
+
+    if (deleted.count === 0) {
+      return NextResponse.json({ error: "Riwayat tidak ditemukan." }, { status: 404 });
+    }
 
     return NextResponse.json({ success: true, message: "Riwayat dihapus." });
   } catch (error) {

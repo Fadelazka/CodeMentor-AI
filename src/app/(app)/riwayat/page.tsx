@@ -1,13 +1,13 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, History, Download, Eye, Trash2, SlidersHorizontal, X } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { mockChatResponses } from "@/data/mock";
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getLanguageLabel, formatDate } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -19,23 +19,107 @@ const langTone: Record<string, "cyan" | "violet" | "pink" | "green" | "amber"> =
   php: "green",
 };
 
+interface HistoryItem {
+  id: string;
+  language: string;
+  errorCode: string | null;
+  sourceCode: string;
+  aiResponse: string;
+  confidence: number | null;
+  createdAt: string;
+}
+
 export default function RiwayatPage() {
   const [search, setSearch] = useState("");
   const [langFilter, setLangFilter] = useState("all");
-  const [rows, setRows] = useState(mockChatResponses);
+  const [rows, setRows] = useState<HistoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        setIsLoading(true);
+        const params = new URLSearchParams();
+        if (langFilter !== "all") params.set("language", langFilter);
+        params.set("limit", "50");
+        const res = await fetch(`/api/history?${params.toString()}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          setRows(data.data || []);
+          setTotalCount(data.count || 0);
+        } else {
+          toast.error("Gagal memuat riwayat.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch history:", err);
+        toast.error("Gagal memuat riwayat.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, [langFilter]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/history?id=${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setRows((prev) => prev.filter((r) => r.id !== id));
+        toast.success("Riwayat dihapus.");
+      } else {
+        const err = await res.json().catch(() => ({ error: "Gagal menghapus" }));
+        toast.error(err.error || "Gagal menghapus riwayat.");
+      }
+    } catch (err) {
+      console.error("Failed to delete history:", err);
+      toast.error("Gagal menghapus riwayat.");
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!confirm("Hapus SEMUA riwayat? Tindakan ini tidak dapat dibatalkan.")) return;
+    try {
+      const res = await fetch("/api/history?all=1", { method: "DELETE" });
+      if (res.ok) {
+        setRows([]);
+        toast.success("Semua riwayat dihapus.");
+      } else {
+        toast.error("Gagal menghapus semua riwayat.");
+      }
+    } catch (err) {
+      toast.error("Gagal menghapus semua riwayat.");
+    }
+  };
 
   const filtered = rows.filter((r) => {
     const matchSearch =
-      r.errorCode.toLowerCase().includes(search.toLowerCase()) ||
+      r.errorCode?.toLowerCase().includes(search.toLowerCase()) ||
       r.sourceCode.toLowerCase().includes(search.toLowerCase());
     const matchLang = langFilter === "all" || r.language === langFilter;
     return matchSearch && matchLang;
   });
 
-  const handleDelete = (id: string) => {
-    setRows((prev) => prev.filter((r) => r.id !== id));
-    toast.success("Riwayat dihapus.");
-  };
+  if (isLoading) {
+    return (
+      <div className="animate-fade-in">
+        <PageHeader
+          eyebrow="Riwayat"
+          icon={History}
+          title="Riwayat Analisis"
+          description="Semua error yang pernah Anda tanyakan, tersimpan rapi untuk dipelajari kembali."
+        />
+        <div className="mt-8 space-y-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <LoadingSkeleton key={i} className="h-40" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in">
@@ -45,13 +129,16 @@ export default function RiwayatPage() {
         title="Riwayat Analisis"
         description="Semua error yang pernah Anda tanyakan, tersimpan rapi untuk dipelajari kembali."
         actions={
-          <GradientButton
-            variant="outline"
-            icon={Download}
-            onClick={() => toast.success("Mengekspor seluruh riwayat (demo).")}
-          >
-            Ekspor
-          </GradientButton>
+          <div className="flex gap-2">
+            <GradientButton variant="outline" icon={Download} onClick={() => toast.success("Mengekspor seluruh riwayat (demo).")}>
+              Ekspor
+            </GradientButton>
+            {rows.length > 0 && (
+              <GradientButton variant="outline" icon={Trash2} onClick={handleDeleteAll} className="text-neon-red border-neon-red/40 hover:bg-neon-red/10">
+                Hapus Semua
+              </GradientButton>
+            )}
+          </div>
         }
       />
 
@@ -95,7 +182,15 @@ export default function RiwayatPage() {
       )}
 
       <div className="mt-6 space-y-4">
-        {filtered.length === 0 && (
+        {filtered.length === 0 && rows.length > 0 && (
+          <EmptyState
+            icon={History}
+            title="Tidak ada hasil filter"
+            description="Coba ubah kata kunci atau filter bahasa."
+          />
+        )}
+
+        {filtered.length === 0 && rows.length === 0 && (
           <EmptyState
             icon={History}
             title="Belum ada riwayat"
@@ -112,15 +207,10 @@ export default function RiwayatPage() {
                   <BadgePill tone={langTone[r.language] ?? "neutral"}>
                     {getLanguageLabel(r.language)}
                   </BadgePill>
-                  <BadgePill tone="pink">{r.errorCode}</BadgePill>
+                  <BadgePill tone="pink">{r.errorCode ?? "N/A"}</BadgePill>
                   {r.confidence && (
                     <BadgePill tone={r.confidence >= 85 ? "green" : "amber"}>
                       Confidence {r.confidence}%
-                    </BadgePill>
-                  )}
-                  {r.feedback && (
-                    <BadgePill tone={r.feedback === "helpful" ? "green" : "neutral"}>
-                      {r.feedback === "helpful" ? "âœ“ Bermanfaat" : "âœ— Tidak membantu"}
                     </BadgePill>
                   )}
                   <span className="text-[11px] text-white/35">{formatDate(r.createdAt)}</span>
@@ -140,7 +230,19 @@ export default function RiwayatPage() {
                   Buka
                 </GradientButton>
                 <button
-                  onClick={() => handleDelete(r.id)}
+                  onClick={() => {
+                    const confirmed = confirm("Hapus riwayat ini?");
+                    if (confirmed) {
+                      fetch(`/api/history?id=${r.id}`, { method: "DELETE" }).then((res) => {
+                        if (res.ok) {
+                          setRows((prev) => prev.filter((item) => item.id !== r.id));
+                          toast.success("Riwayat dihapus.");
+                        } else {
+                          toast.error("Gagal menghapus riwayat.");
+                        }
+                      });
+                    }
+                  }}
                   className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-white/10 px-3 text-xs text-white/45 transition-colors hover:border-neon-pink/40 hover:text-[#FF7C9C]"
                 >
                   <Trash2 className="h-3.5 w-3.5" /> Hapus
@@ -149,6 +251,14 @@ export default function RiwayatPage() {
             </div>
           </GlassCard>
         ))}
+
+        {filtered.length === 0 && rows.length > 0 && (
+          <EmptyState
+            icon={History}
+            title="Tidak ada hasil filter"
+            description="Coba ubah kata kunci atau filter bahasa."
+          />
+        )}
       </div>
 
       {filtered.length > 0 && (

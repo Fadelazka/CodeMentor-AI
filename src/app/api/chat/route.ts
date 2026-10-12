@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { retrieveRelevantErrors, generateExplainationWithGroq } from "@/lib/ai";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -9,6 +11,7 @@ export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
     const body = await req.json();
     const { sourceCode, language = "python", errorMessage, saveHistory } = body;
 
@@ -40,10 +43,10 @@ export async function POST(req: NextRequest) {
 
     // Simpan riwayat hanya jika diizinkan oleh preferensi user (auto-save).
     try {
-      if (saveHistory !== false) {
+      if (saveHistory !== false && session?.user?.id) {
         await prisma.chatHistory.create({
           data: {
-            userId: "demo-user",
+            userId: session.user.id,
             language,
             errorCode: ragContext.errorCode,
             sourceCode,
