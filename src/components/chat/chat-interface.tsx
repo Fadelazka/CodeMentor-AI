@@ -279,9 +279,9 @@ export function ChatInterface() {
               <h3 className="font-mono text-[10px] uppercase tracking-wider text-white/60">Tips Penggunaan</h3>
             </div>
             <ul className="space-y-2 text-sm text-white/50">
-              <li className="flex gap-2"><span className="text-neon-red">â€¢</span> Tempel pesan error lengkap beserta stack trace.</li>
-              <li className="flex gap-2"><span className="text-neon-red">â€¢</span> Sertakan kode di sekitar baris yang error.</li>
-              <li className="flex gap-2"><span className="text-neon-red">â€¢</span> Beri feedback agar AI semakin akurat.</li>
+              <li className="flex gap-2"><span className="text-neon-red">•</span> Tempel pesan error lengkap beserta stack trace.</li>
+              <li className="flex gap-2"><span className="text-neon-red">•</span> Sertakan kode di sekitar baris yang error.</li>
+              <li className="flex gap-2"><span className="text-neon-red">•</span> Beri feedback agar AI semakin akurat.</li>
             </ul>
           </GlassCard>
         </div>
@@ -381,7 +381,7 @@ export function ChatInterface() {
                         className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[10px] text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
                       >
                         {copied === msg.content.slice(0, 20) ? (
-                          <span className="text-neon-green">Tersalin âœ“</span>
+                          <span className="text-neon-green">Tersalin ✓</span>
                         ) : (
                           <>
                             <ClipboardCopy className="h-3 w-3" /> Salin
