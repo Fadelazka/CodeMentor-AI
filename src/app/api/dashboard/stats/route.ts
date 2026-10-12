@@ -202,7 +202,7 @@ export async function GET() {
     const avgResponseTime = Math.round(avgResponseTimeResult._avg.responseTimeMs ?? 0);
 
     const aiAccuracy = feedbackHelpful + feedbackNotHelpful > 0
-      ? Math.round((feedbackHelpful / (feedbackHelpful + feedbackNotHelpful)) * 100) / 100
+      ? Math.round((feedbackHelpful / (feedbackHelpful + feedbackNotHelpful)) * 1000) / 10
       : 0;
 
     // Usage per language
