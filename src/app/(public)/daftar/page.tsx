@@ -2,23 +2,43 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Code2, Github, Mail, User as UserIcon, Building2, UserPlus, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
 export default function DaftarPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        toast.error(json.error ?? "Gagal membuat akun.");
+        setIsLoading(false);
+        return;
+      }
+
+      toast.success("Akun berhasil dibuat, silakan masuk.");
+      router.push("/masuk");
+    } catch {
+      toast.error("Terjadi kesalahan. Coba lagi.");
       setIsLoading(false);
-      toast.success("Akun berhasil dibuat! Mengalihkan ke dashboard...");
-      window.location.href = "/dashboard";
-    }, 1200);
+    }
   };
 
   return (
@@ -49,7 +69,14 @@ export default function DaftarPage() {
               </label>
               <div className="relative">
                 <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input type="text" placeholder="Nama lengkap Anda" className="pl-10" required />
+                <Input
+                  type="text"
+                  placeholder="Nama lengkap Anda"
+                  className="pl-10"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
             </div>
 
@@ -59,7 +86,14 @@ export default function DaftarPage() {
               </label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input type="email" placeholder="nama@kampus.ac.id" className="pl-10" required />
+                <Input
+                  type="email"
+                  placeholder="nama@kampus.ac.id"
+                  className="pl-10"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </div>
 
@@ -75,6 +109,8 @@ export default function DaftarPage() {
                   className="pl-10 pr-10"
                   minLength={8}
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
