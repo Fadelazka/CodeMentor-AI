@@ -57,17 +57,18 @@ model VerificationToken {
 }
 
 model ChatHistory {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  language    String
-  errorCode   String?
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language     String
+  errorCode    String?
   errorMessage String?
-  sourceCode  String
-  aiResponse  String
-  confidence  Float?
-  feedback    Feedback?
-  createdAt   DateTime @default(now())
+  sourceCode   String
+  aiResponse   String
+  confidence   Float?
+  feedback     Feedback?
+  responseTimeMs Int?
+  createdAt    DateTime @default(now())
 
   @@index([userId])
   @@index([language])

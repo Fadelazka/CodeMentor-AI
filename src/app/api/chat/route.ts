@@ -10,6 +10,8 @@ export const fetchCache = "force-no-store";
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+  
   try {
     const session = await getServerSession(authOptions);
     const body = await req.json();
@@ -37,8 +39,10 @@ export async function POST(req: NextRequest) {
       ragContext,
     });
 
+    const responseTimeMs = Date.now() - startTime;
+
     console.log(
-      `[api/chat] lang=${language} codeLen=${sourceCode.length} errMsg=${(errorMessage ?? "").slice(0, 80) || "-"} ragMatches=${ragContext.matches.length} mock=${result.mock}`
+      `[api/chat] lang=${language} codeLen=${sourceCode.length} errMsg=${(errorMessage ?? "").slice(0, 80) || "-"} ragMatches=${ragContext.matches.length} mock=${result.mock} responseTimeMs=${responseTimeMs}`
     );
 
     // Simpan riwayat hanya jika diizinkan oleh preferensi user (auto-save).
@@ -53,6 +57,7 @@ export async function POST(req: NextRequest) {
             sourceCode,
             aiResponse: result.explanation,
             confidence: result.confidence,
+            responseTimeMs,
           },
         });
       }
@@ -65,7 +70,7 @@ export async function POST(req: NextRequest) {
       confidence: result.confidence,
       mock: result.mock,
       ragMatches: ragContext.matches.length,
-      responseTimeMs: 0,
+      responseTimeMs,
     });
   } catch (error) {
     console.error("Chat API error:", error);

@@ -62,11 +62,11 @@ export async function GET() {
         ? Math.round((feedbackHelpful / feedbackTotal) * 1000) / 10
         : 0;
 
-      // Average confidence (proxy for response time)
-      const avgConfidenceResult = await prisma.chatHistory.aggregate({
-        _avg: { confidence: true },
+      // Average response time (ms)
+      const avgResponseTimeResult = await prisma.chatHistory.aggregate({
+        _avg: { responseTimeMs: true },
       });
-      const avgConfidence = avgConfidenceResult._avg.confidence ?? 0;
+      const avgResponseTime = Math.round(avgResponseTimeResult._avg.responseTimeMs ?? 0);
 
       // Distinct error codes
       const distinctErrors = await prisma.chatHistory.groupBy({
@@ -127,7 +127,7 @@ export async function GET() {
         isAdminView: true,
         totalQuestions,
         aiAccuracy,
-        avgResponseTime: Math.round(avgConfidence),
+        avgResponseTime,
         errorsSolved: distinctErrors.length,
         usageByLanguage: usageByLanguage.reduce((acc, item) => ({ ...acc, [item.language]: item._count }), {}),
         usagePerDay,
@@ -154,16 +154,18 @@ export async function GET() {
       totalQuestions,
       feedbackHelpful,
       feedbackNotHelpful,
-      avgResponseTime,
+      avgResponseTimeResult,
       errorTypes,
       recentActivity,
+      usageByLanguageResult,
+      usagePerDayResult,
     ] = await Promise.all([
       prisma.chatHistory.count({ where: { userId } }),
       prisma.chatHistory.count({ where: { userId, feedback: "HELPFUL" } }),
       prisma.chatHistory.count({ where: { userId, feedback: "NOT_HELPFUL" } }),
       prisma.chatHistory.aggregate({
         where: { userId },
-        _avg: { confidence: true },
+        _avg: { responseTimeMs: true },
       }),
       prisma.chatHistory.groupBy({
         by: ["errorCode"],
@@ -182,40 +184,57 @@ export async function GET() {
           createdAt: true,
         },
       }),
+      prisma.chatHistory.groupBy({
+        by: ["language"],
+        where: { userId },
+        _count: true,
+      }),
+      prisma.chatHistory.groupBy({
+        by: ["createdAt"],
+        where: { userId, createdAt: { gte: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) } },
+        _count: true,
+      }),
     ]);
+
+    const avgResponseTime = Math.round(avgResponseTimeResult._avg.responseTimeMs ?? 0);
 
     const aiAccuracy = feedbackHelpful + feedbackNotHelpful > 0
       ? Math.round((feedbackHelpful / (feedbackHelpful + feedbackNotHelpful)) * 100) / 100
       : 0;
 
     // Usage per language
-    const usageByLanguage = await prisma.chatHistory.groupBy({
-      by: ["language"],
-      where: { userId },
-      _count: true,
-    });
+    const usageByLanguage = usageByLanguageResult.reduce((acc, item) => ({ ...acc, [item.language]: item._count }), {});
 
     // Usage per day (last 14 days)
     const twoWeeksAgo = new Date();
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
-    const usagePerDay = await prisma.chatHistory.groupBy({
-      by: ["createdAt"],
-      where: { userId, createdAt: { gte: twoWeeksAgo } },
-      _count: true,
+    const dailyCounts: Record<string, number> = {};
+    for (let i = 0; i < 14; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - (13 - i));
+      const key = d.toISOString().split("T")[0];
+      dailyCounts[key] = 0;
+    }
+
+    usagePerDayResult.forEach(item => {
+      const key = item.createdAt.toISOString().split("T")[0];
+      if (dailyCounts[key] !== undefined) dailyCounts[key] = item._count;
     });
+
+    const usagePerDay = Object.entries(dailyCounts).map(([date, count]) => ({
+      date,
+      count,
+    }));
 
     return NextResponse.json({
       dbTersedia: true,
       totalQuestions,
       aiAccuracy,
-      avgResponseTime: 0,
+      avgResponseTime,
       errorsSolved: errorTypes.length,
-      usageByLanguage: usageByLanguage.reduce((acc, item) => ({ ...acc, [item.language]: item._count }), {}),
-      usagePerDay: usagePerDay.map(item => ({
-        date: item.createdAt.toISOString().split("T")[0],
-        count: item._count,
-      })),
+      usageByLanguage,
+      usagePerDay,
       recentActivity,
     });
   } catch (error) {
