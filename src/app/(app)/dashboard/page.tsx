@@ -109,6 +109,7 @@ export default function DashboardPage() {
             charts: data.charts,
             topErrors: data.topErrors,
             recommendations: data.recommendations,
+            recentActivity: data.recentActivity ?? [],
             meta: data.meta,
             isAdminView: true,
           });
@@ -146,6 +147,7 @@ export default function DashboardPage() {
               charts: data.charts,
               topErrors: data.topErrors,
               recommendations: data.recommendations,
+              recentActivity: data.recentActivity ?? [],
               meta: data.meta,
               isAdminView: true,
             });
@@ -308,10 +310,14 @@ const metrics: MetricData[] = hasActivity && stats ? [
     jumlah: d.count,
   })) || [];
 
-  const languagePieData = Object.entries(stats?.charts?.languages || stats?.usageByLanguage || {}).map(([bahasa, persen]) => ({
-    bahasa,
-    persen: typeof persen === "number" ? persen : 0,
-  }));
+  const rawLanguages:
+    | { language: string; count: number }[]
+    | Record<string, number> =
+    stats?.charts?.languages ?? stats?.usageByLanguage ?? {};
+
+  const languagePieData = Array.isArray(rawLanguages)
+    ? rawLanguages.map((l) => ({ bahasa: l.language.toUpperCase(), persen: l.count }))
+    : Object.entries(rawLanguages).map(([bahasa, count]) => ({ bahasa, persen: count }));
 
   const topErrors = stats?.topErrors || [];
   const errorCounts = stats?.recentActivity

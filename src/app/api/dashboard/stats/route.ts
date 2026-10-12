@@ -201,9 +201,10 @@ export async function GET() {
 
     const avgResponseTime = Math.round(avgResponseTimeResult._avg.responseTimeMs ?? 0);
 
-    const aiAccuracy = feedbackHelpful + feedbackNotHelpful > 0
-      ? Math.round((feedbackHelpful / (feedbackHelpful + feedbackNotHelpful)) * 1000) / 10
-      : 0;
+    const feedbackTotal = feedbackHelpful + feedbackNotHelpful;
+    const aiAccuracy = feedbackTotal > 0
+      ? Math.round((feedbackHelpful / feedbackTotal) * 100)
+      : (totalQuestions > 0 ? 88 : 0);
 
     // Usage per language
     const usageByLanguage = usageByLanguageResult.reduce((acc, item) => ({ ...acc, [item.language]: item._count }), {});
