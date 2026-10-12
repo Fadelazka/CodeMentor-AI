@@ -239,6 +239,13 @@ export async function GET() {
     // Error types solved
     const errorsSolved = errorTypes.length;
 
+    // Top error types (aggregated across the user's whole history)
+    const topErrors = errorTypes
+      .filter((e) => e.errorCode)
+      .map((e) => ({ errorType: e.errorCode as string, count: e._count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
     return NextResponse.json({
       dbTersedia: true,
       totalQuestions,
@@ -248,6 +255,7 @@ export async function GET() {
       usageByLanguage,
       usagePerDay,
       recentActivity,
+      topErrors,
     });
   } catch (error) {
     console.error("[dashboard/stats] Error:", error);

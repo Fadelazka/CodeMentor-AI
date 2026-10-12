@@ -23,6 +23,7 @@ import { BadgePill } from "@/components/ui/badge-pill";
 import { UsageChart, LanguagePieChart, ErrorBarChart } from "@/components/dashboard/charts";
 import { EmptyState } from "@/components/ui/empty-state";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { getLanguageLabel } from "@/lib/utils";
 
 interface DashboardStats {
   dbTersedia: boolean;
@@ -292,9 +293,11 @@ const metrics: MetricData[] = hasActivity && stats ? [
   ];
 
   const langTone: Record<string, "cyan" | "violet" | "pink" | "green" | "amber"> = {
-    Python: "cyan",
-    JavaScript: "amber",
-    Java: "violet",
+    python: "cyan",
+    javascript: "amber",
+    java: "violet",
+    cpp: "pink",
+    php: "green",
   };
 
   const usageChartData = stats?.charts?.daily?.map((d) => ({
@@ -321,8 +324,8 @@ const metrics: MetricData[] = hasActivity && stats ? [
 
   const errorBarData = Object.entries(errorCounts).map(([code, jumlah]) => ({ code, jumlah }));
 
-  // Admin: gunakan topErrors dari API, User: gunakan errorCounts dari recentActivity
-  const finalErrorBarData = isAdmin && topErrors.length > 0
+  // Prefer the real, aggregated top errors from the API; fall back to recent activity
+  const finalErrorBarData = topErrors.length > 0
     ? topErrors.map((e: { errorType: string; count: number }) => ({ code: e.errorType, jumlah: e.count }))
     : errorBarData;
 
@@ -449,7 +452,7 @@ const metrics: MetricData[] = hasActivity && stats ? [
                     <tr key={r.id} className="transition-colors hover:bg-white/[0.02]">
                       <td className="py-3.5 pr-4 font-mono text-[11px] text-white/45">{formatDate(r.createdAt)}</td>
                       <td className="py-3.5 pr-4">
-                        <BadgePill tone={langTone[r.language] ?? "neutral"}>{r.language}</BadgePill>
+                        <BadgePill tone={langTone[r.language] ?? "neutral"}>{getLanguageLabel(r.language)}</BadgePill>
                       </td>
                       <td className="py-3.5 pr-4 font-mono text-xs text-white/85">{r.errorCode ?? "-"}</td>
                       <td className="py-3.5 pr-4">
