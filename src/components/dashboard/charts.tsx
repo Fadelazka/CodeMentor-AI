@@ -16,7 +16,7 @@ import {
   AreaChart,
 } from "recharts";
 
-// Brand colors per language (order matches dashboardStats.bahasaTerbanyak)
+// Brand colors per language
 const PIE_COLORS = ["#FF3B6B", "#F7DF1E", "#EA2D2E", "#00599C", "#FF6B35"];
 
 const axisTick = { fill: "#71717A", fontSize: 10, fontFamily: "monospace" };
@@ -30,7 +30,23 @@ const tooltipStyle = {
   fontFamily: "monospace",
 };
 
+function EmptyChartPlaceholder({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 h-full flex flex-col items-center justify-center">
+      <div className="w-12 h-12 rounded-full border border-white/[0.1] flex items-center justify-center mb-4">
+        <span className="text-2xl">📊</span>
+      </div>
+      <h3 className="text-sm font-semibold text-white mb-1">{title}</h3>
+      <p className="text-xs text-zinc-500">{subtitle}</p>
+    </div>
+  );
+}
+
 export function UsageChart({ data }: { data: { tanggal: string; jumlah: number }[] }) {
+  if (!data || data.length === 0 || data.every(d => d.jumlah === 0)) {
+    return <EmptyChartPlaceholder title="Penggunaan 14 Hari Terakhir" subtitle="Belum ada data aktivitas" />;
+  }
+
   return (
     <ResponsiveContainer width="100%" height={260}>
       <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -60,6 +76,10 @@ export function UsageChart({ data }: { data: { tanggal: string; jumlah: number }
 }
 
 export function LanguagePieChart({ data }: { data: { bahasa: string; persen: number }[] }) {
+  if (!data || data.length === 0 || data.every(d => d.persen === 0)) {
+    return <EmptyChartPlaceholder title="Bahasa yang Digunakan" subtitle="Belum ada data bahasa" />;
+  }
+
   return (
     <ResponsiveContainer width="100%" height={240}>
       <PieChart>
@@ -85,6 +105,10 @@ export function LanguagePieChart({ data }: { data: { bahasa: string; persen: num
 }
 
 export function ErrorBarChart({ data }: { data: { code: string; jumlah: number }[] }) {
+  if (!data || data.length === 0 || data.every(d => d.jumlah === 0)) {
+    return <EmptyChartPlaceholder title="Error Paling Sering" subtitle="Belum ada error tercatat" />;
+  }
+
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data} layout="vertical" margin={{ top: 5, right: 24, left: 48, bottom: 5 }}>

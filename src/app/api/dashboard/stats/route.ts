@@ -17,7 +17,7 @@ interface SessionUser {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    
+
     // If not authenticated, return default empty stats (not 401)
     // This allows the dashboard to show empty state gracefully
     if (!session?.user) {
@@ -49,6 +49,105 @@ export async function GET() {
       });
     }
 
+    // ==== ADMIN: Return global stats ====
+    if (user.role === "ADMIN") {
+      // Total pertanyaan (semua user)
+      const totalQuestions = await prisma.chatHistory.count();
+
+      // Feedback stats untuk akurasi
+      const feedbackHelpful = await prisma.chatHistory.count({ where: { feedback: "HELPFUL" } });
+      const feedbackNotHelpful = await prisma.chatHistory.count({ where: { feedback: "NOT_HELPFUL" } });
+      const feedbackTotal = feedbackHelpful + feedbackNotHelpful;
+      const aiAccuracy = feedbackTotal > 0
+        ? Math.round((feedbackHelpful / feedbackTotal) * 1000) / 10
+        : 0;
+
+      // Average confidence (proxy for response time)
+      const avgConfidenceResult = await prisma.chatHistory.aggregate({
+        _avg: { confidence: true },
+      });
+      const avgConfidence = avgConfidenceResult._avg.confidence ?? 0;
+
+      // Distinct error codes
+      const distinctErrors = await prisma.chatHistory.groupBy({
+        by: ["errorCode"],
+        where: { errorCode: { not: null } },
+        _count: true,
+      });
+
+      // Usage per language (all users)
+      const usageByLanguage = await prisma.chatHistory.groupBy({
+        by: ["language"],
+        _count: true,
+      });
+
+      // Usage per day (last 14 days, all users)
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+      const dailyCounts: Record<string, number> = {};
+      for (let i = 0; i < 14; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - (13 - i));
+        const key = d.toISOString().split("T")[0];
+        dailyCounts[key] = 0;
+      }
+
+      const recentHistories = await prisma.chatHistory.findMany({
+        where: { createdAt: { gte: twoWeeksAgo } },
+        select: { createdAt: true },
+      });
+
+      recentHistories.forEach(h => {
+        const key = h.createdAt.toISOString().split("T")[0];
+        if (dailyCounts[key] !== undefined) dailyCounts[key]++;
+      });
+
+      const usagePerDay = Object.entries(dailyCounts).map(([date, count]) => ({
+        date,
+        count,
+      }));
+
+      // Recent activity (all users)
+      const recentActivity = await prisma.chatHistory.findMany({
+        where: {},
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: {
+          id: true,
+          language: true,
+          errorCode: true,
+          confidence: true,
+          createdAt: true,
+        },
+      });
+
+      return NextResponse.json({
+        dbTersedia: true,
+        isAdminView: true,
+        totalQuestions,
+        aiAccuracy,
+        avgResponseTime: Math.round(avgConfidence),
+        errorsSolved: distinctErrors.length,
+        usageByLanguage: usageByLanguage.reduce((acc, item) => ({ ...acc, [item.language]: item._count }), {}),
+        usagePerDay,
+        recentActivity,
+        meta: {
+          totalUsers: await prisma.user.count(),
+          activeUsers7d: await prisma.user.count({
+            where: {
+              chatHistory: {
+                some: {
+                  createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+                },
+              },
+            },
+          }),
+        },
+      });
+    }
+
+    // ==== USER BIASA: Return user-specific stats ====
     const userId = user.id;
 
     const [

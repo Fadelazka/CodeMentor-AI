@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   MessageSquarePlus,
@@ -11,6 +12,8 @@ import {
   MessageSquare,
   ArrowUpRight,
   AlertTriangle,
+  Users,
+  Activity,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -37,6 +40,17 @@ interface DashboardStats {
     confidence: number | null;
     createdAt: string;
   }[];
+  meta?: {
+    totalUsers: number;
+    activeUsers7d: number;
+  };
+  isAdminView?: boolean;
+  charts?: {
+    daily: { date: string; count: number }[];
+    languages: { language: string; count: number }[];
+  };
+  topErrors?: { errorType: string; count: number }[];
+  recommendations?: { errorType: string; title: string; url: string }[];
 }
 
 interface MetricData {
@@ -51,19 +65,28 @@ interface MetricData {
 }
 
 export default function DashboardPage() {
+  const { data: session, status } = useSession();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    if (status === "loading") return;
+
+    if (!session?.user) return;
+
+    const isAdminUser = session.user.role === "ADMIN";
+    setIsAdmin(isAdminUser);
+
     const fetchStats = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch("/api/dashboard/stats", { cache: "no-store" });
-        
+        const endpoint = isAdminUser ? "/api/admin/stats" : "/api/dashboard/stats";
+        const res = await fetch(endpoint, { cache: "no-store" });
+
         // Handle 401 or other errors gracefully
         if (!res.ok) {
           console.warn("Stats API returned:", res.status);
-          // Set default empty stats instead of throwing
           setStats({
             dbTersedia: false,
             totalQuestions: 0,
@@ -73,15 +96,27 @@ export default function DashboardPage() {
             usageByLanguage: {},
             usagePerDay: [],
             recentActivity: [],
+            isAdminView: isAdminUser,
           });
           return;
         }
-        
+
         const data = await res.json();
-        setStats(data);
+        // Normalize response shape
+        if (data.isAdminView) {
+          setStats({
+            ...data.summary,
+            charts: data.charts,
+            topErrors: data.topErrors,
+            recommendations: data.recommendations,
+            meta: data.meta,
+            isAdminView: true,
+          });
+        } else {
+          setStats({ ...data, isAdminView: false });
+        }
       } catch (err) {
         console.error("Failed to fetch stats:", err);
-        // Set default empty stats on error
         setStats({
           dbTersedia: false,
           totalQuestions: 0,
@@ -91,6 +126,7 @@ export default function DashboardPage() {
           usageByLanguage: {},
           usagePerDay: [],
           recentActivity: [],
+          isAdminView: isAdminUser,
         });
       } finally {
         setIsLoading(false);
@@ -98,7 +134,28 @@ export default function DashboardPage() {
     };
 
     fetchStats();
-  }, []);
+
+    // Polling untuk admin (30 detik)
+    if (isAdminUser) {
+      const interval = setInterval(() => {
+        fetch("/api/admin/stats", { cache: "no-store" })
+          .then(r => r.json())
+          .then(data => {
+            setStats({
+              ...data.summary,
+              charts: data.charts,
+              topErrors: data.topErrors,
+              recommendations: data.recommendations,
+              meta: data.meta,
+              isAdminView: true,
+            });
+          })
+          .catch(console.error);
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+  }, [session, status]);
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -110,14 +167,16 @@ export default function DashboardPage() {
     });
   };
 
-  if (isLoading) {
+  if (isLoading || status === "loading") {
     return (
       <div className="animate-fade-in">
         <PageHeader
           eyebrow="Dashboard"
           icon={LayoutDashboard}
-          title="Selamat datang kembali, Fadhel."
-          description="Begini progres belajar debugging Anda. Semangat terus."
+          title={isAdmin ? "Selamat datang kembali, Admin." : "Selamat datang kembali, Fadhel."}
+          description={isAdmin
+            ? "Pantau aktivitas pengguna CodeMentor AI secara real-time."
+            : "Begini progres belajar debugging Anda. Semangat terus."}
           actions={
             <GradientButton href="/chat" icon={MessageSquarePlus}>
               Tanya Error Baru
@@ -145,12 +204,12 @@ export default function DashboardPage() {
 
   const metrics: MetricData[] = hasActivity && stats ? [
     {
-      label: "Total Pertanyaan",
+      label: isAdmin ? "Total Pertanyaan (Semua User)" : "Total Pertanyaan",
       value: stats.totalQuestions.toLocaleString("id-ID"),
       change: "+12,4%",
       trending: "up",
       positive: true,
-      icon: MessageSquare,
+      icon: isAdmin ? Users : MessageSquare,
       accent: "cyan",
       spark: [42, 55, 48, 62, 70, 66, 82, 78],
     },
@@ -165,8 +224,8 @@ export default function DashboardPage() {
       spark: [80, 82, 81, 84, 85, 86, 87, 88],
     },
     {
-      label: "Waktu Respons",
-      value: `${stats.avgResponseTime}s`,
+      label: "Waktu Respons (Confidence)",
+      value: `${stats.avgResponseTime}%`,
       change: "-0,3s",
       trending: "down",
       positive: true,
@@ -175,7 +234,7 @@ export default function DashboardPage() {
       spark: [4.2, 3.9, 3.6, 3.4, 3.3, 3.0, 2.9, 2.8],
     },
     {
-      label: "Error Dipecahkan",
+      label: isAdmin ? "Error Dipecahkan (Global)" : "Error Dipecahkan",
       value: stats.errorsSolved.toLocaleString("id-ID"),
       change: "+8,7%",
       trending: "up",
@@ -186,12 +245,12 @@ export default function DashboardPage() {
     },
   ] : [
     {
-      label: "Total Pertanyaan",
+      label: isAdmin ? "Total Pertanyaan (Semua User)" : "Total Pertanyaan",
       value: "0",
-      change: "Belum ada aktivitas",
+      change: isAdmin ? "Belum ada data global" : "Belum ada aktivitas",
       trending: "flat",
       positive: true,
-      icon: MessageSquare,
+      icon: isAdmin ? Users : MessageSquare,
       accent: "cyan",
       spark: [0, 0, 0, 0, 0, 0, 0, 0],
     },
@@ -207,7 +266,7 @@ export default function DashboardPage() {
     },
     {
       label: "Waktu Respons",
-      value: "0s",
+      value: "0%",
       change: "Belum ada data",
       trending: "flat",
       positive: true,
@@ -216,13 +275,13 @@ export default function DashboardPage() {
       spark: [0, 0, 0, 0, 0, 0, 0, 0],
     },
     {
-      label: "Error Dipecahkan",
+      label: isAdmin ? "Error Dipecahkan (Global)" : "Error Dipecahkan",
       value: "0",
       change: "Belum ada data",
       trending: "flat" as const,
       positive: true,
       icon: BookOpen,
-      accent: "pink" as const,
+      accent: "pink",
       spark: [0, 0, 0, 0, 0, 0, 0, 0],
     },
   ];
@@ -233,16 +292,20 @@ export default function DashboardPage() {
     Java: "violet",
   };
 
-  const usageChartData = stats?.usagePerDay?.map((d) => ({
+  const usageChartData = stats?.charts?.daily?.map((d) => ({
+    tanggal: new Date(d.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short" }),
+    jumlah: d.count,
+  })) || stats?.usagePerDay?.map((d: { date: string; count: number }) => ({
     tanggal: new Date(d.date).toLocaleDateString("id-ID", { day: "2-digit", month: "short" }),
     jumlah: d.count,
   })) || [];
 
-  const languagePieData = Object.entries(stats?.usageByLanguage || {}).map(([bahasa, persen]) => ({
+  const languagePieData = Object.entries(stats?.charts?.languages || stats?.usageByLanguage || {}).map(([bahasa, persen]) => ({
     bahasa,
-    persen,
+    persen: typeof persen === "number" ? persen : 0,
   }));
 
+  const topErrors = stats?.topErrors || [];
   const errorCounts = stats?.recentActivity
     ?.filter((a) => a.errorCode)
     ?.reduce((acc, a) => {
@@ -253,13 +316,20 @@ export default function DashboardPage() {
 
   const errorBarData = Object.entries(errorCounts).map(([code, jumlah]) => ({ code, jumlah }));
 
+  // Admin: gunakan topErrors dari API, User: gunakan errorCounts dari recentActivity
+  const finalErrorBarData = isAdmin && topErrors.length > 0
+    ? topErrors.map((e: { errorType: string; count: number }) => ({ code: e.errorType, jumlah: e.count }))
+    : errorBarData;
+
   return (
     <div className="animate-fade-in">
       <PageHeader
         eyebrow="Dashboard"
         icon={LayoutDashboard}
-        title="Selamat datang kembali, Fadhel."
-        description="Begini progres belajar debugging Anda. Semangat terus."
+        title={isAdmin ? "Selamat datang kembali, Admin." : `Selamat datang kembali, ${session?.user?.name?.split(" ")[0] || "User"}.`}
+        description={isAdmin
+          ? "Pantau aktivitas pengguna CodeMentor AI secara real-time."
+          : "Begini progres belajar debugging Anda. Semangat terus."}
         actions={
           <GradientButton href="/chat" icon={MessageSquarePlus}>
             Tanya Error Baru
@@ -267,13 +337,27 @@ export default function DashboardPage() {
         }
       />
 
+      {/* Admin: Info user count */}
+      {isAdmin && stats?.meta && (
+        <div className="mt-4 flex flex-wrap gap-3 text-xs text-zinc-500">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+            <Users className="w-3.5 h-3.5" />
+            <span>{stats.meta.totalUsers.toLocaleString("id-ID")} total user</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neon-green/[0.1] border border-neon-green/[0.2]">
+            <Activity className="w-3.5 h-3.5 text-neon-green" />
+            <span>{stats.meta.activeUsers7d.toLocaleString("id-ID")} aktif 7 hari</span>
+          </div>
+        </div>
+      )}
+
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((m) => (
           <MetricCard key={m.label} {...m} />
         ))}
       </div>
 
-      {!hasActivity ? (
+      {!hasActivity && !isAdmin ? (
         <div className="mt-8">
           <EmptyState
             title="Belum ada aktivitas"
@@ -322,7 +406,7 @@ export default function DashboardPage() {
                   Pantau
                 </BadgePill>
               </GlassCardHeader>
-              <ErrorBarChart data={errorBarData} />
+              <ErrorBarChart data={finalErrorBarData} />
             </GlassCard>
 
             <LearningRecommendations />
