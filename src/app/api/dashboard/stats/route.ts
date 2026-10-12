@@ -68,7 +68,7 @@ export async function GET() {
       });
       const avgResponseTime = Math.round(avgResponseTimeResult._avg.responseTimeMs ?? 0);
 
-      // Distinct error codes
+      // Distinct error codes (Error Dipecahkan)
       const distinctErrors = await prisma.chatHistory.groupBy({
         by: ["errorCode"],
         where: { errorCode: { not: null } },
@@ -130,7 +130,10 @@ export async function GET() {
         avgResponseTime,
         errorsSolved: distinctErrors.length,
         usageByLanguage: usageByLanguage.reduce((acc, item) => ({ ...acc, [item.language]: item._count }), {}),
-        usagePerDay,
+        usagePerDay: Object.entries(dailyCounts).map(([date, count]) => ({
+          date,
+          count,
+        })),
         recentActivity,
         meta: {
           totalUsers: await prisma.user.count(),
@@ -217,15 +220,24 @@ export async function GET() {
       dailyCounts[key] = 0;
     }
 
-    usagePerDayResult.forEach(item => {
-      const key = item.createdAt.toISOString().split("T")[0];
-      if (dailyCounts[key] !== undefined) dailyCounts[key] = item._count;
+    // Get all submissions in the last 14 days for this user
+    const userRecentHistories = await prisma.chatHistory.findMany({
+      where: { userId, createdAt: { gte: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) } },
+      select: { createdAt: true },
+    });
+
+    userRecentHistories.forEach(h => {
+      const key = h.createdAt.toISOString().split("T")[0];
+      if (dailyCounts[key] !== undefined) dailyCounts[key]++;
     });
 
     const usagePerDay = Object.entries(dailyCounts).map(([date, count]) => ({
       date,
       count,
     }));
+
+    // Error types solved
+    const errorsSolved = errorTypes.length;
 
     return NextResponse.json({
       dbTersedia: true,

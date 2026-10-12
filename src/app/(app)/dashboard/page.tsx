@@ -21,7 +21,6 @@ import { MetricCard } from "@/components/ui/metric-card";
 import { GlassCard, GlassCardHeader, GlassCardTitle } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { UsageChart, LanguagePieChart, ErrorBarChart } from "@/components/dashboard/charts";
-import { LearningRecommendations } from "@/components/dashboard/learning-recommendations";
 import { EmptyState } from "@/components/ui/empty-state";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 
@@ -167,6 +166,12 @@ export default function DashboardPage() {
     });
   };
 
+  const formatResponseTime = (ms: number): string => {
+    if (ms === 0) return "0ms";
+    if (ms < 1000) return `${Math.round(ms)}ms`;
+    return `${(ms / 1000).toFixed(1)}s`;
+  };
+
   if (isLoading || status === "loading") {
     return (
       <div className="animate-fade-in">
@@ -202,7 +207,7 @@ export default function DashboardPage() {
 
   const hasActivity = stats && stats.totalQuestions > 0;
 
-  const metrics: MetricData[] = hasActivity && stats ? [
+const metrics: MetricData[] = hasActivity && stats ? [
     {
       label: isAdmin ? "Total Pertanyaan (Semua User)" : "Total Pertanyaan",
       value: stats.totalQuestions.toLocaleString("id-ID"),
@@ -224,8 +229,8 @@ export default function DashboardPage() {
       spark: [80, 82, 81, 84, 85, 86, 87, 88],
     },
     {
-      label: "Waktu Respons (Confidence)",
-      value: `${stats.avgResponseTime}%`,
+      label: "Waktu Respons",
+      value: formatResponseTime(stats.avgResponseTime),
       change: "-0,3s",
       trending: "down",
       positive: true,
@@ -266,8 +271,8 @@ export default function DashboardPage() {
     },
     {
       label: "Waktu Respons",
-      value: "0%",
-      change: "0%",
+      value: "0ms",
+      change: "—",
       trending: "flat",
       positive: true,
       icon: Clock,
@@ -408,8 +413,6 @@ export default function DashboardPage() {
               </GlassCardHeader>
               <ErrorBarChart data={finalErrorBarData} />
             </GlassCard>
-
-            <LearningRecommendations />
           </div>
 
           <GlassCard className="mt-6">

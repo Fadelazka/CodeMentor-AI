@@ -9,9 +9,44 @@ export const revalidate = 0;
 export const fetchCache = "force-no-store";
 export const runtime = "nodejs";
 
+// Fungsi untuk mendeteksi tipe error dari pesan error atau respons AI
+function detectErrorType(errorMessage: string | undefined, aiResponse: string): string | null {
+  const text = `${errorMessage ?? ""} ${aiResponse}`.toLowerCase();
+
+  const errorPatterns: Record<string, RegExp> = {
+    'SyntaxError': /syntaxerror|syntax error|invalid syntax/i,
+    'TypeError': /typeerror|type error|cannot read propert/i,
+    'NameError': /nameerror|name error|not defined/i,
+    'IndexError': /indexerror|index error|list index out of range/i,
+    'KeyError': /keyerror|key error/i,
+    'ValueError': /valueerror|value error|invalid literal/i,
+    'AttributeError': /attributeerror|attribute error|has no attribute/i,
+    'ZeroDivisionError': /zerodivisionerror|zero division error|division by zero/i,
+    'IndentationError': /indentationerror|indentation error/i,
+    'ImportError': /importerror|import error|no module named/i,
+    'ModuleNotFoundError': /modulenotfounderror|module not found/i,
+    'ReferenceError': /referenceerror|reference error|is not defined/i,
+    'RangeError': /rangeerror|range error/i,
+    'CompileError': /compile error|compilation error/i,
+    'RuntimeError': /runtime error/i,
+    'NullPointerException': /nullpointerexception|null pointer exception/i,
+    'ArrayIndexOutOfBoundsException': /arrayindexoutofboundsexception|index out of bounds/i,
+    'NumberFormatException': /numberformatexception|number format exception/i,
+    'ArithmeticException': /arithmeticexception|arithmetic exception/i,
+    'SegmentationFault': /segmentation fault|segfault/i,
+  };
+
+  for (const [errorType, pattern] of Object.entries(errorPatterns)) {
+    if (pattern.test(text)) {
+      return errorType;
+    }
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
-  
+
   try {
     const session = await getServerSession(authOptions);
     const body = await req.json();
@@ -41,8 +76,11 @@ export async function POST(req: NextRequest) {
 
     const responseTimeMs = Date.now() - startTime;
 
+    // Deteksi tipe error dari pesan error user atau respons AI
+    const detectedErrorCode = detectErrorType(errorMessage, result.explanation);
+
     console.log(
-      `[api/chat] lang=${language} codeLen=${sourceCode.length} errMsg=${(errorMessage ?? "").slice(0, 80) || "-"} ragMatches=${ragContext.matches.length} mock=${result.mock} responseTimeMs=${responseTimeMs}`
+      `[api/chat] lang=${language} codeLen=${sourceCode.length} errMsg=${(errorMessage ?? "").slice(0, 80) || "-"} detectedError=${detectedErrorCode} ragMatches=${ragContext.matches.length} mock=${result.mock} responseTimeMs=${responseTimeMs}`
     );
 
     // Simpan riwayat hanya jika diizinkan oleh preferensi user (auto-save).
@@ -52,7 +90,7 @@ export async function POST(req: NextRequest) {
           data: {
             userId: session.user.id,
             language,
-            errorCode: ragContext.errorCode,
+            errorCode: detectedErrorCode ?? ragContext.errorCode,
             errorMessage: errorMessage ?? null,
             sourceCode,
             aiResponse: result.explanation,
@@ -71,6 +109,7 @@ export async function POST(req: NextRequest) {
       mock: result.mock,
       ragMatches: ragContext.matches.length,
       responseTimeMs,
+      detectedErrorCode,
     });
   } catch (error) {
     console.error("Chat API error:", error);
