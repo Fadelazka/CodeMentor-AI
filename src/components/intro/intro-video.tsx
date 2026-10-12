@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { SkipForward } from "lucide-react";
+import { SkipForward, Play } from "lucide-react";
 import {
   IntroSource,
 } from "@/hooks/use-intro-state";
@@ -21,6 +21,7 @@ const POSTER_SRC = "/intro/codementor-intro-poster.jpg";
 export function IntroVideo({ onDone, onSkip }: IntroVideoProps) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [ready, setReady] = React.useState(false);
+  const [autoplayBlocked, setAutoplayBlocked] = React.useState(false);
 
   const handleEnded = React.useCallback(() => {
     onDone("auto");
@@ -46,18 +47,33 @@ export function IntroVideo({ onDone, onSkip }: IntroVideoProps) {
     if (!video) return;
     const tryPlay = () => {
       video.play().catch(() => {
-        // Autoplay diblokir browser — mulai saat user berinteraksi.
+        // Autoplay diblokir browser — tampilkan tombol play manual.
+        setAutoplayBlocked(true);
         setReady(true);
       });
     };
     video.addEventListener("loadeddata", () => setReady(true));
-    video.addEventListener("playing", () => setReady(true));
+    video.addEventListener("playing", () => {
+      setReady(true);
+      setAutoplayBlocked(false);
+    });
     tryPlay();
     return () => {
       video.removeEventListener("loadeddata", () => setReady(true));
       video.removeEventListener("playing", () => setReady(true));
     };
   }, []);
+
+  const handlePlayClick = () => {
+    const video = videoRef.current;
+    if (video) {
+      video.play().then(() => {
+        setAutoplayBlocked(false);
+      }).catch(() => {
+        setAutoplayBlocked(true);
+      });
+    }
+  };
 
   return (
     <div
@@ -79,13 +95,30 @@ export function IntroVideo({ onDone, onSkip }: IntroVideoProps) {
         onError={handleError}
       />
 
-      {!ready && (
+      {!ready && !autoplayBlocked && (
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
           <p className="font-mono text-xs uppercase tracking-widest text-zinc-400">
             Memulai…
           </p>
         </div>
+      )}
+
+      {autoplayBlocked && (
+        <button
+          type="button"
+          onClick={handlePlayClick}
+          className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-20"
+        >
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-20 h-20 rounded-full bg-[#FF3B6B] flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Play className="w-8 h-8 text-white ml-1" fill="white" />
+            </div>
+            <span className="text-white text-sm font-medium">
+              Klik untuk memutar intro
+            </span>
+          </div>
+        </button>
       )}
 
       <button

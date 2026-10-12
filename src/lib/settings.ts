@@ -29,6 +29,8 @@ export const DEFAULT_SETTINGS: UserSettings = {
 };
 
 const STORAGE_KEY = "codementor_user_settings_v1";
+const SETTINGS_VERSION_KEY = "codementor_settings_version";
+const CURRENT_SETTINGS_VERSION = "v2";
 
 export function loadSettings(): UserSettings {
   if (typeof window === "undefined") return DEFAULT_SETTINGS;
@@ -36,7 +38,7 @@ export function loadSettings(): UserSettings {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw) as Partial<UserSettings>;
-    return {
+    const settings = {
       ...DEFAULT_SETTINGS,
       ...parsed,
       emailNotifications: {
@@ -44,6 +46,12 @@ export function loadSettings(): UserSettings {
         ...(parsed.emailNotifications ?? {}),
       },
     };
+    // Migration: force dark theme for old settings versions
+    const version = localStorage.getItem(SETTINGS_VERSION_KEY);
+    if (version !== CURRENT_SETTINGS_VERSION) {
+      return { ...settings, theme: "dark" as const };
+    }
+    return settings;
   } catch {
     return DEFAULT_SETTINGS;
   }
@@ -52,6 +60,7 @@ export function loadSettings(): UserSettings {
 export function saveSettings(settings: UserSettings) {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+  localStorage.setItem(SETTINGS_VERSION_KEY, CURRENT_SETTINGS_VERSION);
   // Trigger storage event for other tabs
   window.dispatchEvent(
     new StorageEvent("storage", {
