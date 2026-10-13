@@ -230,8 +230,8 @@ export function ChatInterface() {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="h-10 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 pr-8 text-sm text-white outline-none transition-colors focus:border-neon-red/40 [&>option]:bg-[#0A0B14]"
-                >
+                  className="h-10 rounded-xl border px-3.5 pr-8 text-sm outline-none transition-colors focus:border-neon-red/40"
+                style={{ background: "var(--input-bg)", borderColor: "var(--input-border)", color: "var(--input-text)" }}                >
                   {languages.map((l) => (
                     <option key={l.value} value={l.value}>
                       {l.label}
@@ -254,8 +254,8 @@ export function ChatInterface() {
                 value={errorInput}
                 onChange={(e) => setErrorInput(e.target.value)}
                 placeholder="Tempel pesan error di sini..."
-                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 font-mono text-xs text-white placeholder:text-white/30 outline-none transition-colors focus:border-neon-red/40"
-              />
+                className="w-full rounded-xl border px-3.5 py-2.5 font-mono text-xs outline-none transition-colors focus:border-neon-red/40"
+                style={{ background: "var(--input-bg)", borderColor: "var(--input-border)", color: "var(--input-text)" }}              />
             </div>
 
             <div className="mt-4 flex gap-3">
@@ -318,23 +318,28 @@ export function ChatInterface() {
                   className={
                     msg.role === "user"
                       ? "rounded-2xl rounded-tr-sm border border-neon-red/20 bg-[linear-gradient(135deg,rgba(255,59,107,0.12),rgba(255,107,53,0.10))] px-4 py-3 text-sm leading-relaxed text-white/90"
-                      : "rounded-2xl rounded-tl-sm border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white/80"
+                      : "rounded-2xl rounded-tl-sm border px-4 py-3 text-sm leading-relaxed"
+                  }
+                  style={
+                    msg.role === "assistant"
+                      ? { background: "var(--surface-1)", borderColor: "var(--border)", color: "var(--text-secondary)" }
+                      : undefined
                   }
                 >
                   {isCorrect ? (
                     <CorrectCodeBanner explanation={parsed.explanation} />
                   ) : (
                     <>
-                      <div className="prose-sm prose-invert max-w-none [&_a]:text-neon-red [&_h2]:text-white [&_h3]:text-white [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-white">
+                       <div className="prose-sm max-w-none [&_a]:text-neon-red [&_li]:my-0.5 [&_p]:my-1.5" style={{ color: "var(--text-secondary)" }}>
                         <ReactMarkdown
                           components={{
                             code: ({ children }) => (
-                              <code className="rounded-md border border-white/10 bg-[#05060A] px-1.5 py-0.5 font-mono text-xs text-neon-red">
+                               <code className="rounded-md border px-1.5 py-0.5 font-mono text-xs text-neon-red" style={{ background: "var(--editor-bg)", borderColor: "var(--border)" }}>
                                 {children}
                               </code>
                             ),
                             pre: ({ children }) => (
-                              <pre className="overflow-x-auto rounded-xl border border-white/10 bg-[#05060A] p-3 font-mono text-xs text-white/85">
+                               <pre className="overflow-x-auto rounded-xl border p-3 font-mono text-xs" style={{ background: "var(--editor-bg)", borderColor: "var(--border)", color: "var(--editor-text)" }}>
                                 {children}
                               </pre>
                             ),
@@ -400,9 +405,9 @@ export function ChatInterface() {
             {isLoading && (
               <div>
                 <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-white/35">{"// processing"}</div>
-                <div className="inline-flex items-center gap-2.5 rounded-2xl rounded-tl-sm border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+                <div className="inline-flex items-center gap-2.5 rounded-2xl rounded-tl-sm border px-4 py-3" style={{ background: "var(--surface-1)", borderColor: "var(--border)" }}>
                   <Loader2 className="h-4 w-4 animate-spin text-neon-red" />
-                  <span className="font-mono text-xs text-white/50">Menganalisis kode &amp; mencari solusi...</span>
+                  <span className="font-mono text-xs" style={{ color: "var(--text-muted)" }}>Menganalisis kode &amp; mencari solusi...</span>
                 </div>
               </div>
             )}

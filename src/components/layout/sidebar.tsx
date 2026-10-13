@@ -231,7 +231,7 @@ export function Sidebar() {
         "fixed inset-y-0 left-0 z-40 hidden flex-col border-r backdrop-blur-xl transition-[width] duration-300 lg:flex",
         collapsed ? "w-[72px]" : "w-[260px]"
       )}
-      style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
+      style={{ background: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
     >
       <div className="flex h-16 items-center justify-between border-b border-white/[0.06] px-3">
         <SidebarBrand collapsed={collapsed} />
@@ -300,7 +300,7 @@ export function MobileSidebar() {
           "absolute inset-y-0 left-0 flex w-[268px] flex-col border-r transition-transform duration-300",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
-        style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
+        style={{ background: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
       >
         <div className="flex h-16 items-center justify-between border-b border-white/[0.06] px-4">
           <SidebarBrand collapsed={false} />

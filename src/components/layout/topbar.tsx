@@ -43,7 +43,7 @@ export function Topbar() {
   return (
     <header
       className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b px-4 backdrop-blur-xl sm:px-6"
-      style={{ backgroundColor: "var(--navbar-bg)", borderColor: "var(--sidebar-border)" }}
+      style={{ background: "var(--topbar-bg)", borderColor: "var(--topbar-border)" }}
     >
       <button
         onClick={() => setMobileOpen(true)}
