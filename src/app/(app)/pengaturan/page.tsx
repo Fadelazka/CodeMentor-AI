@@ -25,7 +25,7 @@ export default function PengaturanPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = codementor-data-.json;
+      a.download = `codementor-data-${Date.now()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
