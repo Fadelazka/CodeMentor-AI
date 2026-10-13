@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Github, Mail, User as UserIcon, Building2, UserPlus, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LogoMark } from "@/components/brand/logo-mark";
@@ -16,6 +17,7 @@ export default function DaftarPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const githubEnabled = process.env.NEXT_PUBLIC_GITHUB_ENABLED === "true";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,18 +157,27 @@ export default function DaftarPage() {
             </Button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-wider text-muted-foreground">
-              <span className="bg-card px-3">atau daftar dengan</span>
-            </div>
-          </div>
+          {githubEnabled && (
+            <>
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase tracking-wider text-muted-foreground">
+                  <span className="bg-card px-3">atau daftar dengan</span>
+                </div>
+              </div>
 
-          <Button variant="outline" className="w-full" type="button">
-            <Github className="h-4 w-4" /> Daftar dengan GitHub
-          </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                type="button"
+                onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+              >
+                <Github className="h-4 w-4" /> Daftar dengan GitHub
+              </Button>
+            </>
+          )}
 
           <div className="mt-6 space-y-2">
             {["Gratis selamanya untuk mahasiswa", "Akses penuh ke semua fitur", "Tanpa kartu kredit"].map((f) => (

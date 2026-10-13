@@ -1,10 +1,18 @@
 import type { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
   providers: [
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID ?? "",
+      clientSecret: process.env.GITHUB_SECRET ?? "",
+      allowDangerousEmailAccountLinking: true,
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -20,6 +28,7 @@ export const authOptions: NextAuthOptions = {
           where: { email },
         });
 
+        // User tidak ada, atau user OAuth (tidak punya password)
         if (!user || !user.passwordHash) return null;
 
         const isValid = await compare(credentials.password, user.passwordHash);
@@ -30,26 +39,73 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
+          image: user.image,
         };
       },
     }),
   ],
   session: { strategy: "jwt" },
-  pages: { signIn: "/masuk" },
+  pages: { signIn: "/masuk", error: "/masuk" },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role;
+        token.role = (user as { role?: string }).role ?? "USER";
       }
+
+      // Refresh data ringan saat session di-update.
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true, name: true, email: true },
+        });
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
+        (session.user as { id?: string }).id = token.id as string;
+        (session.user as { role?: string }).role = token.role as string;
       }
       return session;
     },
+    async signIn({ user, account }) {
+      // GitHub OAuth: pastikan user punya role default & tandai provider.
+      if (account?.provider === "github" && user.email) {
+        const email = user.email.trim().toLowerCase();
+        const dbUser = await prisma.user.findUnique({ where: { email } });
+
+        // User lama (dari credentials) yang login via GitHub dengan email
+        // sama -> link ke akun yang sama (tidak buat duplikat).
+        if (dbUser && dbUser.provider !== "github") {
+          await prisma.user.update({
+            where: { id: dbUser.id },
+            data: { provider: "github", image: user.image ?? dbUser.image },
+          });
+        }
+      }
+
+      return true;
+    },
   },
+  events: {
+    async createUser({ user }) {
+      // User baru via OAuth: set default role + provider.
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { role: "USER", provider: "github" },
+      });
+    },
+    async linkAccount({ user, account }) {
+      console.log("[auth] Account linked:", account.provider, user.email);
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
 };

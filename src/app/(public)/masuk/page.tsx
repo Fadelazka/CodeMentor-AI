@@ -14,6 +14,7 @@ export default function MasukPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const githubEnabled = process.env.NEXT_PUBLIC_GITHUB_ENABLED === "true";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,18 +123,27 @@ export default function MasukPage() {
             </Button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-wider text-muted-foreground">
-              <span className="bg-card px-3">atau lanjutkan dengan</span>
-            </div>
-          </div>
+          {githubEnabled && (
+            <>
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase tracking-wider text-muted-foreground">
+                  <span className="bg-card px-3">atau lanjutkan dengan</span>
+                </div>
+              </div>
 
-          <Button variant="outline" className="w-full" type="button" onClick={() => signIn("github", { callbackUrl: "/dashboard" })}>
-            <Github className="h-4 w-4" /> Masuk dengan GitHub
-          </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                type="button"
+                onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+              >
+                <Github className="h-4 w-4" /> Masuk dengan GitHub
+              </Button>
+            </>
+          )}
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Belum punya akun?{" "}
