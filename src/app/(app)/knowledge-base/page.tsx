@@ -5,11 +5,20 @@ import { Database, BookOpen, Languages, ArrowRight, LayoutDashboard } from "luci
 import { knowledgeBaseEntries, languageCounts } from "@/data/knowledge-base";
 import { languages } from "@/data/mock";
 import { KbExplore } from "@/components/knowledge-base/kb-explore";
+import { PythonLogo, JavaScriptLogo, JavaLogo, CppLogo, PhpLogo } from "@/components/knowledge-base/language-logos";
 import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { MetricCard } from "@/components/ui/metric-card";
+
+const languageLogos: Record<string, typeof PythonLogo> = {
+  python: PythonLogo,
+  javascript: JavaScriptLogo,
+  java: JavaLogo,
+  cpp: CppLogo,
+  php: PhpLogo,
+};
 
 export default function KnowledgeBasePage() {
   return (
@@ -55,22 +64,31 @@ export default function KnowledgeBasePage() {
           Per Bahasa
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {languages.map((lang) => (
-            <Link
-              key={lang.value}
-              href={`/knowledge-base/${lang.value}`}
-              className="group rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all hover:-translate-y-1 hover:border-white/[0.12]"
-            >
-              <div className="mb-3 text-3xl">{lang.icon}</div>
-              <h3 className="font-bold text-white">{lang.label}</h3>
-              <p className="mt-1 text-xs text-zinc-500">
-                {languageCounts[lang.value] ?? 0} contoh error di sini
-              </p>
-              <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-zinc-400 group-hover:text-white transition-colors">
-                Buka halaman <ArrowRight className="h-3 w-3" />
-              </span>
-            </Link>
-          ))}
+          {languages.map((lang) => {
+            const Logo = languageLogos[lang.value];
+            return (
+              <Link
+                key={lang.value}
+                href={`/knowledge-base/${lang.value}`}
+                className="group rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all hover:-translate-y-1 hover:border-white/[0.12]"
+              >
+                <div className="mb-4 flex h-16 w-16 items-center justify-center">
+                  {Logo ? (
+                    <Logo className="h-full w-full transition-transform duration-300 group-hover:scale-110" />
+                  ) : (
+                    <span className="text-3xl">{lang.icon}</span>
+                  )}
+                </div>
+                <h3 className="font-bold text-white">{lang.label}</h3>
+                <p className="mt-1 text-xs text-zinc-500">
+                  {languageCounts[lang.value] ?? 0} contoh error di sini
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-zinc-400 group-hover:text-white transition-colors">
+                  Buka halaman <ArrowRight className="h-3 w-3" />
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
