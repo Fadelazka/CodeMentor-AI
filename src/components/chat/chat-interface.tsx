@@ -24,6 +24,7 @@ import { languages } from "@/data/mock";
 import { useSettings } from "@/contexts/SettingsContext";
 import { addNotification } from "@/lib/notifications";
 import toast from "react-hot-toast";
+import { LanguageDropdown } from "@/components/chat/language-dropdown";
 
 const USED_LANGUAGES_KEY = "codementor_used_languages";
 
@@ -226,20 +227,8 @@ export function ChatInterface() {
         <div className="space-y-6">
           <GlassCard>
             <div className="mb-4 flex items-center justify-between gap-3">
-              <div className="relative">
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="h-10 rounded-xl border px-3.5 pr-8 text-sm outline-none transition-colors focus:border-neon-red/40"
-                style={{ background: "var(--input-bg)", borderColor: "var(--input-border)", color: "var(--input-text)" }}                >
-                  {languages.map((l) => (
-                    <option key={l.value} value={l.value}>
-                      {l.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <span className="font-mono text-[11px] text-white/35">.{activeLanguage?.extensions}</span>
+              <LanguageDropdown value={language} onChange={setLanguage} />
+              <span className="font-mono text-[11px]" style={{ color: "var(--text-muted)" }}>.{activeLanguage?.extensions}</span>
             </div>
 
             <div className="overflow-hidden rounded-xl border border-white/10">
