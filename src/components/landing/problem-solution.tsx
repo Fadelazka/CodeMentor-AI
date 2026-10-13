@@ -1,20 +1,31 @@
 import { AlertCircle, HelpCircle, Users, Lightbulb, CheckCircle2, ArrowDown } from "lucide-react";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FadeUp, FadeRight, StaggerContainer, StaggerItem } from "@/components/landing/animations";
+import {
+  ErrorConfusionIllustration,
+  TechnicalErrorIllustration,
+  OverwhelmedTeacherIllustration,
+  RealTimeIllustration,
+  IndonesianLanguageIllustration,
+  RecommendationIllustration,
+} from "@/components/landing/illustrations";
 
 const masalah = [
   {
     icon: AlertCircle,
+    illustration: ErrorConfusionIllustration,
     title: "Kode error, tapi tidak paham kenapa",
     desc: "Mahasiswa tahu kode mereka error, tetapi tidak mengerti penyebab di baliknya. Pesan error teknis yang rumit membuat frustasi dan menghambat proses belajar.",
   },
   {
     icon: HelpCircle,
+    illustration: TechnicalErrorIllustration,
     title: "Pesan error terlalu teknis",
     desc: "Pesan error dalam bahasa Inggris dengan istilah teknis membingungkan, terutama untuk mahasiswa di awal perkuliahan.",
   },
   {
     icon: Users,
+    illustration: OverwhelmedTeacherIllustration,
     title: "Dosen & asisten kewalahan",
     desc: "Banyaknya pertanyaan debugging yang berulang membuat dosen dan asisten kewalahan menjawab satu per satu.",
   },
@@ -23,16 +34,19 @@ const masalah = [
 const solusi = [
   {
     icon: Lightbulb,
+    illustration: RealTimeIllustration,
     title: "Penjelasan real-time",
     desc: "Dapatkan penjelasan error secara instan saat coding, langsung di VS Code atau melalui aplikasi web.",
   },
   {
     icon: CheckCircle2,
+    illustration: IndonesianLanguageIllustration,
     title: "Dalam Bahasa Indonesia",
     desc: "Penjelasan yang mudah dipahami dalam Bahasa Indonesia dengan contoh perbaikan yang konkret.",
   },
   {
     icon: Lightbulb,
+    illustration: RecommendationIllustration,
     title: "Rekomendasi materi",
     desc: "CodeMentor AI merekomendasikan materi belajar yang relevan dengan error yang Anda hadapi.",
   },
@@ -63,6 +77,9 @@ export function ProblemSolution() {
         <StaggerContainer className="grid gap-px border border-border bg-border md:grid-cols-3">
           {masalah.map((item, i) => (
             <StaggerItem key={item.title} lift className="bg-background p-8">
+              <div className="mb-6 overflow-hidden rounded-lg">
+                <item.illustration />
+              </div>
               <p className="kicker mb-8">
                 <span className="text-accent">M-{String(i + 1).padStart(2, "0")}</span>
               </p>
@@ -88,6 +105,9 @@ export function ProblemSolution() {
           <StaggerContainer className="grid w-full gap-px border border-border bg-border md:grid-cols-3">
             {solusi.map((item, i) => (
               <StaggerItem key={item.title} lift className="bg-background p-8">
+                <div className="mb-6 overflow-hidden rounded-lg">
+                  <item.illustration />
+                </div>
                 <p className="kicker mb-8">
                   <span className="text-accent">S-{String(i + 1).padStart(2, "0")}</span>
                 </p>

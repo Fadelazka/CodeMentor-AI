@@ -2,13 +2,20 @@ import Link from "next/link";
 import { ArrowRight, Zap, Layers } from "lucide-react";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { FadeUp, FadeRight, StaggerContainer, StaggerItem } from "@/components/landing/animations";
+import {
+  PythonIllustration,
+  JavaScriptIllustration,
+  JavaIllustration,
+  CppIllustration,
+  PhpIllustration,
+} from "@/components/landing/illustrations";
 
 const bahasaList = [
-  { nama: "Python", token: "py", deskripsi: "SyntaxError, TypeError, IndexError, dan error umum dalam pengembangan Python.", popular: true },
-  { nama: "JavaScript", token: "js", deskripsi: "ReferenceError, SyntaxError, dan error pada lingkungan Node.js & browser." },
-  { nama: "Java", token: "java", deskripsi: "NullPointerException, ArrayIndexOutOfBounds, dan penanganan exception Java." },
-  { nama: "C++", token: "cpp", deskripsi: "Segmentation Fault, compilation error, dan isu manajemen memori." },
-  { nama: "PHP", token: "php", deskripsi: "ParseError, undefined variable, dan error pengembangan web PHP." },
+  { nama: "Python", token: "py", illustration: PythonIllustration, deskripsi: "SyntaxError, TypeError, IndexError, dan error umum dalam pengembangan Python.", popular: true },
+  { nama: "JavaScript", token: "js", illustration: JavaScriptIllustration, deskripsi: "ReferenceError, SyntaxError, dan error pada lingkungan Node.js & browser." },
+  { nama: "Java", token: "java", illustration: JavaIllustration, deskripsi: "NullPointerException, ArrayIndexOutOfBounds, dan penanganan exception Java." },
+  { nama: "C++", token: "cpp", illustration: CppIllustration, deskripsi: "Segmentation Fault, compilation error, dan isu manajemen memori." },
+  { nama: "PHP", token: "php", illustration: PhpIllustration, deskripsi: "ParseError, undefined variable, dan error pengembangan web PHP." },
 ];
 
 export function Languages() {
@@ -37,6 +44,9 @@ export function Languages() {
               lift
               className="group flex flex-col bg-background p-6 transition-colors hover:bg-muted"
             >
+              <div className="mb-5 overflow-hidden rounded-md">
+                <b.illustration />
+              </div>
               <div className="mb-8 flex items-center justify-between">
                 <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
                   .{b.token}
