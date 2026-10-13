@@ -21,6 +21,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
+import { LogoMark } from "@/components/brand/logo-mark";
 
 const COLLAPSE_KEY = "codementor_sidebar_collapsed";
 
@@ -180,9 +181,7 @@ export function SidebarSection({
 function SidebarBrand({ collapsed }: { collapsed: boolean }) {
   return (
     <Link href="/" className={cn("flex items-center gap-2.5 px-2", collapsed && "justify-center px-0")}>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-white">
-        <span className="font-mono text-sm font-bold text-[#05060A]">&lt;/&gt;</span>
-      </span>
+      <LogoMark className="h-9 w-9 shrink-0" size={36} />
       {!collapsed && (
         <span className="leading-tight">
           <span className="block font-display text-sm font-bold tracking-tight text-white">

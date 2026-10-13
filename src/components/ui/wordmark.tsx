@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { LogoMark } from "@/components/brand/logo-mark";
 
 export function Wordmark({
   className,
@@ -8,13 +9,11 @@ export function Wordmark({
   showLabel?: boolean;
 }) {
   return (
-    <div className={cn("flex items-center gap-3", className)}>
-      <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-ink text-paper dark:bg-paper dark:text-ink">
-        <span className="font-mono text-sm font-bold">&lt;/&gt;</span>
-      </div>
+    <div className={cn("flex items-center gap-2.5", className)}>
+      <LogoMark className="h-9 w-9" size={36} />
       {showLabel && (
         <span className="font-display text-lg font-bold tracking-tight text-foreground">
-          CodeMentor<span className="font-mono text-xs text-accent">_AI</span>
+          CodeMentor<span className="font-mono text-xs text-[#FF3B6B]">_AI</span>
         </span>
       )}
     </div>

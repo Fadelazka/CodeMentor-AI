@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Code2, Github, Mail, User as UserIcon, Building2, UserPlus, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { Github, Mail, User as UserIcon, Building2, UserPlus, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LogoMark } from "@/components/brand/logo-mark";
 import toast from "react-hot-toast";
 
 export default function DaftarPage() {
@@ -47,9 +48,7 @@ export default function DaftarPage() {
         <div className="rounded-sm border border-border bg-card p-8">
           <div className="mb-8 text-center">
             <Link href="/" className="mb-6 inline-flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-ink">
-                <Code2 className="h-5 w-5 text-paper" />
-              </div>
+              <LogoMark className="h-10 w-10" size={40} />
               <span className="text-lg font-bold text-foreground">
                 Code<span className="text-accent">Mentor</span> AI
               </span>
