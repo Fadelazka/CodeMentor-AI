@@ -93,6 +93,15 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      try {
+        if (new URL(url).origin === baseUrl) return url;
+      } catch {
+        // URL tidak valid -> fallback ke baseUrl
+      }
+      return baseUrl;
+    },
   },
   events: {
     async createUser({ user }) {
@@ -104,6 +113,12 @@ export const authOptions: NextAuthOptions = {
     },
     async linkAccount({ user, account }) {
       console.log("[auth] Account linked:", account.provider, user.email);
+    },
+  },
+  logger: {
+    error(code, metadata) {
+      const message = metadata instanceof Error ? metadata.message : metadata.error.message;
+      console.error("[auth][error]", code, message);
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

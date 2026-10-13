@@ -138,7 +138,7 @@ export default function MasukPage() {
                 variant="outline"
                 className="w-full"
                 type="button"
-                onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+                onClick={() => signIn("github", { callbackUrl: "/redirect-check" })}
               >
                 <Github className="h-4 w-4" /> Masuk dengan GitHub
               </Button>
