@@ -54,6 +54,8 @@ export async function generateExplainationWithGroq(payload: {
   sourceCode: string;
   errorMessage?: string;
   ragContext: RagContext;
+  aiLanguage?: "id" | "en";
+  aiDetailLevel?: "brief" | "medium" | "detailed";
 }) {
   const apiKey = process.env.GROQ_API_KEY;
 
@@ -72,12 +74,64 @@ export async function generateExplainationWithGroq(payload: {
     )
     .join("\n\n");
 
-  const systemPrompt = `Kamu adalah CodeMentor AI, asisten debugging kode untuk mahasiswa Indonesia.
-Selalu jawab dalam Bahasa Indonesia dengan bahasa yang mudah dipahami.
+  const lang = payload.aiLanguage ?? "id";
+  const detail = payload.aiDetailLevel ?? "medium";
 
-PENTING: Pertama, analisis apakah kode user SUDAH BENAR (tidak ada error/syntax error/logika error).
+  const langInstruction =
+    lang === "en"
+      ? "Always respond in English with clear explanations."
+      : "Selalu jawab dalam Bahasa Indonesia dengan bahasa yang mudah dipahami untuk mahasiswa.";
 
-JIKA KODE SUDAH BENAR (tidak ada error):
+  const detailInstruction: Record<string, string> = {
+    brief:
+      lang === "en"
+        ? "Keep explanations concise and to the point (1-2 paragraphs at most). Focus on the fix."
+        : "Jelaskan secara singkat (maksimal 1-2 paragraf) dan fokus ke solusi.",
+    medium:
+      lang === "en"
+        ? "Provide balanced explanation: cause, fix, corrected code if needed, short recommendation."
+        : "Berikan penjelasan seimbang: penyebab, solusi, kode perbaikan jika ada, rekomendasi singkat.",
+    detailed:
+      lang === "en"
+        ? "Provide detailed explanation: root cause, step-by-step fix, complete corrected code, related concepts, and safe runnable example."
+        : "Berikan penjelasan lengkap: penyebab mendalam, langkah perbaikan, kode perbaikan LENGKAP, konsep terkait, contoh siap jalan.",
+  };
+
+  const sectionsEn = `IF CODE IS CORRECT (no error):
+Only reply with:
+
+✅ CODE IS CORRECT
+
+[2-3 sentences explaining why.]
+
+Do NOT show "Broken Code", "Corrected Code", or "Recommended Materials".
+
+IF CODE IS WRONG (has error):
+Use this exact format:
+
+## Explanation of the Error
+[Explain the cause clearly]
+
+## Problematic Code
+\`\`\`${payload.language}
+[original broken code]
+\`\`\`
+
+## Corrected Code
+\`\`\`${payload.language}
+[complete, corrected, runnable code]
+\`\`\`
+
+## Recommended Materials
+[Relevant concepts to learn]
+
+IMPORTANT:
+- Include "## Corrected Code" when code is wrong.
+- Use the same programming language as the user's code (${payload.language}).
+- Prioritize knowledge base context when available.
+- End with "**Confidence:** <number>%".`;
+
+  const sectionsId = `JIKA KODE SUDAH BENAR (tidak ada error):
 Balas HANYA dengan format berikut:
 
 ✅ KODE INI SUDAH BENAR 100%
@@ -113,6 +167,12 @@ ATURAN PENTING:
 - Selalu gunakan bahasa pemrograman yang sama dengan kode user (${payload.language}).
 - Prioritaskan jawaban berdasarkan konteks knowledge base bila tersedia.
 - Akhiri jawaban dengan baris "**Confidence:** <angka>%".`;
+
+  const systemPrompt = `Kamu adalah CodeMentor AI, asisten debugging kode.
+${langInstruction}
+${detailInstruction[detail]}
+
+${lang === "en" ? sectionsEn : sectionsId}`;
 
   const userPrompt = `Bahasa pemrograman: ${payload.language}
 Kode sumber:

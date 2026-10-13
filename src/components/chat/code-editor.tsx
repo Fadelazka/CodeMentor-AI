@@ -48,6 +48,7 @@ export function CodeEditor({ value, onChange, language, height = "320px", readOn
       readOnly={readOnly}
       placeholder="Tempel atau tulis kode Anda di sini..."
       className="overflow-hidden rounded-sm border border-border text-sm"
+      style={{ fontSize: "var(--editor-font-size, 14px)" }}
       basicSetup={{
         lineNumbers: true,
         highlightActiveLine: true,

@@ -41,7 +41,10 @@ export function Topbar() {
   const initial = name.charAt(0).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-white/[0.06] bg-[#05060A]/80 px-4 backdrop-blur-xl sm:px-6">
+    <header
+      className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b px-4 backdrop-blur-xl sm:px-6"
+      style={{ backgroundColor: "var(--navbar-bg)", borderColor: "var(--sidebar-border)" }}
+    >
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Buka menu"

@@ -72,6 +72,8 @@ export async function POST(req: NextRequest) {
       sourceCode,
       errorMessage,
       ragContext,
+      aiLanguage: body.aiLanguage,
+      aiDetailLevel: body.aiDetailLevel,
     });
 
     const responseTimeMs = Date.now() - startTime;

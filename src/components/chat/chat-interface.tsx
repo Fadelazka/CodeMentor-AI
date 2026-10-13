@@ -141,6 +141,8 @@ export function ChatInterface() {
           language,
           errorMessage: errorInput.trim() || undefined,
           saveHistory: settings.autoSaveHistory,
+          aiLanguage: settings.aiLanguage,
+          aiDetailLevel: settings.aiDetailLevel,
         }),
       });
 
