@@ -104,6 +104,14 @@ export const authOptions: NextAuthOptions = {
     },
   },
   events: {
+    async signIn({ user, account, profile }) {
+      console.log("[auth/signIn]", {
+        provider: account?.provider,
+        email: user?.email,
+        hasAccount: !!account,
+        hasProfile: !!profile,
+      });
+    },
     async createUser({ user }) {
       // User baru via OAuth: set default role + provider.
       await prisma.user.update({
@@ -113,6 +121,9 @@ export const authOptions: NextAuthOptions = {
     },
     async linkAccount({ user, account }) {
       console.log("[auth] Account linked:", account.provider, user.email);
+    },
+    async signOut() {
+      console.log("[auth/signOut]");
     },
   },
   logger: {

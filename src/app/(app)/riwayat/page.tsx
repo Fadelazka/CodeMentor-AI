@@ -1,8 +1,9 @@
 ﻿"use client";
 
 import { useState, useEffect } from "react";
-import { Search, History, Download, Eye, Trash2, SlidersHorizontal, X } from "lucide-react";
+import { Search, History, Eye, Trash2, SlidersHorizontal, X } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
+import { ExportDropdown } from "@/components/history/export-dropdown";
 import { GlassCard } from "@/components/ui/glass-card";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -131,9 +132,7 @@ export default function RiwayatPage() {
         description="Semua error yang pernah Anda tanyakan, tersimpan rapi untuk dipelajari kembali."
         actions={
           <div className="flex gap-2">
-            <GradientButton variant="outline" icon={Download} onClick={() => toast.success("Mengekspor seluruh riwayat (demo).")}>
-              Ekspor
-            </GradientButton>
+            <ExportDropdown language={langFilter} searchQuery={search} />
             {rows.length > 0 && (
               <GradientButton variant="outline" icon={Trash2} onClick={handleDeleteAll} className="text-neon-red border-neon-red/40 hover:bg-neon-red/10">
                 Hapus Semua
