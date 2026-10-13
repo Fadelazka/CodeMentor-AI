@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Palette, Bot, Bell, User, RotateCcw, KeyRound, Download, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ import type { UserSettings } from "@/lib/settings";
 import { SettingsSection } from "@/components/settings/settings-section";
 import { RadioGroup } from "@/components/settings/radio-group";
 import { ToggleSwitch } from "@/components/settings/toggle-switch";
+import { ChangePasswordModal } from "@/components/settings/change-password-modal";
 
 function Field({
   label,
@@ -71,6 +72,7 @@ function CheckItem({
 
 export default function PengaturanPage() {
   const { settings, updateSettings, resetAll } = useSettings();
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const change = (partial: Partial<UserSettings>) => {
     updateSettings(partial);
@@ -222,7 +224,11 @@ export default function PengaturanPage() {
         description="Kelola keamanan dan data akun Anda"
       >
         <div className="flex flex-wrap gap-3">
-          <GradientButton variant="outline" icon={KeyRound}>
+          <GradientButton
+            variant="outline"
+            icon={KeyRound}
+            onClick={() => setIsChangePasswordOpen(true)}
+          >
             Ubah Password
           </GradientButton>
           <GradientButton variant="outline" icon={Download}>
@@ -246,6 +252,11 @@ export default function PengaturanPage() {
           </button>
         </div>
       </SettingsSection>
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+      />
     </div>
   );
 }
