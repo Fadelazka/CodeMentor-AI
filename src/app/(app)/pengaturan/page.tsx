@@ -1,262 +1,64 @@
-'use client';
+﻿use client
 
 import { useState } from 'react';
 import { useSettings } from '@/contexts/SettingsContext';
+import { toast } from 'react-hot-toast';
+import { Palette, Bot, Bell, User as UserIcon, KeyRound, Download, Trash2 } from 'lucide-react';
+import { ChangePasswordModal } from '@/components/settings/change-password-modal';
 
 export default function PengaturanPage() {
   const { settings, updateSettings, resetAll } = useSettings();
-  const [savedMessage, setSavedMessage] = useState('');
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleUpdate = (key: string, value: any) => {
     updateSettings({ [key]: value });
-    setSavedMessage('Pengaturan tersimpan');
-    setTimeout(() => setSavedMessage(''), 2000);
+    toast.success('Pengaturan tersimpan');
   };
 
+  const handleDownloadData = async () => {
+    setIsDownloading(true);
+    try {
+      const res = await fetch('/api/user/export');
+      if (!res.ok) throw new Error('Export failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = codementor-data-.json;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success('Data berhasil diunduh');
+    } catch {
+      toast.error('Gagal mengunduh data');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const Option = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) => (
+    <button
+      onClick={onClick}
+      className='px-4 py-2 rounded-lg text-sm font-medium transition-all border'
+      style={{
+        background: active ? 'rgba(255,59,107,0.1)' : 'var(--surface-2)',
+        borderColor: active ? '#FF3B6B' : 'var(--border)',
+        color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
+      }}
+    >{children}</button>
+  );
+
   return (
-    <div className="max-w-4xl space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className='max-w-4xl space-y-6'>
+      <div className='flex items-center justify-between flex-wrap gap-4'>
         <div>
-          <p className="text-xs uppercase tracking-wider text-[#FF3B6B] mb-1">
-            {'// PENGATURAN'}
-          </p>
-          <h1 className="text-2xl font-bold text-white">Pengaturan</h1>
-          <p className="text-sm text-zinc-400 mt-1">
-            Kelola preferensi dan tampilan aplikasi Anda
-          </p>
+          <p className='text-xs uppercase tracking-wider text-[#FF3B6B] mb-1'>{'// PENGATURAN'}</p>
+          <h1 className='text-2xl font-bold' style={{ color: 'var(--text-primary)' }}>Pengaturan</h1>
+          <p className='text-sm mt-1' style={{ color: 'var(--text-secondary)' }}>Kelola preferensi dan tampilan aplikasi Anda</p>
         </div>
-        <button
-          onClick={() => {
-            resetAll();
-            setSavedMessage('Direset ke default');
-            setTimeout(() => setSavedMessage(''), 2000);
-          }}
-          className="px-4 py-2 rounded-lg border border-white/[0.08] bg-white/[0.02] text-sm text-white font-medium hover:bg-white/[0.08] transition-colors"
-        >
-          Kembalikan Default
-        </button>
-      </div>
-
-      {savedMessage && (
-        <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-400">
-          ✓ {savedMessage}
-        </div>
-      )}
-
-      {/* Preferensi Tampilan */}
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-6">
-        <div>
-          <h3 className="text-base font-semibold text-white mb-1">
-            Preferensi Tampilan
-          </h3>
-          <p className="text-xs text-zinc-500">
-            Sesuaikan tema dan tampilan aplikasi
-          </p>
-        </div>
-
-        {/* Tema Aplikasi */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-3">
-            Tema Aplikasi
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { value: 'light', label: 'Terang' },
-              { value: 'dark', label: 'Gelap' },
-              { value: 'system', label: 'Sistem' },
-            ].map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleUpdate('theme', opt.value)}
-                className="px-4 py-2 rounded-lg border text-sm font-medium transition-all"
-                style={{
-                  background:
-                    settings.theme === opt.value
-                      ? 'rgba(255,59,107,0.1)'
-                      : 'rgba(255,255,255,0.02)',
-                  borderColor:
-                    settings.theme === opt.value
-                      ? '#FF3B6B'
-                      : 'rgba(255,255,255,0.08)',
-                  color: 'white',
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Warna Aksen */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-3">
-            Warna Aksen
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { value: 'red', label: 'Merah' },
-              { value: 'orange', label: 'Orange' },
-              { value: 'violet', label: 'Violet' },
-              { value: 'cyan', label: 'Cyan' },
-            ].map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleUpdate('accentColor', opt.value)}
-                className="px-4 py-2 rounded-lg border text-sm font-medium transition-all"
-                style={{
-                  background:
-                    settings.accentColor === opt.value
-                      ? 'rgba(255,59,107,0.1)'
-                      : 'rgba(255,255,255,0.02)',
-                  borderColor:
-                    settings.accentColor === opt.value
-                      ? '#FF3B6B'
-                      : 'rgba(255,255,255,0.08)',
-                  color: 'white',
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Ukuran Font Editor */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-3">
-            Ukuran Font Editor
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { value: 'small', label: 'Kecil' },
-              { value: 'medium', label: 'Sedang' },
-              { value: 'large', label: 'Besar' },
-            ].map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleUpdate('editorFontSize', opt.value)}
-                className="px-4 py-2 rounded-lg border text-sm font-medium transition-all"
-                style={{
-                  background:
-                    settings.editorFontSize === opt.value
-                      ? 'rgba(255,59,107,0.1)'
-                      : 'rgba(255,255,255,0.02)',
-                  borderColor:
-                    settings.editorFontSize === opt.value
-                      ? '#FF3B6B'
-                      : 'rgba(255,255,255,0.08)',
-                  color: 'white',
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Preferensi AI */}
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 space-y-6">
-        <div>
-          <h3 className="text-base font-semibold text-white mb-1">
-            Preferensi AI
-          </h3>
-          <p className="text-xs text-zinc-500">
-            Atur cara AI menjelaskan error
-          </p>
-        </div>
-
-        {/* Bahasa Penjelasan */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-3">
-            Bahasa Penjelasan
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { value: 'id', label: 'Bahasa Indonesia' },
-              { value: 'en', label: 'English' },
-            ].map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleUpdate('aiLanguage', opt.value)}
-                className="px-4 py-2 rounded-lg border text-sm font-medium transition-all"
-                style={{
-                  background:
-                    settings.aiLanguage === opt.value
-                      ? 'rgba(255,59,107,0.1)'
-                      : 'rgba(255,255,255,0.02)',
-                  borderColor:
-                    settings.aiLanguage === opt.value
-                      ? '#FF3B6B'
-                      : 'rgba(255,255,255,0.08)',
-                  color: 'white',
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Tingkat Detail Jawaban */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-3">
-            Tingkat Detail Jawaban
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { value: 'brief', label: 'Singkat' },
-              { value: 'medium', label: 'Sedang' },
-              { value: 'detailed', label: 'Detail' },
-            ].map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleUpdate('aiDetailLevel', opt.value)}
-                className="px-4 py-2 rounded-lg border text-sm font-medium transition-all"
-                style={{
-                  background:
-                    settings.aiDetailLevel === opt.value
-                      ? 'rgba(255,59,107,0.1)'
-                      : 'rgba(255,255,255,0.02)',
-                  borderColor:
-                    settings.aiDetailLevel === opt.value
-                      ? '#FF3B6B'
-                      : 'rgba(255,255,255,0.08)',
-                  color: 'white',
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Auto-save */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <p className="text-sm font-medium text-white">
-              Auto-save Chat History
-            </p>
-            <p className="text-xs text-zinc-500 mt-1">
-              Simpan otomatis riwayat percakapan Anda.
-            </p>
-          </div>
-          <button
-            onClick={() =>
-              handleUpdate('autoSaveHistory', !settings.autoSaveHistory)
-            }
-            className={`relative w-11 h-6 rounded-full transition-colors ${
-              settings.autoSaveHistory ? 'bg-[#FF3B6B]' : 'bg-zinc-700'
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
-                settings.autoSaveHistory ? 'translate-x-5' : 'translate-x-0'
-              }`}
-            />
-          </button>
-        </div>
+        <button onClick={() => { resetAll(); toast.success('Direset ke default'); }} className='px-4 py-2 rounded-lg text-sm font-medium transition-colors border' style={{ background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}>Kembalikan Default</button>
       </div>
     </div>
   );
