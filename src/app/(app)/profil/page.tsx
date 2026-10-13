@@ -1,4 +1,7 @@
-"use client";
+﻿"use client";
+import { useState } from "react";
+import { EditProfileModal } from "@/components/profile/edit-profile-modal";
+      
 
 import { useSession } from "next-auth/react";
 import { MessagesSquare, CheckCircle2, Code2, User, IdCard } from "lucide-react";
@@ -30,11 +33,10 @@ const DETAILS = [
   { label: "Bergabung", value: FALLBACK.joinedAt },
 ];
 
-export default function ProfilPage() {
+export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useState(false);
   const { data: session } = useSession();
 
-  const name = session?.user?.name ?? FALLBACK.name;
-  const email = session?.user?.email ?? FALLBACK.email;
+  const name = session?.user?.name ?? FALLBACK.name; const email = session?.user?.email ?? FALLBACK.email;
   const role = (session?.user as { role?: string } | undefined)?.role ?? FALLBACK.role;
 
   const details = DETAILS.map((d) => {
@@ -88,3 +90,13 @@ export default function ProfilPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
