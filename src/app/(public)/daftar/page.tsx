@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LogoMark } from "@/components/brand/logo-mark";
+import { AuthBackground } from "@/components/auth/auth-background";
 import toast from "react-hot-toast";
 
 export default function DaftarPage() {
@@ -45,8 +46,9 @@ export default function DaftarPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background pt-16 pb-16">
-      <div className="w-full max-w-lg">
+    <div className="relative flex min-h-screen items-center justify-center bg-background pt-16 pb-16">
+      <AuthBackground />
+      <div className="relative z-10 w-full max-w-lg">
         <div className="rounded-sm border border-border bg-card p-8">
           <div className="mb-8 text-center">
             <Link href="/" className="mb-6 inline-flex items-center gap-2">
