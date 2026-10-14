@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   MessagesSquare,
@@ -16,7 +16,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   X,
-  LogOut,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -207,14 +206,6 @@ function SidebarFooter({ collapsed, onNavigate }: { collapsed: boolean; onNaviga
       {links.map((item) => (
         <SidebarLink key={item.href} item={item} collapsed={collapsed} onNavigate={onNavigate} />
       ))}
-      <button
-        type="button"
-        onClick={() => signOut({ callbackUrl: "/" })}
-        className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-neon-red transition-colors hover:bg-neon-red/[0.08]"
-      >
-        <LogOut className="h-[18px] w-[18px]" strokeWidth={1.75} />
-        <span className="flex-1 truncate font-medium tracking-tight">Keluar</span>
-      </button>
     </div>
   );
 }
