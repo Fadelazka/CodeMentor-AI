@@ -4,12 +4,37 @@ import { Database, BookOpen, Languages, ArrowRight } from "lucide-react";
 import { knowledgeBaseEntries, languageCounts } from "@/data/knowledge-base";
 import { languages } from "@/data/mock";
 import { KbExplore } from "@/components/knowledge-base/kb-explore";
+import {
+  PythonLogo,
+  JavaScriptLogo,
+  JavaLogo,
+  CppLogo,
+  PhpLogo,
+} from "@/components/knowledge-base/language-logos";
 
 export const metadata: Metadata = {
   title: "Knowledge Base CodeMentor AI",
   description:
     "Jelajahi knowledge base CodeMentor AI: 200+ pola error pemrograman di 5 bahasa, lengkap dengan deskripsi, solusi, dan contoh kode.",
 };
+
+function getLanguageLogo(code: string) {
+  const map: Record<string, React.ComponentType<{ className?: string }>> = {
+    python: PythonLogo,
+    javascript: JavaScriptLogo,
+    js: JavaScriptLogo,
+    java: JavaLogo,
+    cpp: CppLogo,
+    cplusplus: CppLogo,
+    php: PhpLogo,
+  };
+  return map[code.toLowerCase()] ?? null;
+}
+
+function LanguageLogo({ code, className = "w-12 h-12" }: { code: string; className?: string }) {
+  const Logo = getLanguageLogo(code);
+  return Logo ? <Logo className={className} /> : null;
+}
 
 export default function KnowledgeBasePage() {
   return (
@@ -55,7 +80,9 @@ export default function KnowledgeBasePage() {
                   href={`/knowledge-base/${lang.value}`}
                   className="group rounded-sm border border-border bg-card p-5 transition-all hover:-translate-y-1 hover:border-foreground/20"
                 >
-                  <div className="mb-3 text-3xl">{lang.icon}</div>
+                  <div className="mb-3 flex h-12 items-center justify-center">
+                    <LanguageLogo code={lang.value} />
+                  </div>
                   <h3 className="font-bold text-foreground">{lang.nama}</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {languageCounts[lang.value] ?? 0} contoh error di sini
