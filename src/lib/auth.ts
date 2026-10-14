@@ -53,19 +53,21 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = (user as { role?: string }).role ?? "USER";
         token.nim = (user as { nim?: string | null }).nim ?? null;
+        token.picture = user.image;
       }
 
       // Refresh data ringan saat session di-update.
       if (trigger === "update" && token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, name: true, email: true, nim: true },
+          select: { role: true, name: true, email: true, nim: true, image: true },
         });
         if (dbUser) {
           token.role = dbUser.role;
           token.name = dbUser.name;
           token.email = dbUser.email;
           token.nim = dbUser.nim;
+          token.picture = dbUser.image;
         }
       }
 
@@ -76,6 +78,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as { id?: string }).id = token.id as string;
         (session.user as { role?: string }).role = token.role as string;
         (session.user as { nim?: string | null }).nim = token.nim as string | null;
+        (session.user as { image?: string | null }).image = token.picture as string | null;
       }
       return session;
     },

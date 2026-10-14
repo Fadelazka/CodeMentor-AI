@@ -1,6 +1,7 @@
 "use client";
 
 import { UserCog } from "lucide-react";
+import Image from "next/image";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
 
@@ -9,6 +10,7 @@ interface ProfileCardProps {
   email: string;
   joinedAt: string;
   role?: string;
+  image?: string;
   onEdit?: () => void;
 }
 
@@ -22,13 +24,17 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
-export function ProfileCard({ name, email, joinedAt, role, onEdit }: ProfileCardProps) {
+export function ProfileCard({ name, email, joinedAt, role, image, onEdit }: ProfileCardProps) {
   return (
     <GlassCard>
       <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
         <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#FF3B6B,#FF6B35)] p-[2px]">
-          <span className="flex h-full w-full items-center justify-center rounded-[14px] bg-[#05060A] font-display text-2xl font-bold text-white">
-            {getInitials(name)}
+          <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-[14px] bg-[#05060A] font-display text-2xl font-bold text-white">
+            {image ? (
+              <Image src={image} alt={name} width={80} height={80} unoptimized className="h-full w-full object-cover" />
+            ) : (
+              getInitials(name)
+            )}
           </span>
         </span>
 

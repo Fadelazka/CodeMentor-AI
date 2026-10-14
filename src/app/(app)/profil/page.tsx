@@ -38,6 +38,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
   const name = session?.user?.name ?? FALLBACK.name; const email = session?.user?.email ?? FALLBACK.email;
   const role = (session?.user as { role?: string } | undefined)?.role ?? FALLBACK.role;
   const nim = (session?.user as { nim?: string } | undefined)?.nim ?? "";
+  const image = session?.user?.image ?? "";
 
   const details = DETAILS.map((d) => {
     if (d.label === "Nama Lengkap") return { ...d, value: name };
@@ -55,7 +56,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
         description="Kelola informasi akun Anda"
       />
 
-      <ProfileCard name={name} email={email} role={role} joinedAt={FALLBACK.joinedAt} onEdit={() => setIsEditOpen(true)} />
+      <ProfileCard name={name} email={email} role={role} image={image} joinedAt={FALLBACK.joinedAt} onEdit={() => setIsEditOpen(true)} />
 
       <GlassCard>
         <SectionLabel icon={IdCard}>Informasi Akun</SectionLabel>
@@ -95,6 +96,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
           name: name || '',
           email: email || '',
           nim: nim || '',
+          image: image || '',
         }}
       />
     </div>
