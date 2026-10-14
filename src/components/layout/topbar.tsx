@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
   Menu,
+  MessageSquare,
   MessageSquarePlus,
   ChevronRight,
   User,
@@ -16,6 +17,7 @@ import { useSidebar } from "@/components/layout/sidebar";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { BadgePill } from "@/components/ui/badge-pill";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { FeedbackModal } from "@/components/chat/feedback-modal";
 
 const LABELS: Record<string, string> = {
   dashboard: "Dashboard",
@@ -32,6 +34,7 @@ export function Topbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const segment = pathname?.split("/").filter(Boolean)[0] ?? "";
@@ -63,6 +66,16 @@ export function Topbar() {
         <BadgePill tone="green" dot className="hidden xl:inline-flex">
           AI Online
         </BadgePill>
+
+        {pathname?.startsWith("/chat") && (
+          <button
+            onClick={() => setIsFeedbackOpen(true)}
+            className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/[0.08]"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Feedback
+          </button>
+        )}
 
         <NotificationBell />
 
@@ -136,6 +149,11 @@ export function Topbar() {
           )}
         </div>
       </div>
+
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+      />
     </header>
   );
 }
