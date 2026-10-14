@@ -1,15 +1,22 @@
 ﻿"use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditProfileModal } from "@/components/profile/edit-profile-modal";
       
 
 import { useSession } from "next-auth/react";
-import { MessagesSquare, CheckCircle2, Code2, User, IdCard } from "lucide-react";
+import { MessagesSquare, CheckCircle2, User, IdCard } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { SectionLabel } from "@/components/ui/section-label";
 import { GlassCard } from "@/components/ui/glass-card";
 import { MetricCard } from "@/components/ui/metric-card";
 import { ProfileCard } from "@/components/profile/profile-card";
+import {
+  PythonLogo,
+  JavaScriptLogo,
+  JavaLogo,
+  CppLogo,
+  PhpLogo,
+} from "@/components/knowledge-base/language-logos";
 
 const FALLBACK = {
   name: "Fadhel Muhammad Azka Islamy",
@@ -18,11 +25,13 @@ const FALLBACK = {
   joinedAt: "27 Agustus 2026",
 };
 
-const STATS = [
-  { label: "Total Chat", value: "1.247", icon: MessagesSquare, accent: "cyan" as const },
-  { label: "Error Dipecahkan", value: "1.178", icon: CheckCircle2, accent: "green" as const },
-  { label: "Bahasa Favorit", value: "Python", icon: Code2, accent: "violet" as const },
-];
+const LANG_META: Record<string, { label: string; Logo: React.ComponentType<{ className?: string }> }> = {
+  python: { label: "Python", Logo: PythonLogo },
+  javascript: { label: "JavaScript", Logo: JavaScriptLogo },
+  java: { label: "Java", Logo: JavaLogo },
+  cpp: { label: "C++", Logo: CppLogo },
+  php: { label: "PHP", Logo: PhpLogo },
+};
 
 const DETAILS = [
   { label: "Nama Lengkap", value: FALLBACK.name },
@@ -34,11 +43,21 @@ const DETAILS = [
 
 export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useState(false);
   const { data: session } = useSession();
+  const [stats, setStats] = useState<{ totalQuestions?: number; errorsSolved?: number } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/dashboard/stats")
+      .then((r) => r.json())
+      .then((d) => setStats(d))
+      .catch(() => setStats({ totalQuestions: 0, errorsSolved: 0 }));
+  }, []);
 
   const name = session?.user?.name ?? FALLBACK.name; const email = session?.user?.email ?? FALLBACK.email;
   const role = (session?.user as { role?: string } | undefined)?.role ?? FALLBACK.role;
   const nim = (session?.user as { nim?: string } | undefined)?.nim ?? "";
   const image = session?.user?.image ?? "";
+  const favoriteLanguage = (session?.user as { favoriteLanguage?: string } | undefined)?.favoriteLanguage ?? "";
+  const favMeta = favoriteLanguage ? LANG_META[favoriteLanguage] : undefined;
 
   const details = DETAILS.map((d) => {
     if (d.label === "Nama Lengkap") return { ...d, value: name };
@@ -78,15 +97,32 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
       <div>
         <SectionLabel icon={User}>Statistik</SectionLabel>
         <div className="grid gap-4 sm:grid-cols-3">
-          {STATS.map((stat) => (
-            <MetricCard
-              key={stat.label}
-              label={stat.label}
-              value={stat.value}
-              icon={stat.icon}
-              accent={stat.accent}
-            />
-          ))}
+          <MetricCard
+            label="Total Chat"
+            value={String(stats?.totalQuestions ?? 0)}
+            icon={MessagesSquare}
+            accent="cyan"
+          />
+          <MetricCard
+            label="Error Dipecahkan"
+            value={String(stats?.errorsSolved ?? 0)}
+            icon={CheckCircle2}
+            accent="green"
+          />
+          <div className="glass-panel rounded-2xl p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">Bahasa Favorit</p>
+            <div className="mt-3 flex items-center gap-2">
+              {favMeta ? (
+                <>
+                  <favMeta.Logo className="w-6 h-6" />
+                  <span className="font-display text-3xl font-bold tracking-tight text-white">{favMeta.label}</span>
+                </>
+              ) : (
+                <span className="font-display text-3xl font-bold tracking-tight text-white/40">-</span>
+              )}
+            </div>
+            {!favMeta && <p className="mt-1 text-[11px] text-white/40">Belum dipilih</p>}
+          </div>
         </div>
       </div>
       <EditProfileModal
@@ -97,6 +133,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
           email: email || '',
           nim: nim || '',
           image: image || '',
+          favoriteLanguage: favoriteLanguage || '',
         }}
       />
     </div>

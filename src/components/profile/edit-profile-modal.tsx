@@ -6,13 +6,28 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
-import { X, UserRound, Mail, IdCard, Camera, Upload } from "lucide-react";
+import { X, UserRound, Mail, IdCard, Camera, Upload, ChevronDown } from "lucide-react";
+import {
+  PythonLogo,
+  JavaScriptLogo,
+  JavaLogo,
+  CppLogo,
+  PhpLogo,
+} from "@/components/knowledge-base/language-logos";
 
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialData: { name: string; email: string; nim?: string; image?: string };
+  initialData: { name: string; email: string; nim?: string; image?: string; favoriteLanguage?: string };
 }
+
+const LANGUAGES = [
+  { value: "python", label: "Python", Logo: PythonLogo },
+  { value: "javascript", label: "JavaScript", Logo: JavaScriptLogo },
+  { value: "java", label: "Java", Logo: JavaLogo },
+  { value: "cpp", label: "C++", Logo: CppLogo },
+  { value: "php", label: "PHP", Logo: PhpLogo },
+];
 
 export function EditProfileModal({ isOpen, onClose, initialData }: EditProfileModalProps) {
   const { update } = useSession();
@@ -20,6 +35,8 @@ export function EditProfileModal({ isOpen, onClose, initialData }: EditProfileMo
   const [name, setName] = useState(initialData.name);
   const [email, setEmail] = useState(initialData.email);
   const [nim, setNim] = useState(initialData.nim || "");
+  const [favoriteLanguage, setFavoriteLanguage] = useState(initialData.favoriteLanguage || "");
+  const [langOpen, setLangOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState(initialData.image || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,16 +44,19 @@ export function EditProfileModal({ isOpen, onClose, initialData }: EditProfileMo
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isBusy = isLoading || isUploading;
+  const selectedLang = LANGUAGES.find((l) => l.value === favoriteLanguage);
 
   useEffect(() => {
     if (isOpen) {
       setName(initialData.name);
       setEmail(initialData.email);
       setNim(initialData.nim || "");
+      setFavoriteLanguage(initialData.favoriteLanguage || "");
       setImagePreview(initialData.image || "");
       setSelectedFile(null);
+      setLangOpen(false);
     }
-  }, [isOpen, initialData.name, initialData.email, initialData.nim, initialData.image]);
+  }, [isOpen, initialData.name, initialData.email, initialData.nim, initialData.image, initialData.favoriteLanguage]);
 
   const handleChooseFile = () => fileInputRef.current?.click();
 
@@ -80,7 +100,7 @@ export function EditProfileModal({ isOpen, onClose, initialData }: EditProfileMo
       if (selectedFile) {
         await uploadAvatar();
       }
-      const res = await fetch("/api/user/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: name.trim(), email: email.toLowerCase().trim(), nim: nim.trim() }) });
+      const res = await fetch("/api/user/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: name.trim(), email: email.toLowerCase().trim(), nim: nim.trim(), favoriteLanguage }) });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Gagal");
       await update();
@@ -169,6 +189,44 @@ export function EditProfileModal({ isOpen, onClose, initialData }: EditProfileMo
                 <div className="relative">
                   <IdCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                   <input value={nim} onChange={(e) => setNim(e.target.value)} placeholder="Masukkan NIM" disabled={isBusy} className="w-full rounded-xl border py-2.5 pl-10 pr-3 text-sm outline-none disabled:opacity-50" style={{ background: "var(--input-bg)", borderColor: "var(--input-border)", color: "var(--input-text)" }} />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium" style={{ color: "var(--text-secondary)" }}>Bahasa Favorit</label>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setLangOpen((v) => !v)}
+                    disabled={isBusy}
+                    className="flex w-full items-center justify-between rounded-xl border px-4 py-2.5 text-sm outline-none disabled:opacity-50"
+                    style={{ background: "var(--input-bg)", borderColor: "var(--input-border)", color: "var(--input-text)" }}
+                  >
+                    {selectedLang ? (
+                      <span className="flex items-center gap-2">
+                        <selectedLang.Logo className="w-5 h-5" />
+                        {selectedLang.label}
+                      </span>
+                    ) : (
+                      <span className="text-zinc-500">Pilih bahasa</span>
+                    )}
+                    <ChevronDown className="h-4 w-4 text-zinc-400" />
+                  </button>
+                  {langOpen && (
+                    <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border shadow-lg" style={{ background: "var(--surface-2)", borderColor: "var(--border)" }}>
+                      {LANGUAGES.map((l) => (
+                        <button
+                          key={l.value}
+                          type="button"
+                          onClick={() => { setFavoriteLanguage(l.value); setLangOpen(false); }}
+                          className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:bg-white/[0.06]"
+                          style={{ color: "var(--input-text)" }}
+                        >
+                          <l.Logo className="w-5 h-5" />
+                          {l.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div>

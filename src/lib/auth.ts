@@ -41,6 +41,7 @@ export const authOptions: NextAuthOptions = {
           nim: user.nim,
           role: user.role,
           image: user.image,
+          favoriteLanguage: user.favoriteLanguage,
         };
       },
     }),
@@ -54,13 +55,14 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as { role?: string }).role ?? "USER";
         token.nim = (user as { nim?: string | null }).nim ?? null;
         token.picture = user.image;
+        token.favoriteLanguage = (user as { favoriteLanguage?: string | null }).favoriteLanguage ?? null;
       }
 
       // Refresh data ringan saat session di-update.
       if (trigger === "update" && token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, name: true, email: true, nim: true, image: true },
+          select: { role: true, name: true, email: true, nim: true, image: true, favoriteLanguage: true },
         });
         if (dbUser) {
           token.role = dbUser.role;
@@ -68,6 +70,7 @@ export const authOptions: NextAuthOptions = {
           token.email = dbUser.email;
           token.nim = dbUser.nim;
           token.picture = dbUser.image;
+          token.favoriteLanguage = dbUser.favoriteLanguage;
         }
       }
 
@@ -79,6 +82,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as { role?: string }).role = token.role as string;
         (session.user as { nim?: string | null }).nim = token.nim as string | null;
         (session.user as { image?: string | null }).image = token.picture as string | null;
+        (session.user as { favoriteLanguage?: string | null }).favoriteLanguage = token.favoriteLanguage as string | null;
       }
       return session;
     },
