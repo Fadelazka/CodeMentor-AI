@@ -15,7 +15,6 @@ const FALLBACK = {
   name: "Fadhel Muhammad Azka Islamy",
   email: "fadhel@example.com",
   role: "Mahasiswa",
-  nim: "V3925005",
   joinedAt: "27 Agustus 2026",
 };
 
@@ -29,7 +28,7 @@ const DETAILS = [
   { label: "Nama Lengkap", value: FALLBACK.name },
   { label: "Email", value: FALLBACK.email },
   { label: "Role", value: FALLBACK.role },
-  { label: "NIM", value: FALLBACK.nim },
+  { label: "NIM", value: "-" },
   { label: "Bergabung", value: FALLBACK.joinedAt },
 ];
 
@@ -38,11 +37,13 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
 
   const name = session?.user?.name ?? FALLBACK.name; const email = session?.user?.email ?? FALLBACK.email;
   const role = (session?.user as { role?: string } | undefined)?.role ?? FALLBACK.role;
+  const nim = (session?.user as { nim?: string } | undefined)?.nim ?? "";
 
   const details = DETAILS.map((d) => {
     if (d.label === "Nama Lengkap") return { ...d, value: name };
     if (d.label === "Email") return { ...d, value: email };
     if (d.label === "Role") return { ...d, value: role };
+    if (d.label === "NIM") return { ...d, value: nim || "-" };
     return d;
   });
 
@@ -93,6 +94,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
         initialData={{
           name: name || '',
           email: email || '',
+          nim: nim || '',
         }}
       />
     </div>

@@ -38,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name,
           email: user.email,
+          nim: user.nim,
           role: user.role,
           image: user.image,
         };
@@ -51,18 +52,20 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role ?? "USER";
+        token.nim = (user as { nim?: string | null }).nim ?? null;
       }
 
       // Refresh data ringan saat session di-update.
       if (trigger === "update" && token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, name: true, email: true },
+          select: { role: true, name: true, email: true, nim: true },
         });
         if (dbUser) {
           token.role = dbUser.role;
           token.name = dbUser.name;
           token.email = dbUser.email;
+          token.nim = dbUser.nim;
         }
       }
 
@@ -72,6 +75,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as { id?: string }).id = token.id as string;
         (session.user as { role?: string }).role = token.role as string;
+        (session.user as { nim?: string | null }).nim = token.nim as string | null;
       }
       return session;
     },
