@@ -52,7 +52,7 @@ export function getNavSections(isAdmin: boolean): NavSection[] {
     {
       label: "Kelola",
       items: [
-        { href: "/knowledge-base", label: "Pengetahuan", icon: BookOpen },
+        { href: "/pengetahuan", label: "Pengetahuan", icon: BookOpen },
         ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
       ],
     },
