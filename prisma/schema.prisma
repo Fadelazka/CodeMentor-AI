@@ -73,6 +73,8 @@ model ChatHistory {
   aiResponse   String
   confidence   Float?
   feedback     Feedback?
+  feedbackComment String?
+  feedbackAt   DateTime?
   responseTimeMs Int?
   createdAt    DateTime @default(now())
 

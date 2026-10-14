@@ -86,9 +86,10 @@ export async function POST(req: NextRequest) {
     );
 
     // Simpan riwayat hanya jika diizinkan oleh preferensi user (auto-save).
+    let chatHistoryId: string | null = null;
     try {
       if (saveHistory !== false && session?.user?.id) {
-        await prisma.chatHistory.create({
+        const saved = await prisma.chatHistory.create({
           data: {
             userId: session.user.id,
             language,
@@ -100,6 +101,7 @@ export async function POST(req: NextRequest) {
             responseTimeMs,
           },
         });
+        chatHistoryId = saved.id;
       }
     } catch {
       // toleran terhadap kegagalan penyimpanan riwayat
@@ -112,6 +114,7 @@ export async function POST(req: NextRequest) {
       ragMatches: ragContext.matches.length,
       responseTimeMs,
       detectedErrorCode,
+      chatHistoryId,
     });
   } catch (error) {
     console.error("Chat API error:", error);

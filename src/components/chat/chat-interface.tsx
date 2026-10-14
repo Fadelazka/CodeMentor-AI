@@ -25,6 +25,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { addNotification } from "@/lib/notifications";
 import toast from "react-hot-toast";
 import { LanguageDropdown } from "@/components/chat/language-dropdown";
+import { FeedbackButtons } from "@/components/chat/feedback-buttons";
 
 const USED_LANGUAGES_KEY = "codementor_used_languages";
 
@@ -34,6 +35,7 @@ interface Msg {
   content: string;
   confidence?: number;
   errorCode?: string;
+  chatHistoryId?: string;
   feedback?: "helpful" | "not-helpful";
   createdAt: Date;
 }
@@ -158,6 +160,7 @@ export function ChatInterface() {
         {
           id: `ai-${Date.now()}`,
           role: "assistant",
+          chatHistoryId: data.chatHistoryId ?? data.id,
           content: data.explanation ?? "Server tidak mengembalikan penjelasan.",
           confidence: typeof data.confidence === "number" ? data.confidence : undefined,
           errorCode: errorInput.trim().split("\n")[0]?.slice(0, 60) || undefined,
@@ -198,11 +201,6 @@ export function ChatInterface() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleFeedback = (id: string, feedback: "helpful" | "not-helpful") => {
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, feedback } : m)));
-    toast.success(feedback === "helpful" ? "Terima kasih atas feedbacknya!" : "Catatanmu membantu AI belajar.");
   };
 
   const handleCopy = (content: string) => {
@@ -355,23 +353,6 @@ export function ChatInterface() {
 
                   {msg.role === "assistant" && msg.id !== "welcome" && (
                     <div className="mt-3 flex items-center gap-2 border-t border-white/[0.07] pt-3">
-                      <span className="mr-1 font-mono text-[10px] uppercase tracking-wider text-white/35">Feedback:</span>
-                      <button
-                        onClick={() => handleFeedback(msg.id, "helpful")}
-                        className={`rounded-lg px-2.5 py-1 font-mono text-[10px] transition-colors ${
-                          msg.feedback === "helpful" ? "bg-neon-green/15 text-neon-green" : "text-white/45 hover:bg-white/[0.06]"
-                        }`}
-                      >
-                        Bermanfaat
-                      </button>
-                      <button
-                        onClick={() => handleFeedback(msg.id, "not-helpful")}
-                        className={`rounded-lg px-2.5 py-1 font-mono text-[10px] transition-colors ${
-                          msg.feedback === "not-helpful" ? "bg-neon-pink/15 text-[#FF7C9C]" : "text-white/45 hover:bg-white/[0.06]"
-                        }`}
-                      >
-                        Tidak membantu
-                      </button>
                       <button
                         onClick={() => handleCopy(msg.content)}
                         className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[10px] text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
@@ -385,6 +366,13 @@ export function ChatInterface() {
                         )}
                       </button>
                     </div>
+                  )}
+
+                  {msg.role === "assistant" && msg.id !== "welcome" && msg.chatHistoryId && (
+                    <FeedbackButtons
+                      chatHistoryId={msg.chatHistoryId}
+                      initialFeedback={msg.feedback}
+                    />
                   )}
                 </div>
               </div>
