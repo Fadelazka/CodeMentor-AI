@@ -13,6 +13,16 @@ const CODE_SNIPPETS = [
   { text: '&&', x: '92%', delay: 6, duration: 24 },
 ];
 
+const CODE_METEORS = [
+  { text: 'const x = 5', start: { x: -5, y: -5 }, end: { x: 105, y: 105 }, delay: 0, duration: 4 },
+  { text: 'function foo()', start: { x: 110, y: -5 }, end: { x: -10, y: 105 }, delay: 2, duration: 5 },
+  { text: '=> { }', start: { x: -10, y: 30 }, end: { x: 110, y: 130 }, delay: 4, duration: 3.5 },
+  { text: 'async await', start: { x: 110, y: 20 }, end: { x: -10, y: 120 }, delay: 6, duration: 4.5 },
+  { text: 'return null', start: { x: -5, y: 50 }, end: { x: 105, y: 150 }, delay: 8, duration: 4 },
+  { text: 'if (true) {', start: { x: 110, y: 60 }, end: { x: -10, y: 160 }, delay: 10, duration: 5 },
+  { text: 'try { } catch { }', start: { x: -10, y: 0 }, end: { x: 110, y: 100 }, delay: 12, duration: 4 },
+];
+
 export function AuthBackground() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -25,32 +35,35 @@ export function AuthBackground() {
           x: [0, 100, 0],
           y: [0, -80, 0],
           scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
         }}
         transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#00E5FF] opacity-20 blur-[120px]"
+        className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#00E5FF] opacity-30 blur-[120px]"
       />
       <motion.div
         animate={{
           x: [0, -120, 0],
           y: [0, 100, 0],
           scale: [1, 1.3, 1],
+          opacity: [0.3, 0.5, 0.3],
         }}
         transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute -bottom-40 -right-32 w-[600px] h-[600px] rounded-full bg-[#7C4DFF] opacity-20 blur-[140px]"
+        className="absolute -bottom-40 -right-32 w-[600px] h-[600px] rounded-full bg-[#7C4DFF] opacity-30 blur-[140px]"
       />
       <motion.div
         animate={{
           x: [0, 80, 0],
           y: [0, -100, 0],
           scale: [1, 1.15, 1],
+          opacity: [0.3, 0.5, 0.3],
         }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
-        className="absolute top-1/2 left-1/3 w-[400px] h-[400px] rounded-full bg-[#FF3B6B] opacity-15 blur-[130px]"
+        className="absolute top-1/2 left-1/3 w-[400px] h-[400px] rounded-full bg-[#FF3B6B] opacity-25 blur-[130px]"
       />
 
       {/* Grid pattern */}
       <div
-        className="absolute inset-0 opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.06]"
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
@@ -63,7 +76,7 @@ export function AuthBackground() {
         <motion.div
           key={i}
           initial={{ y: '105vh', opacity: 0 }}
-          animate={{ y: '-10vh', opacity: [0, 0.15, 0.15, 0] }}
+          animate={{ y: '-10vh', opacity: [0, 0.25, 0.25, 0] }}
           transition={{
             duration: snippet.duration,
             repeat: Infinity,
@@ -78,6 +91,36 @@ export function AuthBackground() {
           }}
         >
           {snippet.text}
+        </motion.div>
+      ))}
+
+      {/* Code meteors — diagonal shooting stars */}
+      {CODE_METEORS.map((meteor, i) => (
+        <motion.div
+          key={`meteor-${i}`}
+          initial={{
+            x: `${meteor.start.x}vw`,
+            y: `${meteor.start.y}vh`,
+            opacity: 0,
+          }}
+          animate={{
+            x: `${meteor.end.x}vw`,
+            y: `${meteor.end.y}vh`,
+            opacity: [0, 0.9, 0.9, 0],
+          }}
+          transition={{
+            duration: meteor.duration,
+            repeat: Infinity,
+            delay: meteor.delay,
+            ease: 'linear',
+          }}
+          className="absolute font-mono text-white select-none whitespace-nowrap"
+          style={{
+            fontSize: '13px',
+            textShadow: '0 0 8px rgba(0, 229, 255, 0.75), 0 0 16px rgba(124, 77, 255, 0.6)',
+          }}
+        >
+          {meteor.text}
         </motion.div>
       ))}
 
