@@ -3,13 +3,13 @@
 import { UserCog } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
-import { Tooltip } from "@/components/ui/tooltip";
 
 interface ProfileCardProps {
   name: string;
   email: string;
   joinedAt: string;
   role?: string;
+  onEdit?: () => void;
 }
 
 function getInitials(name: string): string {
@@ -22,7 +22,7 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
-export function ProfileCard({ name, email, joinedAt, role }: ProfileCardProps) {
+export function ProfileCard({ name, email, joinedAt, role, onEdit }: ProfileCardProps) {
   return (
     <GlassCard>
       <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
@@ -47,13 +47,11 @@ export function ProfileCard({ name, email, joinedAt, role }: ProfileCardProps) {
           </div>
         </div>
 
-        <Tooltip content="Coming soon">
-          <span className="inline-flex">
-            <GradientButton variant="outline" icon={UserCog} disabled>
-              Edit Profil
-            </GradientButton>
-          </span>
-        </Tooltip>
+        <span className="inline-flex">
+          <GradientButton variant="outline" icon={UserCog} onClick={onEdit}>
+            Edit Profil
+          </GradientButton>
+        </span>
       </div>
     </GlassCard>
   );

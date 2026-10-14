@@ -54,7 +54,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
         description="Kelola informasi akun Anda"
       />
 
-      <ProfileCard name={name} email={email} role={role} joinedAt={FALLBACK.joinedAt} />
+      <ProfileCard name={name} email={email} role={role} joinedAt={FALLBACK.joinedAt} onEdit={() => setIsEditOpen(true)} />
 
       <GlassCard>
         <SectionLabel icon={IdCard}>Informasi Akun</SectionLabel>
@@ -87,6 +87,14 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
           ))}
         </div>
       </div>
+      <EditProfileModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        initialData={{
+          name: name || '',
+          email: email || '',
+        }}
+      />
     </div>
   );
 }
