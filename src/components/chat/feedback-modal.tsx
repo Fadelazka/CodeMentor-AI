@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MessageSquare, Loader2, Check } from 'lucide-react';
 
@@ -21,6 +22,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const reset = () => {
     setType('');
@@ -56,9 +62,9 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
@@ -163,6 +169,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
           )}
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
