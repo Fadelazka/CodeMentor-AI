@@ -1,0 +1,14 @@
+# File yang TIDAK dibundel ke dalam .vsix
+# Catatan: kalau file ini tidak ada, vsce memakai .gitignore sebagai fallback —
+# dan .gitignore kita mengabaikan "out/", sehingga entrypoint ekstensi hilang.
+
+src/**
+tsconfig.json
+.gitignore
+.vscodeignore
+.vscode/**
+.vscode-test/**
+package-lock.json
+**/*.map
+**/*.ts
+*.vsix

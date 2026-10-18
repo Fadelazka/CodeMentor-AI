@@ -44,6 +44,28 @@ function detectErrorType(errorMessage: string | undefined, aiResponse: string): 
   return null;
 }
 
+/**
+ * Header CORS: dipakai oleh ekstensi VS Code, yang webview-nya berjalan pada
+ * origin berbeda (`vscode-webview://...`). Endpoint ini tidak memakai cookie /
+ * kredensial, jadi `Access-Control-Allow-Origin: *` aman dipakai.
+ */
+const CORS_HEADERS: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Max-Age": "86400",
+};
+
+/** Response JSON + header CORS (dipakai semua jalur return di route ini). */
+function jsonResponse(body: unknown, status = 200) {
+  return NextResponse.json(body, { status, headers: CORS_HEADERS });
+}
+
+/** Preflight CORS untuk klien lintas-origin (ekstensi VS Code). */
+export function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+}
+
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
 
@@ -53,12 +75,12 @@ export async function POST(req: NextRequest) {
     const { sourceCode, language = "python", errorMessage, saveHistory } = body;
 
     if (!sourceCode || typeof sourceCode !== "string" || sourceCode.trim().length === 0) {
-      return NextResponse.json({ error: "sourceCode wajib diisi." }, { status: 400 });
+      return jsonResponse({ error: "sourceCode wajib diisi." }, 400);
     }
 
     const allowedLanguages = ["python", "javascript", "java", "cpp", "php"];
     if (!allowedLanguages.includes(language)) {
-      return NextResponse.json({ error: "Bahasa tidak didukung." }, { status: 400 });
+      return jsonResponse({ error: "Bahasa tidak didukung." }, 400);
     }
 
     // Preferensi gaya AI: ambil dari DB (hasil kuis) bila user sudah menyelesaikan kuis.
@@ -136,7 +158,7 @@ export async function POST(req: NextRequest) {
       // toleran terhadap kegagalan penyimpanan riwayat
     }
 
-    return NextResponse.json({
+    return jsonResponse({
       explanation: result.explanation,
       confidence: result.confidence,
       mock: result.mock,
@@ -147,6 +169,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Chat API error:", error);
-    return NextResponse.json({ error: "Terjadi kesalahan internal." }, { status: 500 });
+    return jsonResponse({ error: "Terjadi kesalahan internal." }, 500);
   }
 }

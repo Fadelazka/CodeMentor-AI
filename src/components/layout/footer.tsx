@@ -10,7 +10,7 @@ const footerLinks = {
     { label: "Cara Kerja", href: "/cara-kerja" },
     { label: "Bahasa Didukung", href: "/bahasa" },
     { label: "Knowledge Base", href: "/knowledge-base" },
-    { label: "Ekstensi VS Code", href: "/fitur#vscode" },
+    { label: "Ekstensi VS Code", href: "/ekstensi-vscode" },
   ],
   Aplikasi: [
     { label: "Dashboard", href: "/dashboard" },

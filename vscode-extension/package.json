@@ -1,0 +1,63 @@
+{
+  "name": "codementor-ai-extension",
+  "displayName": "CodeMentor AI",
+  "description": "AI mentor debugging dalam Bahasa Indonesia - jelaskan error kode langsung dari VS Code.",
+  "version": "0.2.1",
+  "publisher": "codementor-ai",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Education",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "debugging",
+    "error",
+    "bahasa indonesia",
+    "codementor"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onView:codementor-sidebar"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "codementor-ai.focusChat",
+        "title": "CodeMentor AI: Buka Panel Chat"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codementor-container",
+          "title": "CodeMentor AI",
+          "icon": "$(code)"
+        }
+      ]
+    },
+    "views": {
+      "codementor-container": [
+        {
+          "type": "webview",
+          "id": "codementor-sidebar",
+          "name": "Chat"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.5.0"
+  }
+}

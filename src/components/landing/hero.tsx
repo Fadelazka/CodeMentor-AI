@@ -128,7 +128,7 @@ return (
               </motion.button>
               <motion.div variants={fadeUp} className="inline-flex">
                 <Link
-                  href="/fitur#vscode"
+                  href="/ekstensi-vscode"
                   className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-[#333] bg-transparent px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-[#FF3B6B]/50 hover:bg-[#1a1a1a]"
                 >
                   <Download className="h-4 w-4" />

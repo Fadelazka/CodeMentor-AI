@@ -67,7 +67,7 @@ export function CTA() {
                   whileTap={reduce ? undefined : { scale: 0.98 }}
                 >
                   <Link
-                    href="/fitur#vscode"
+                    href="/ekstensi-vscode"
                     className="group inline-flex w-full items-center justify-center gap-2 border border-paper/20 px-8 py-4 text-sm font-semibold text-paper transition-colors hover:border-paper/50 hover:bg-paper/10 sm:w-auto"
                   >
                     <Download className="h-4 w-4" />
