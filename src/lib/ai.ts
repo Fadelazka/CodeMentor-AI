@@ -97,6 +97,23 @@ export async function generateExplainationWithGroq(payload: {
         : "Berikan penjelasan lengkap: penyebab mendalam, langkah perbaikan, kode perbaikan LENGKAP, konsep terkait, contoh siap jalan.",
   };
 
+  // Instruksi tambahan berdasarkan preferensi AI user (hasil kuis onboarding / pengaturan).
+  // brief  -> jawaban singkat & to-the-point
+  // medium -> seimbang
+  // detailed -> sangat detail, komprehensif, dan edukatif
+  const preferenceNote =
+    detail === "brief"
+      ? lang === "en"
+        ? "Provide a very short, to-the-point answer."
+        : "Berikan jawaban yang sangat singkat dan to-the-point."
+      : detail === "detailed"
+        ? lang === "en"
+          ? "Provide a very detailed, comprehensive, and educational explanation."
+          : "Berikan penjelasan yang sangat detail, komprehensif, dan edukatif."
+        : lang === "en"
+          ? "Provide a balanced, easy-to-understand explanation."
+          : "Berikan penjelasan yang seimbang dan mudah dipahami.";
+
   const sectionsEn = `IF CODE IS CORRECT (no error):
 Only reply with:
 
@@ -171,6 +188,7 @@ ATURAN PENTING:
   const systemPrompt = `Kamu adalah CodeMentor AI, asisten debugging kode.
 ${langInstruction}
 ${detailInstruction[detail]}
+${preferenceNote}
 
 ${lang === "en" ? sectionsEn : sectionsId}`;
 

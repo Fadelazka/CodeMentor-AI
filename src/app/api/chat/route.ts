@@ -61,6 +61,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Bahasa tidak didukung." }, { status: 400 });
     }
 
+    // Preferensi gaya AI: ambil dari DB (hasil kuis) bila user sudah menyelesaikan kuis.
+    // Jika belum, tetap pakai setting dari client (localStorage) -> perilaku lama tidak berubah.
+    const VALID_LEVELS = ["brief", "medium", "detailed"] as const;
+    type DetailLevel = (typeof VALID_LEVELS)[number];
+
+    let dbPreference: DetailLevel | undefined;
+    if (session?.user?.id) {
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { aiPreference: true, quizCompletedAt: true },
+        });
+        if (
+          dbUser?.quizCompletedAt &&
+          dbUser.aiPreference &&
+          (VALID_LEVELS as readonly string[]).includes(dbUser.aiPreference)
+        ) {
+          dbPreference = dbUser.aiPreference as DetailLevel;
+        }
+      } catch {
+        // toleran: bila gagal baca preferensi, lanjut dengan default.
+      }
+    }
+
+    const clientLevel = (VALID_LEVELS as readonly string[]).includes(body.aiDetailLevel)
+      ? (body.aiDetailLevel as DetailLevel)
+      : undefined;
+    const effectiveDetailLevel: DetailLevel = dbPreference ?? clientLevel ?? "medium";
+
     const ragContext = {
       language,
       matches: await retrieveRelevantErrors(language, `${sourceCode} ${errorMessage ?? ""}`),
@@ -73,7 +102,7 @@ export async function POST(req: NextRequest) {
       errorMessage,
       ragContext,
       aiLanguage: body.aiLanguage,
-      aiDetailLevel: body.aiDetailLevel,
+      aiDetailLevel: effectiveDetailLevel,
     });
 
     const responseTimeMs = Date.now() - startTime;

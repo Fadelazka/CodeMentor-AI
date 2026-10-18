@@ -18,6 +18,9 @@ model User {
   passwordHash String?
   provider     String?
   role         Role      @default(USER)
+  quizScore       Int       @default(0)
+  aiPreference    String    @default("medium")
+  quizCompletedAt DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   accounts     Account[]

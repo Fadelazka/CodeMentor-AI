@@ -58,11 +58,24 @@ export const authOptions: NextAuthOptions = {
         token.favoriteLanguage = (user as { favoriteLanguage?: string | null }).favoriteLanguage ?? null;
       }
 
-      // Refresh data ringan saat session di-update.
-      if (trigger === "update" && token.id) {
+      // Sinkronkan status kuis dari DB agar bisa dibaca middleware (edge).
+      // Dijalankan saat login, saat session di-update, atau saat token belum punya nilai.
+      // Setelah terisi (string ISO atau null), tidak query lagi di request berikutnya.
+      if (
+        token.id &&
+        (user || trigger === "update" || token.quizCompletedAt === undefined)
+      ) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, name: true, email: true, nim: true, image: true, favoriteLanguage: true },
+          select: {
+            role: true,
+            name: true,
+            email: true,
+            nim: true,
+            image: true,
+            favoriteLanguage: true,
+            quizCompletedAt: true,
+          },
         });
         if (dbUser) {
           token.role = dbUser.role;
@@ -71,6 +84,9 @@ export const authOptions: NextAuthOptions = {
           token.nim = dbUser.nim;
           token.picture = dbUser.image;
           token.favoriteLanguage = dbUser.favoriteLanguage;
+          token.quizCompletedAt = dbUser.quizCompletedAt
+            ? dbUser.quizCompletedAt.toISOString()
+            : null;
         }
       }
 
@@ -83,6 +99,8 @@ export const authOptions: NextAuthOptions = {
         (session.user as { nim?: string | null }).nim = token.nim as string | null;
         (session.user as { image?: string | null }).image = token.picture as string | null;
         (session.user as { favoriteLanguage?: string | null }).favoriteLanguage = token.favoriteLanguage as string | null;
+        (session.user as { quizCompletedAt?: string | null }).quizCompletedAt =
+          (token.quizCompletedAt as string | null | undefined) ?? null;
       }
       return session;
     },
@@ -105,13 +123,25 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Pengaman: di production, jangan pernah pakai origin localhost.
+      const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(baseUrl);
+      const safeBase =
+        process.env.NODE_ENV === "production" && isLocal
+          ? process.env.NEXTAUTH_URL &&
+            !/localhost|127\.0\.0\.1/i.test(process.env.NEXTAUTH_URL)
+            ? process.env.NEXTAUTH_URL
+            : process.env.VERCEL_PROJECT_PRODUCTION_URL
+              ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+              : baseUrl
+          : baseUrl;
+
+      if (url.startsWith("/")) return `${safeBase}${url}`;
       try {
-        if (new URL(url).origin === baseUrl) return url;
+        if (new URL(url).origin === safeBase) return url;
       } catch {
-        // URL tidak valid -> fallback ke baseUrl
+        // URL tidak valid -> fallback ke safeBase
       }
-      return baseUrl;
+      return safeBase;
     },
   },
   events: {
