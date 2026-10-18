@@ -8,7 +8,12 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash("admin123", 10);
   await prisma.user.upsert({
     where: { email: "admin@codementor.com" },
-    update: {},
+    // Akun yang SUDAH ADA juga diperbaiki: password direset ke "admin123" + role dipastikan ADMIN.
+    // (name sengaja tidak diubah agar nama kustom pada akun tidak tertimpa.)
+    update: {
+      passwordHash: adminPasswordHash,
+      role: "ADMIN",
+    },
     create: {
       email: "admin@codementor.com",
       name: "Admin CodeMentor",
