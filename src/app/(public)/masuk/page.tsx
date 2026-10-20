@@ -115,9 +115,9 @@ export default function MasukPage() {
                 <input type="checkbox" className="rounded-sm border-border" />
                 Ingat saya
               </label>
-              <a href="#" className="font-medium text-foreground hover:text-accent">
+              <Link href="/lupa-password" className="font-medium text-foreground hover:text-accent">
                 Lupa kata sandi?
-              </a>
+              </Link>
             </div>
 
             <Button type="submit" loading={isLoading} className="w-full" size="lg">
