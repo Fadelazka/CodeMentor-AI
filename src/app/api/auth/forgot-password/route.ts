@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -39,11 +40,44 @@ export async function POST(req: NextRequest) {
       data: { resetToken: token, resetTokenExpiry },
     });
 
-    const origin = req.headers.get("origin") || "http://localhost:3000";
+    const origin = req.headers.get("origin") || "https://code-mentor-ai-zeta-three.vercel.app";
     const resetLink = `${origin}/reset-password?token=${token}`;
 
-    // Mock pengiriman email - hanya log ke console
-    console.log("[forgot-password] RESET LINK:", resetLink);
+    try {
+      const apiKey = process.env.RESEND_API_KEY;
+      if (apiKey) {
+        const resend = new Resend(apiKey);
+        await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: email,
+          subject: "Atur Ulang Kata Sandi - CodeMentor AI",
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <h2 style="color: #333;">Atur Ulang Kata Sandi</h2>
+              <p>Halo ${user.name || "Pengguna"},</p>
+              <p>Kami menerima permintaan untuk mengatur ulang kata sandi akun CodeMentor AI Anda.</p>
+              <p>Klik tombol di bawah ini untuk mengatur ulang kata sandi:</p>
+              <p style="text-align: center; margin: 30px 0;">
+                <a href="${resetLink}" style="background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                  Atur Ulang Kata Sandi
+                </a>
+              </p>
+              <p>Atau salin dan tempel tautan ini ke browser Anda:</p>
+              <p style="word-break: break-all; color: #666;">${resetLink}</p>
+              <p>Tautan ini akan kedaluwarsa dalam 1 jam.</p>
+              <p>Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan email ini.</p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+              <p style="color: #666; font-size: 12px;">CodeMentor AI</p>
+            </div>
+          `,
+        });
+      } else {
+        console.error("[forgot-password] RESEND_API_KEY tidak ditemukan di environment variables");
+      }
+    } catch (emailError) {
+      console.error("[forgot-password] Gagal mengirim email:", emailError);
+      // Tetap kembalikan sukses untuk keamanan (hindari email enumeration)
+    }
 
     return NextResponse.json({
       success: true,
