@@ -1,8 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/**
+ * Guard sesi: hanya user dengan role ADMIN yang boleh mengelola knowledge base.
+ *
+ * SEBELUMNYA route ini terbuka untuk siapa saja (termasuk tamu) — GET bisa
+ * membaca seluruh rekaman dan POST/PUT/DELETE bisa mengubah data tanpa
+ * autentikasi. Pola pengecekan di bawah disalin dari route admin lain
+ * (`/api/admin/stats` dan `/api/admin/users`) supaya perilakunya seragam.
+ *
+ * @returns `null` bila sesi valid (lanjut ke handler), kalau tidak
+ *          `NextResponse` 403 yang harus langsung dikembalikan pemanggil.
+ */
+async function requireAdmin(): Promise<NextResponse | null> {
+  const session = await getServerSession(authOptions);
+  if (session?.user?.role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden: admin only" }, { status: 403 });
+  }
+  return null;
+}
 
 export async function GET(req: NextRequest) {
   try {
+    const forbidden = await requireAdmin();
+    if (forbidden) return forbidden;
+
     const searchParams = req.nextUrl.searchParams;
     const language = searchParams.get("language");
     const activeOnly = searchParams.get("active") === "true";
@@ -24,6 +51,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const forbidden = await requireAdmin();
+    if (forbidden) return forbidden;
+
     const body = await req.json();
     const { language, errorCode, title, description, solution, examples, tags } = body;
 
@@ -55,6 +85,9 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
+    const forbidden = await requireAdmin();
+    if (forbidden) return forbidden;
+
     const searchParams = req.nextUrl.searchParams;
     const id = searchParams.get("id");
     if (!id) {
@@ -76,6 +109,9 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const forbidden = await requireAdmin();
+    if (forbidden) return forbidden;
+
     const searchParams = req.nextUrl.searchParams;
     const id = searchParams.get("id");
     if (!id) {

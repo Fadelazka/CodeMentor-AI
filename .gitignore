@@ -42,3 +42,6 @@ prisma/*.db-journal
 public/hero/*.mp4.bak
 public/hero/*.webm.bak
 public/hero/*.tmp
+
+# flutter mobile app (project terpisah dari web, jangan ikut repo web)
+/codementor_mobile/
