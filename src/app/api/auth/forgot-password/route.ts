@@ -71,6 +71,7 @@ export async function POST(req: NextRequest) {
             </div>
           `,
         });
+        console.log("[forgot-password] Email berhasil dikirim via Resend ke:", email);
       } else {
         console.error("[forgot-password] RESEND_API_KEY tidak ditemukan di environment variables");
       }
