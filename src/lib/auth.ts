@@ -59,12 +59,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Sinkronkan status kuis dari DB agar bisa dibaca middleware (edge).
-      // Dijalankan saat login, saat session di-update, atau saat token belum punya nilai.
-      // Setelah terisi (string ISO atau null), tidak query lagi di request berikutnya.
-      if (
-        token.id &&
-        (user || trigger === "update" || token.quizCompletedAt === undefined)
-      ) {
+      if (token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {

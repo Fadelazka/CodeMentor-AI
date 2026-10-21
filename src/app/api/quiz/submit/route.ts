@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
       },
       select: { id: true, quizScore: true, aiPreference: true, quizCompletedAt: true },
     });
+    console.log("[quiz/submit] Updated user", user.id, user.quizCompletedAt?.toISOString());
 
     return NextResponse.json({ success: true, user }, { status: 200 });
   } catch (error) {
