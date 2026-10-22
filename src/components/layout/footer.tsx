@@ -28,7 +28,7 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="relative z-10 border-t border-border bg-background">
       <div className="container-editorial py-16">
         <StaggerContainer className="grid gap-12 lg:grid-cols-5">
           <StaggerItem className="lg:col-span-2">
