@@ -1,7 +1,21 @@
-import Link from "next/link";
 import { ArrowRight, MessageSquare, Database, History, BookOpen, BarChart3, ShieldCheck, PencilRuler, Zap } from "lucide-react";
+import type { TargetAndTransition, Variants } from "framer-motion";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { FadeUp, FadeRight, StaggerContainer, StaggerItem } from "@/components/landing/animations";
+import { UnderlineLink } from "@/components/ui/micro-interactions";
+import { FadeUp, FadeRight, Reveal, StaggerContainer, StaggerItem, fadeUp, slideRight, slideLeft } from "@/components/landing/animations";
+
+/**
+ * Arah masuk tiap kartu fitur (berulang 3-pola agar tidak monoton):
+ * 1) dari kiri  -> 2) dari bawah  -> 3) dari kanan
+ */
+const FEATURE_ENTRANCES: Variants[] = [slideRight, fadeUp, slideLeft];
+
+/** Efek hover kartu: terangkat + bayangan lembut (dark theme). */
+const FEATURE_HOVER: TargetAndTransition = {
+  y: -5,
+  boxShadow: "0 12px 30px -10px rgba(0, 0, 0, 0.75)",
+  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+};
 
 const fiturUtama = [
   { icon: MessageSquare, title: "Chat Debugging Real-time", desc: "Chat dengan AI untuk konsultasi error kode, dibalas instan dalam Bahasa Indonesia." },
@@ -25,17 +39,22 @@ export function Features() {
               Semua yang Anda Butuhkan untuk Belajar &amp; Debugging
             </h2>
           </FadeRight>
-          <FadeUp delay={0.1} className="max-w-sm">
+          <Reveal direction="right" delay={0.1} className="max-w-sm">
             <p className="text-base leading-relaxed text-muted-foreground">
               Dirancang khusus untuk membantu mahasiswa Indonesia memahami error
               kode secara mandiri.
             </p>
-          </FadeUp>
+          </Reveal>
         </div>
 
         <StaggerContainer className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {fiturUtama.map((fitur, i) => (
-            <StaggerItem key={fitur.title} lift className="group flex flex-col bg-background p-8 transition-colors hover:bg-muted">
+            <StaggerItem
+              key={fitur.title}
+              variants={FEATURE_ENTRANCES[i % FEATURE_ENTRANCES.length]}
+              hover={FEATURE_HOVER}
+              className="group relative flex flex-col bg-background p-8 transition-colors hover:bg-muted hover:z-10"
+            >
               <div className="mb-8 flex items-center justify-between">
                 <fitur.icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-foreground" strokeWidth={1.5} />
                 <p className="font-mono text-[11px] text-muted-foreground">
@@ -49,13 +68,13 @@ export function Features() {
         </StaggerContainer>
 
         <FadeUp className="mt-12">
-          <Link
+          <UnderlineLink
             href="/fitur"
-            className="group inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-foreground"
+            className="gap-2 font-mono text-xs font-medium uppercase tracking-wider text-foreground"
           >
             Lihat semua fitur secara detail
             <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-1" />
-          </Link>
+          </UnderlineLink>
         </FadeUp>
       </div>
     </section>

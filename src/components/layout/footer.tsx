@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 import { Wordmark } from "@/components/ui/wordmark";
 import { ReplayIntroButton } from "@/components/intro/replay-intro-button";
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/landing/animations";
+import { UnderlineLink, SocialIconLink } from "@/components/ui/micro-interactions";
 
 const footerLinks = {
   Produk: [
@@ -39,18 +39,18 @@ export function Footer() {
               secara mandiri, 24/7.
             </p>
             <div className="mt-6 flex gap-2">
-              <a href="#" className="cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="GitHub">
+              <SocialIconLink href="#" aria-label="GitHub">
                 <Github className="h-4 w-4" />
-              </a>
-              <a href="#" className="cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="Twitter">
+              </SocialIconLink>
+              <SocialIconLink href="#" aria-label="Twitter">
                 <Twitter className="h-4 w-4" />
-              </a>
-              <a href="#" className="cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="LinkedIn">
+              </SocialIconLink>
+              <SocialIconLink href="#" aria-label="LinkedIn">
                 <Linkedin className="h-4 w-4" />
-              </a>
-              <a href="mailto:halo@codementor.ai" className="cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="Email">
+              </SocialIconLink>
+              <SocialIconLink href="mailto:halo@codementor.ai" aria-label="Email">
                 <Mail className="h-4 w-4" />
-              </a>
+              </SocialIconLink>
             </div>
           </StaggerItem>
 
@@ -60,13 +60,13 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <Link
+                    <UnderlineLink
                       href={link.href}
-                      className="group relative inline-block text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      lineClassName="bg-foreground"
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.label}
-                      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-foreground transition-all duration-300 group-hover:w-full" />
-                    </Link>
+                    </UnderlineLink>
                   </li>
                 ))}
               </ul>

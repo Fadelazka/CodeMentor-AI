@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { ArrowRight, Zap, Layers } from "lucide-react";
 import { Eyebrow } from "@/components/ui/eyebrow";
+import { UnderlineLink } from "@/components/ui/micro-interactions";
 import { FadeUp, FadeRight, StaggerContainer, StaggerItem } from "@/components/landing/animations";
 import {
   PythonIllustration,
@@ -70,13 +70,13 @@ export function Languages() {
         </StaggerContainer>
 
         <FadeUp className="mt-12">
-          <Link
+          <UnderlineLink
             href="/bahasa"
-            className="group inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-foreground"
+            className="gap-2 font-mono text-xs font-medium uppercase tracking-wider text-foreground"
           >
             Detail dukungan bahasa &amp; contoh error
             <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-1" />
-          </Link>
+          </UnderlineLink>
         </FadeUp>
       </div>
     </section>

@@ -4,12 +4,21 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Download } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { HeroBackground } from "@/components/hero/HeroBackground";
 import { GlitchText } from "@/components/ui/glitch-text";
 import { TypingCodeBlock, type CodeToken } from "@/components/ui/typing-text";
 import { CountUp } from "@/components/landing/count-up";
 import { fadeUp, staggerContainer } from "@/components/landing/animations";
+
+/** Stagger ringkas untuk blok statistik di bawah hero. */
+const statStagger: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.07, delayChildren: 0.05 },
+  },
+};
 
 const CODE_LINES: CodeToken[][] = [
   [
@@ -72,41 +81,42 @@ return (
       <HeroBackground />
       <div className="container-editorial relative z-10">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
-          {/* Copy */}
+          {/* Copy — muncul berurutan (staggerChildren) */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
+            initial={reduce ? false : "hidden"}
+            animate={reduce ? undefined : "visible"}
+            variants={staggerContainer}
             className="lg:col-span-6"
           >
-            <p className="kicker flex items-center gap-3">
+            <motion.p variants={fadeUp} className="kicker flex items-center gap-3">
               <span className="text-[#FF3B6B]">[01]</span>
               AI MENTOR PEMROGRAMAN UNTUK MAHASISWA
               <span className="h-px w-10 bg-[#333]" />
-            </p>
+            </motion.p>
 
-            <h1 className="mt-6 font-display text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <motion.h1
+              variants={fadeUp}
+              className="mt-6 font-display text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
+            >
               Paham <GlitchText>Error</GlitchText> Kode Anda, Tanpa Harus
               Bertanya Ke Mana-Mana.
-            </h1>
+            </motion.h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-400"
+            >
               CodeMentor AI menjelaskan error pemrograman secara real-time dalam
               Bahasa Indonesia. Dukung 5 bahasa pemrograman dan basis
               pengetahuan 200+ error.
-            </p>
+            </motion.p>
 
-            <motion.div
-              initial={reduce ? false : "hidden"}
-              animate={reduce ? undefined : "visible"}
-              variants={staggerContainer}
-              className="mt-10 flex flex-col gap-3 sm:flex-row"
-            >
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <motion.button
                 variants={fadeUp}
                 onClick={handleClick}
-                whileHover={reduce ? undefined : { scale: 1.02, transition: { duration: 0.2 } }}
-                whileTap={reduce ? undefined : { scale: 0.98 }}
+                whileHover={reduce ? undefined : { scale: 1.05, transition: { type: "spring", stiffness: 320, damping: 20 } }}
+                whileTap={reduce ? undefined : { scale: 0.95 }}
                 className="group relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm bg-[#FF3B6B] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#FF3B6B]/80 focus:outline-none focus:ring-2 focus:ring-[#FF3B6B] focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
                 Coba CodeMentor AI
@@ -135,13 +145,10 @@ return (
                   Ekstensi VS Code
                 </Link>
               </motion.div>
-            </motion.div>
+            </div>
 
             <motion.div
-              initial={reduce ? false : "hidden"}
-              whileInView={reduce ? undefined : "visible"}
-              viewport={{ once: true, amount: 0.5 }}
-              variants={staggerContainer}
+              variants={statStagger}
               className="mt-12 flex flex-wrap gap-x-10 gap-y-4 border-t border-[#333] pt-6"
             >
               <motion.div
@@ -195,11 +202,26 @@ return (
             </motion.div>
           </motion.div>
 
-          {/* Terminal mockup */}
+          {/* Terminal mockup — masuk dari kanan ke kiri (spring) */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial={reduce ? false : { opacity: 0, x: 56, rotate: 1.2 }}
+            animate={reduce ? undefined : { opacity: 1, x: 0, rotate: 0 }}
+            transition={
+              reduce
+                ? undefined
+                : {
+                    type: "spring",
+                    stiffness: 110,
+                    damping: 17,
+                    mass: 0.9,
+                    delay: 0.12,
+                  }
+            }
+            whileHover={
+              reduce
+                ? undefined
+                : { y: -6, transition: { type: "spring", stiffness: 260, damping: 22 } }
+            }
             className="lg:col-span-6"
           >
             <div className="border border-[#333] bg-[#0A0B14]">

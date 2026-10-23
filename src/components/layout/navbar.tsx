@@ -3,12 +3,12 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { Wordmark } from "@/components/ui/wordmark";
 import { Button } from "@/components/ui/button";
-import { fadeIn, staggerContainer } from "@/components/landing/animations";
+import { UnderlineLink } from "@/components/ui/micro-interactions";
 
 const navLinks = [
   { href: "/fitur", label: "Fitur" },
@@ -16,6 +16,24 @@ const navLinks = [
   { href: "/bahasa", label: "Bahasa" },
   { href: "/knowledge-base", label: "Pengetahuan" },
 ];
+
+/** Container nav links:ascade dari atas dengan jeda antar item. */
+const navStagger: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.22 },
+  },
+};
+
+/** Tiap item nav turun dari atas (bukan fade-in polos). */
+const navItem: Variants = {
+  hidden: { opacity: 0, y: -14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 320, damping: 26, mass: 0.6 },
+  },
+};
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -34,9 +52,13 @@ export function Navbar() {
 
   return (
     <motion.header
-      initial={reduce ? false : { y: -40, opacity: 0 }}
+      initial={reduce ? false : { y: -72, opacity: 0 }}
       animate={reduce ? undefined : { y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      transition={
+        reduce
+          ? undefined
+          : { type: "spring", stiffness: 220, damping: 26, mass: 0.8 }
+      }
       className={cn(
         "fixed top-0 z-50 w-full bg-background transition-shadow",
         scrolled ? "border-b border-border shadow-[0_1px_0_0_hsl(var(--border))]" : "border-b border-transparent"
@@ -46,7 +68,9 @@ export function Navbar() {
         <motion.div
           initial={reduce ? false : { opacity: 0, x: -20 }}
           animate={reduce ? undefined : { opacity: 1, x: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+          transition={
+            reduce ? undefined : { type: "spring", stiffness: 260, damping: 24, mass: 0.7 }
+          }
           className="shrink-0"
         >
           <Link href="/" aria-label="Beranda CodeMentor AI">
@@ -57,37 +81,37 @@ export function Navbar() {
         <motion.div
           initial={reduce ? false : "hidden"}
           animate={reduce ? undefined : "visible"}
-          variants={staggerContainer}
+          variants={navStagger}
           className="hidden items-center gap-8 lg:flex"
         >
           {navLinks.map((link) => (
-            <motion.div key={link.href} variants={fadeIn}>
-              <Link
+            <motion.div key={link.href} variants={navItem}>
+              <UnderlineLink
                 href={link.href}
+                active={isActive(link.href)}
+                lineClassName="bg-accent"
                 className={cn(
-                  "group relative font-mono text-xs font-medium uppercase tracking-wider transition-colors",
+                  "font-mono text-xs font-medium uppercase tracking-wider transition-colors",
                   isActive(link.href)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {link.label}
-                <span
-                  className={cn(
-                    "absolute -bottom-1 left-0 h-px bg-accent transition-all duration-300",
-                    isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
-                  )}
-                />
-              </Link>
+              </UnderlineLink>
             </motion.div>
           ))}
         </motion.div>
 
         <div className="hidden items-center gap-2 lg:flex">
           <motion.div
-            initial={reduce ? false : { opacity: 0 }}
-            animate={reduce ? undefined : { opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            initial={reduce ? false : { opacity: 0, x: 18 }}
+            animate={reduce ? undefined : { opacity: 1, x: 0 }}
+            transition={
+              reduce
+                ? undefined
+                : { delay: 0.3, type: "spring", stiffness: 280, damping: 26, mass: 0.6 }
+            }
             whileHover={reduce ? undefined : { scale: 1.05 }}
             whileTap={reduce ? undefined : { scale: 0.98 }}
           >
@@ -135,26 +159,27 @@ export function Navbar() {
 
       {isOpen && (
         <motion.div
-          initial={reduce ? false : { opacity: 0, y: -8 }}
-          animate={reduce ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
+          initial={reduce ? false : "hidden"}
+          animate={reduce ? undefined : "visible"}
+          variants={navStagger}
           className="border-t border-border bg-background lg:hidden"
         >
           <div className="container-editorial flex flex-col gap-1 py-4">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "rounded-sm px-3 py-2.5 font-mono text-sm font-medium uppercase tracking-wider",
-                  isActive(link.href)
-                    ? "bg-muted text-foreground"
-                    : "text-muted-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
+              <motion.div key={link.href} variants={navItem}>
+                <Link
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    "block rounded-sm px-3 py-2.5 font-mono text-sm font-medium uppercase tracking-wider",
+                    isActive(link.href)
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
             ))}
             <div className="mt-3 flex gap-3 border-t border-border pt-4">
               <Link href="/masuk" className="flex-1">

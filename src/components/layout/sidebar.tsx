@@ -197,7 +197,6 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
 
 function SidebarFooter({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const links: NavItem[] = [
-    { href: "/", label: "Beranda", icon: Home },
     { href: "/profil", label: "Profil", icon: User },
     { href: "/pengaturan", label: "Pengaturan", icon: Settings },
   ];
