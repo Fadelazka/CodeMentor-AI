@@ -20,7 +20,6 @@ import {
   authStatusIcon,
 } from "@/components/auth/auth-animations";
 import { UnderlineLink } from "@/components/ui/micro-interactions";
-import { UnderlineLink } from "@/components/ui/micro-interactions";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
