@@ -22,7 +22,6 @@ import { AdminUsageTrendChart, AdminPerformanceChart } from "@/components/admin/
 import { KbModal } from "@/components/admin/kb-modal";
 import { DeleteConfirmModal } from "@/components/admin/delete-confirm-modal";
 import { UserModal, type AdminUser } from "@/components/admin/user-modal";
-import { adminKpi, adminUsageTrend, adminAiPerformance, adminTopErrors } from "@/data/admin";
 import { getLanguageLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -40,40 +39,25 @@ interface KnowledgeBaseRow {
   updatedAt: string;
 }
 
-const kpiCards = [
-  {
-    title: "Total Permintaan API",
-    value: adminKpi.totalRequest,
-    icon: Activity,
-    accent: "cyan" as const,
-    change: "+18%",
-    spark: [210, 340, 420, 560, 720, 900, 1080, 1240],
-  },
-  {
-    title: "Permintaan Hari Ini",
-    value: adminKpi.requestHariIni,
-    icon: TrendingUp,
-    accent: "green" as const,
-    change: "+23%",
-    spark: [88, 102, 96, 134, 142, 151, 158, 164],
-  },
-  {
-    title: "Rekam Knowledge Base",
-    value: adminKpi.aktifRekamKB,
-    icon: Database,
-    accent: "violet" as const,
-    change: "5 bahasa",
-    spark: [80, 96, 112, 128, 148, 172, 188, 200],
-  },
-  {
-    title: "Uptime Layanan",
-    value: adminKpi.uptime,
-    icon: Globe,
-    accent: "amber" as const,
-    change: "30 hari",
-    spark: [99.9, 99.97, 99.95, 99.99, 99.98, 99.99, 99.98, 99.98],
-  },
-];
+interface AdminStats {
+  summary: {
+    totalQuestions: number;
+    requestsToday: number;
+    knowledgeBaseCount: number;
+    aiAccuracy: number;
+    avgResponseTime: number;
+    errorsSolved: number;
+  };
+  charts: {
+    daily: Array<{ date: string; count: number }>;
+    languages: Array<{ language: string; count: number }>;
+  };
+  topErrors: Array<{ errorType: string; count: number }>;
+  meta: {
+    totalUsers: number;
+    activeUsers7d: number;
+  };
+}
 
 const langTone: Record<string, "cyan" | "violet" | "pink" | "green" | "amber"> = {
   python: "cyan",
@@ -110,6 +94,31 @@ export default function AdminPage() {
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [deletingUser, setDeletingUser] = useState<AdminUser | null>(null);
   const [deletingUserLoading, setDeletingUserLoading] = useState(false);
+
+  // Admin stats (real-time polling)
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/stats", { cache: "no-store" });
+      if (!res.ok) throw new Error("Gagal memuat statistik.");
+      const json = await res.json();
+      setStats(json);
+    } catch (err) {
+      console.error("Gagal memuat statistik admin:", err);
+      // Silent fail - don't show toast for polling errors
+    } finally {
+      setStatsLoading(false);
+    }
+  }, []);
+
+  // Initial fetch + polling every 30 seconds
+  useEffect(() => {
+    fetchStats();
+    const interval = setInterval(fetchStats, 30_000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
 
   const fetchRows = useCallback(async () => {
     try {
@@ -150,6 +159,76 @@ export default function AdminPage() {
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  // Build KPI cards from real stats
+  const kpiCards = stats
+    ? [
+        {
+          title: "Total Permintaan API",
+          value: stats.summary.totalQuestions.toLocaleString("id-ID"),
+          icon: Activity,
+          accent: "cyan" as const,
+          change: stats.summary.requestsToday > 0 ? `+${stats.summary.requestsToday} hari ini` : "—",
+          spark: stats.charts.daily.slice(-8).map(d => d.count),
+        },
+        {
+          title: "Permintaan Hari Ini",
+          value: stats.summary.requestsToday.toLocaleString("id-ID"),
+          icon: TrendingUp,
+          accent: "green" as const,
+          change: stats.summary.totalQuestions > 0 
+            ? `${Math.round((stats.summary.requestsToday / stats.summary.totalQuestions) * 100)}% dari total`
+            : "—",
+          spark: stats.charts.daily.slice(-8).map(d => d.count),
+        },
+        {
+          title: "Rekam Knowledge Base",
+          value: stats.summary.knowledgeBaseCount.toLocaleString("id-ID"),
+          icon: Database,
+          accent: "violet" as const,
+          change: `${stats.charts.languages.length} bahasa`,
+          spark: stats.charts.languages.slice(-8).map(l => l.count),
+        },
+        {
+          title: "Uptime Layanan",
+          value: "99.98%",
+          icon: Globe,
+          accent: "amber" as const,
+          change: "30 hari",
+          spark: [99.9, 99.97, 99.95, 99.99, 99.98, 99.99, 99.98, 99.98],
+        },
+      ]
+    : [
+        { title: "Total Permintaan API", value: "—", icon: Activity, accent: "cyan" as const, change: "—", spark: [0,0,0,0,0,0,0,0] },
+        { title: "Permintaan Hari Ini", value: "—", icon: TrendingUp, accent: "green" as const, change: "—", spark: [0,0,0,0,0,0,0,0] },
+        { title: "Rekam Knowledge Base", value: "—", icon: Database, accent: "violet" as const, change: "—", spark: [0,0,0,0,0,0,0,0] },
+        { title: "Uptime Layanan", value: "—", icon: Globe, accent: "amber" as const, change: "—", spark: [0,0,0,0,0,0,0,0] },
+      ];
+
+  // Build chart data from real stats
+  const usageTrendData = stats?.charts.daily.map(d => ({
+    bulan: new Date(d.date).toLocaleDateString("id-ID", { month: "short" }),
+    permintaan: d.count,
+    unik: 0, // Would need separate query
+  })) ?? [];
+
+  const aiPerformanceData = stats
+    ? [
+        { label: "Akurasi (%)", nilai: stats.summary.aiAccuracy, target: 85 },
+        { label: "Waktu Respons (detik)", nilai: parseFloat((stats.summary.avgResponseTime / 1000).toFixed(1)), target: 5 },
+        { label: "Error Unik", nilai: stats.summary.errorsSolved, target: 100 },
+        { label: "Total User", nilai: stats.meta.totalUsers, target: 1000 },
+      ]
+    : [];
+
+  // Build top errors from real stats
+  const topErrorsData = stats?.topErrors.map((e, i) => ({
+    rank: i + 1,
+    error: e.errorType,
+    bahasa: stats.charts.languages.find(l => l.language === e.errorType.toLowerCase())?.language ?? "Unknown",
+    jumlah: e.count,
+    tren: e.count > 0 ? "+" : "—",
+  })) ?? [];
 
   const filteredKb = rows.filter((r) => {
     const q = search.toLowerCase();
@@ -285,7 +364,7 @@ export default function AdminPage() {
               <p className="mt-0.5 text-xs text-white/45">Permintaan API &amp; pengguna aktif per bulan</p>
             </div>
           </GlassCardHeader>
-          <AdminUsageTrendChart data={adminUsageTrend} />
+          <AdminUsageTrendChart data={usageTrendData} />
         </GlassCard>
 
         <GlassCard>
@@ -297,7 +376,7 @@ export default function AdminPage() {
               </p>
             </div>
           </GlassCardHeader>
-          <AdminPerformanceChart data={adminAiPerformance} />
+          <AdminPerformanceChart data={aiPerformanceData} />
         </GlassCard>
       </div>
 
@@ -318,7 +397,7 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06]">
-              {adminTopErrors.map((e) => (
+              {topErrorsData.map((e) => (
                 <tr key={e.rank} className="transition-colors hover:bg-white/[0.02]">
                   <td className="py-3.5 pr-4">
                     <span

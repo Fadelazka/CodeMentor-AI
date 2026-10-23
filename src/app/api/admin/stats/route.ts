@@ -23,6 +23,16 @@ export async function GET() {
     // Total pertanyaan (semua user)
     const totalQuestions = await prisma.chatHistory.count();
 
+    // Permintaan hari ini
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    const requestsToday = await prisma.chatHistory.count({
+      where: { createdAt: { gte: startOfToday } },
+    });
+
+    // Knowledge base count
+    const knowledgeBaseCount = await prisma.knowledgeBase.count();
+
     // Total feedback positif (untuk akurasi)
     const feedbackHelpful = await prisma.chatHistory.count({ where: { feedback: "HELPFUL" } });
     const feedbackNotHelpful = await prisma.chatHistory.count({ where: { feedback: "NOT_HELPFUL" } });
@@ -137,6 +147,8 @@ return NextResponse.json({
       isAdminView: true,
       summary: {
         totalQuestions,
+        requestsToday,
+        knowledgeBaseCount,
         aiAccuracy,
         avgResponseTime,
         errorsSolved: distinctErrors.length,
