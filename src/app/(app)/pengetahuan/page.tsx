@@ -39,13 +39,13 @@ function LanguageLogo({ code, className = "w-12 h-12" }: { code: string; classNa
 export default function KnowledgeBasePage() {
   return (
     <div className="pt-16">
-      <section className="border-b border-border bg-background py-20">
+      <section className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0E14] py-20">
         <div className="container-editorial">
           <p className="kicker">Knowledge Base</p>
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Jelajahi <span className="text-accent">200+ Pola Error</span> Pemrograman
+          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+            Jelajahi <span className="text-[#FF3B6B]">200+ Pola Error</span> Pemrograman
           </h1>
-          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
+          <p className="mt-5 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
             Database yang terus bertumbuh, dikurasi tim CodeMentor AI untuk pola
             error yang paling sering ditemui. Setiap entri berisi deskripsi
             penyebab, solusi langkah-demi-langkah, dan contoh kode.
@@ -70,7 +70,7 @@ export default function KnowledgeBasePage() {
           </div>
 
           <div className="mt-12">
-            <h2 className="mb-6 text-center text-2xl font-bold tracking-tight text-foreground">
+            <h2 className="mb-6 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Per Bahasa
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -78,16 +78,16 @@ export default function KnowledgeBasePage() {
                 <Link
                   key={lang.value}
                   href={`/pengetahuan/${lang.value}`}
-                  className="group rounded-sm border border-border bg-card p-5 transition-all hover:-translate-y-1 hover:border-foreground/20"
+                  className="group rounded-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0E14] p-5 transition-all hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-700"
                 >
                   <div className="mb-3 flex h-12 items-center justify-center">
                     <LanguageLogo code={lang.value} />
                   </div>
-                  <h3 className="font-bold text-foreground">{lang.nama}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <h3 className="font-bold text-slate-900 dark:text-white">{lang.nama}</h3>
+                  <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
                     {languageCounts[lang.value] ?? 0} contoh error di sini
                   </p>
-                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-foreground group-hover:gap-2 transition-all">
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-slate-900 dark:text-white group-hover:gap-2 transition-all">
                     Buka halaman <ArrowRight className="h-3 w-3" />
                   </span>
                 </Link>
@@ -97,10 +97,10 @@ export default function KnowledgeBasePage() {
 
           <div id="daftar" className="scroll-mt-24">
             <div className="mb-6 flex items-center justify-center gap-3">
-              <div className="flex h-8 items-center justify-center rounded-sm bg-ink px-3 text-xs font-bold text-paper">
+              <div className="flex h-8 items-center justify-center rounded-sm bg-slate-900 dark:bg-white px-3 text-xs font-bold text-white dark:text-slate-900">
                 KB v1.0
               </div>
-              <h2 className="text-center text-2xl font-bold tracking-tight text-foreground">
+              <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Telusuri Semua Pola Error
               </h2>
             </div>
@@ -109,12 +109,12 @@ export default function KnowledgeBasePage() {
         </div>
       </section>
 
-      <section className="section-padding border-t border-border bg-muted/30">
+      <section className="section-padding border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#06080c]">
         <div className="container-editorial text-center">
-          <h2 className="mx-auto max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl text-foreground">
+          <h2 className="mx-auto max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl text-slate-900 dark:text-white">
             Punya error yang tidak ada di sini?
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-slate-600 dark:text-slate-400">
             Kirim kode Anda ke CodeMentor AI. Penjelasan tetap diberikan meski
             polanya baru, lalu entri baru dikurasi untuk knowledge base.
           </p>
@@ -140,12 +140,12 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-sm border border-border bg-card p-6 text-center">
-      <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-sm bg-muted text-foreground">
+    <div className="rounded-sm border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0E14] p-6 text-center">
+      <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-sm bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white">
         {icon}
       </div>
-      <div className="text-2xl font-bold text-foreground">{value}</div>
-      <div className="mt-1 text-sm text-muted-foreground">{label}</div>
+      <div className="text-2xl font-bold text-slate-900 dark:text-white">{value}</div>
+      <div className="mt-1 text-sm text-slate-600 dark:text-slate-400">{label}</div>
     </div>
   );
 }

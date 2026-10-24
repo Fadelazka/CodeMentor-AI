@@ -367,14 +367,14 @@ const metrics: MetricData[] = hasActivity && stats ? [
 
       {/* Admin: Info user count */}
       {isAdmin && stats?.meta && (
-        <div className="mt-4 flex flex-wrap gap-3 text-xs text-zinc-500">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+        <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-600 dark:text-slate-400">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-slate-800">
             <Users className="w-3.5 h-3.5" />
             <span>{stats.meta.totalUsers.toLocaleString("id-ID")} total user</span>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neon-green/[0.1] border border-neon-green/[0.2]">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neon-green/[0.08] dark:bg-neon-green/[0.1] border border-neon-green/30 dark:border-neon-green/[0.2]">
             <Activity className="w-3.5 h-3.5 text-neon-green" />
-            <span>{stats.meta.activeUsers7d.toLocaleString("id-ID")} aktif 7 hari</span>
+            <span className="text-slate-700 dark:text-slate-300">{stats.meta.activeUsers7d.toLocaleString("id-ID")} aktif 7 hari</span>
           </div>
         </div>
       )}
@@ -401,22 +401,22 @@ const metrics: MetricData[] = hasActivity && stats ? [
       ) : (
         <>
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
-            <GlassCard className="lg:col-span-2">
+            <GlassCard className="lg:col-span-2 bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-white/10">
               <GlassCardHeader>
                 <div>
-                  <GlassCardTitle>Penggunaan 14 Hari Terakhir</GlassCardTitle>
-                  <p className="mt-0.5 text-xs text-white/45">Banyaknya pertanyaan yang dikirim</p>
+                  <GlassCardTitle className="text-slate-900 dark:text-white">Penggunaan 14 Hari Terakhir</GlassCardTitle>
+                  <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">Banyaknya pertanyaan yang dikirim</p>
                 </div>
                 <BadgePill tone="cyan">+18%</BadgePill>
               </GlassCardHeader>
               <UsageChart data={usageChartData} />
             </GlassCard>
 
-            <GlassCard>
+            <GlassCard className="bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-white/10">
               <GlassCardHeader>
                 <div>
-                  <GlassCardTitle>Bahasa yang Digunakan</GlassCardTitle>
-                  <p className="mt-0.5 text-xs text-white/45">Distribusi penggunaan</p>
+                  <GlassCardTitle className="text-slate-900 dark:text-white">Bahasa yang Digunakan</GlassCardTitle>
+                  <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">Distribusi penggunaan</p>
                 </div>
               </GlassCardHeader>
               <LanguagePieChart data={languagePieData} />
@@ -424,11 +424,11 @@ const metrics: MetricData[] = hasActivity && stats ? [
           </div>
 
           <div className="mt-6">
-            <GlassCard>
+            <GlassCard className="bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-white/10">
               <GlassCardHeader>
                 <div>
-                  <GlassCardTitle>Error Paling Sering</GlassCardTitle>
-                  <p className="mt-0.5 text-xs text-white/45">Error yang paling banyak dikonsultasikan</p>
+                  <GlassCardTitle className="text-slate-900 dark:text-white">Error Paling Sering</GlassCardTitle>
+                  <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">Error yang paling banyak dikonsultasikan</p>
                 </div>
                 <BadgePill tone="pink" icon={AlertTriangle}>
                   Pantau
@@ -438,15 +438,15 @@ const metrics: MetricData[] = hasActivity && stats ? [
             </GlassCard>
           </div>
 
-          <GlassCard className="mt-6">
+          <GlassCard className="mt-6 bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-white/10">
             <GlassCardHeader>
               <div>
-                <GlassCardTitle>Aktivitas Terakhir</GlassCardTitle>
-                <p className="mt-0.5 text-xs text-white/45">Riwayat interaksi terbaru</p>
+                <GlassCardTitle className="text-slate-900 dark:text-white">Aktivitas Terakhir</GlassCardTitle>
+                <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">Riwayat interaksi terbaru</p>
               </div>
               <Link
                 href="/riwayat"
-                className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-neon-red transition-colors hover:text-white"
+                className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-neon-red transition-colors hover:text-slate-900 dark:hover:text-white"
               >
                 Lihat semua
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -456,25 +456,25 @@ const metrics: MetricData[] = hasActivity && stats ? [
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-white/[0.08]">
+                  <tr className="border-b border-slate-200 dark:border-white/10">
                     {["Tanggal", "Bahasa", "Error", "Confidence", "Status"].map((h) => (
                       <th
                         key={h}
-                        className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-white/40 last:pr-0"
+                        className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-slate-600 dark:text-slate-400 last:pr-0"
                       >
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/[0.06]">
+                <tbody className="divide-y divide-slate-200 dark:divide-white/10">
                   {stats?.recentActivity?.map((r) => (
-                    <tr key={r.id} className="transition-colors hover:bg-white/[0.02]">
-                      <td className="py-3.5 pr-4 font-mono text-[11px] text-white/45">{formatDate(r.createdAt)}</td>
+                    <tr key={r.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02] bg-white dark:bg-[#0B0E14]">
+                      <td className="py-3.5 pr-4 font-mono text-[11px] text-slate-500 dark:text-slate-400">{formatDate(r.createdAt)}</td>
                       <td className="py-3.5 pr-4">
                         <BadgePill tone={langTone[r.language] ?? "neutral"}>{getLanguageLabel(r.language)}</BadgePill>
                       </td>
-                      <td className="py-3.5 pr-4 font-mono text-xs text-white/85">{r.errorCode ?? "-"}</td>
+                      <td className="py-3.5 pr-4 font-mono text-xs text-slate-900 dark:text-white">{r.errorCode ?? "-"}</td>
                       <td className="py-3.5 pr-4">
                         <BadgePill tone={r.confidence && r.confidence >= 85 ? "green" : "amber"}>{r.confidence ?? "-"}%</BadgePill>
                       </td>
@@ -485,7 +485,7 @@ const metrics: MetricData[] = hasActivity && stats ? [
                   ))}
                   {(!stats?.recentActivity || stats.recentActivity.length === 0) && (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-white/40 text-sm">
+                      <td colSpan={5} className="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">
                         Belum ada aktivitas terbaru
                       </td>
                     </tr>

@@ -10,6 +10,7 @@ import { SectionLabel } from "@/components/ui/section-label";
 import { GlassCard } from "@/components/ui/glass-card";
 import { MetricCard } from "@/components/ui/metric-card";
 import { ProfileCard } from "@/components/profile/profile-card";
+import { formatDateShort } from "@/lib/utils";
 import {
   PythonLogo,
   JavaScriptLogo,
@@ -52,11 +53,14 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
       .catch(() => setStats({ totalQuestions: 0, errorsSolved: 0 }));
   }, []);
 
-  const name = session?.user?.name ?? FALLBACK.name; const email = session?.user?.email ?? FALLBACK.email;
+  const name = session?.user?.name ?? FALLBACK.name;
+  const email = session?.user?.email ?? FALLBACK.email;
   const role = (session?.user as { role?: string } | undefined)?.role ?? FALLBACK.role;
   const nim = (session?.user as { nim?: string } | undefined)?.nim ?? "";
   const image = session?.user?.image ?? "";
   const favoriteLanguage = (session?.user as { favoriteLanguage?: string } | undefined)?.favoriteLanguage ?? "";
+  const createdAt = (session?.user as { createdAt?: string } | undefined)?.createdAt ?? null;
+  const joinedAt = createdAt ? formatDateShort(createdAt) : FALLBACK.joinedAt;
   const favMeta = favoriteLanguage ? LANG_META[favoriteLanguage] : undefined;
 
   const details = DETAILS.map((d) => {
@@ -64,6 +68,7 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
     if (d.label === "Email") return { ...d, value: email };
     if (d.label === "Role") return { ...d, value: role };
     if (d.label === "NIM") return { ...d, value: nim || "-" };
+    if (d.label === "Bergabung") return { ...d, value: joinedAt };
     return d;
   });
 
@@ -75,20 +80,20 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
         description="Kelola informasi akun Anda"
       />
 
-      <ProfileCard name={name} email={email} role={role} image={image} joinedAt={FALLBACK.joinedAt} onEdit={() => setIsEditOpen(true)} />
+      <ProfileCard name={name} email={email} role={role} image={image} joinedAt={joinedAt} onEdit={() => setIsEditOpen(true)} />
 
       <GlassCard>
         <SectionLabel icon={IdCard}>Informasi Akun</SectionLabel>
-        <dl className="divide-y divide-white/[0.06]">
+        <dl className="divide-y divide-slate-200 dark:divide-slate-800">
           {details.map((item) => (
             <div
               key={item.label}
               className="flex flex-col gap-0.5 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
             >
-              <dt className="font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+              <dt className="font-mono text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {item.label}
               </dt>
-              <dd className="text-sm text-white">{item.value}</dd>
+              <dd className="text-sm font-medium text-slate-900 dark:text-white">{item.value}</dd>
             </div>
           ))}
         </dl>
@@ -109,19 +114,19 @@ export default function ProfilPage() { const [isEditOpen, setIsEditOpen] = useSt
             icon={CheckCircle2}
             accent="green"
           />
-          <div className="glass-panel rounded-2xl p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">Bahasa Favorit</p>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500 dark:text-white/45">Bahasa Favorit</p>
             <div className="mt-3 flex items-center gap-2">
               {favMeta ? (
                 <>
                   <favMeta.Logo className="w-6 h-6" />
-                  <span className="font-display text-3xl font-bold tracking-tight text-white">{favMeta.label}</span>
+                  <span className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{favMeta.label}</span>
                 </>
               ) : (
-                <span className="font-display text-3xl font-bold tracking-tight text-white/40">-</span>
+                <span className="font-display text-3xl font-bold tracking-tight text-slate-400 dark:text-white/40">-</span>
               )}
             </div>
-            {!favMeta && <p className="mt-1 text-[11px] text-white/40">Belum dipilih</p>}
+            {!favMeta && <p className="mt-1 text-[11px] text-slate-500 dark:text-white/40">Belum dipilih</p>}
           </div>
         </div>
       </div>

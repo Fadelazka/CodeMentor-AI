@@ -51,11 +51,11 @@ export function NotificationBell() {
         aria-label={`Notifikasi (${unreadCount} belum dibaca)`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        className="relative rounded-xl border border-white/[0.06] bg-white/[0.03] p-2 text-white/60 transition-colors hover:border-white/[0.12] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/40"
+        className="relative rounded-xl border border-slate-200 bg-white p-2 text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/40 dark:border-white/[0.06] dark:bg-white/[0.03] dark:text-white/60 dark:hover:border-white/[0.12] dark:hover:text-white"
       >
         <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
         {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-neon-red px-1 text-[10px] font-bold text-white ring-2 ring-[#05060A]">
+          <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-neon-red px-1 text-[10px] font-bold text-white ring-2 ring-white dark:ring-[#05060A]">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}

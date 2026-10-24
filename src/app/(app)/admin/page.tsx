@@ -361,7 +361,7 @@ export default function AdminPage() {
           <GlassCardHeader>
             <div>
               <GlassCardTitle>Tren Penggunaan</GlassCardTitle>
-              <p className="mt-0.5 text-xs text-white/45">Permintaan API &amp; pengguna aktif per bulan</p>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-white/45">Permintaan API &amp; pengguna aktif per bulan</p>
             </div>
           </GlassCardHeader>
           <AdminUsageTrendChart data={usageTrendData} />
@@ -371,7 +371,7 @@ export default function AdminPage() {
           <GlassCardHeader>
             <div>
               <GlassCardTitle>Performa AI vs Target</GlassCardTitle>
-              <p className="mt-0.5 text-xs text-white/45">
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-white/45">
                 Akurasi ≥85% • Respons &lt;5s • Kepuasan UAT ≥80%
               </p>
             </div>
@@ -388,33 +388,33 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/[0.07]">
+              <tr className="border-b border-slate-200 dark:border-white/[0.07]">
                 {["Rank", "Error", "Bahasa", "Jumlah", "Tren"].map((h) => (
-                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-white/40 last:pr-0">
+                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-white/40 last:pr-0">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-slate-200 dark:divide-white/[0.06]">
               {topErrorsData.map((e) => (
-                <tr key={e.rank} className="transition-colors hover:bg-white/[0.02]">
+                <tr key={e.rank} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                   <td className="py-3.5 pr-4">
                     <span
                       className={
                         e.rank === 1
                           ? "inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[linear-gradient(135deg,#FF3B6B,#FF6B35)] text-xs font-bold text-[#050818]"
-                          : "inline-flex h-6 w-6 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-xs font-semibold text-white/50"
+                          : "inline-flex h-6 w-6 items-center justify-center rounded-lg border border-slate-300 bg-slate-100 text-xs font-semibold text-slate-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-white/50"
                       }
                     >
                       {e.rank}
                     </span>
                   </td>
-                  <td className="py-3 pr-4 font-mono text-xs font-medium text-white/90">{e.error}</td>
+                  <td className="py-3 pr-4 font-mono text-xs font-medium text-slate-800 dark:text-white/90">{e.error}</td>
                   <td className="py-3 pr-4">
                     <BadgePill tone={langTone[e.bahasa.toLowerCase()] ?? "neutral"}>{e.bahasa}</BadgePill>
                   </td>
-                  <td className="py-3 pr-4 font-semibold text-white">{e.jumlah}</td>
+                  <td className="py-3 pr-4 font-semibold text-slate-900 dark:text-white">{e.jumlah}</td>
                   <td className="py-3">
                     <BadgePill tone={e.tren.startsWith("-") ? "green" : "amber"}>{e.tren}</BadgePill>
                   </td>
@@ -429,16 +429,16 @@ export default function AdminPage() {
         <GlassCardHeader className="flex-col gap-4 sm:flex-row sm:items-center">
           <div>
             <GlassCardTitle>Kelola Knowledge Base</GlassCardTitle>
-            <p className="mt-0.5 text-xs text-white/45">Rekaman error yang tersedia untuk RAG retrieval</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-white/45">Rekaman error yang tersedia untuk RAG retrieval</p>
           </div>
           <div className="flex w-full gap-2 sm:w-auto">
             <div className="relative flex-1 sm:flex-none">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-white/35" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Cari rekaman..."
-                className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-4 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-neon-red/40 focus:bg-white/[0.06] sm:w-56"
+                className="h-10 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-neon-red/40 focus:bg-white dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:placeholder:text-white/30 dark:focus:bg-white/[0.06] sm:w-56"
               />
             </div>
             <GradientButton size="md" icon={Plus} onClick={() => setCreateOpen(true)}>
@@ -450,45 +450,45 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/[0.07]">
+              <tr className="border-b border-slate-200 dark:border-white/[0.07]">
                 {["ID", "Bahasa", "Error", "Judul", "Diperbarui", "Status", "Aksi"].map((h) => (
-                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-white/40 last:pr-0">
+                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-white/40 last:pr-0">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-slate-200 dark:divide-white/[0.06]">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-10 text-center text-sm text-white/40">
+                  <td colSpan={7} className="py-10 text-center text-sm text-slate-500 dark:text-white/40">
                     <Loader2 className="mx-auto mb-2 h-5 w-5 animate-spin text-[#FF3B6B]" />
                     Memuat rekaman knowledge base...
                   </td>
                 </tr>
               ) : filteredKb.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-10 text-center text-sm text-white/40">
+                  <td colSpan={7} className="py-10 text-center text-sm text-slate-500 dark:text-white/40">
                     {search ? "Tidak ada rekaman yang cocok." : "Belum ada rekaman knowledge base."}
                   </td>
                 </tr>
               ) : (
                 filteredKb.map((r) => (
-                  <tr key={r.id} className="transition-colors hover:bg-white/[0.02]">
-                    <td className="py-3.5 pr-4 font-mono text-xs text-white/45">{r.id}</td>
+                  <tr key={r.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]">
+                    <td className="py-3.5 pr-4 font-mono text-xs text-slate-500 dark:text-white/45">{r.id}</td>
                     <td className="py-3.5 pr-4">
                       <BadgePill tone={langTone[r.language] ?? "neutral"}>{getLanguageLabel(r.language)}</BadgePill>
                     </td>
-                    <td className="py-3.5 pr-4 font-mono text-xs font-medium text-white/85">{r.errorCode}</td>
-                    <td className="py-3.5 pr-4 text-white/55">{r.title}</td>
-                    <td className="py-3.5 pr-4 text-xs text-white/40">{formatUpdatedAt(r.updatedAt)}</td>
+                    <td className="py-3.5 pr-4 font-mono text-xs font-medium text-slate-900 dark:text-white/85">{r.errorCode}</td>
+                    <td className="py-3.5 pr-4 text-slate-600 dark:text-white/55">{r.title}</td>
+                    <td className="py-3.5 pr-4 text-xs text-slate-500 dark:text-white/40">{formatUpdatedAt(r.updatedAt)}</td>
                     <td className="py-3.5 pr-4">
                       <button
                         onClick={() => toggleActive(r)}
                         className={`rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider transition-colors ${
                           r.isActive
-                            ? "border-neon-green/25 bg-neon-green/12 text-neon-green"
-                            : "border-white/10 bg-white/[0.04] text-white/45"
+                            ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:border-neon-green/25 dark:bg-neon-green/12 dark:text-neon-green"
+                            : "border-slate-300 bg-slate-100 text-slate-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-white/45"
                         }`}
                       >
                         {r.isActive ? "Aktif" : "Nonaktif"}
@@ -498,14 +498,14 @@ export default function AdminPage() {
                       <div className="flex gap-1">
                         <button
                           onClick={() => setEditing(r)}
-                          className="rounded-lg p-1.5 text-white/45 transition-colors hover:bg-white/[0.06] hover:text-neon-red"
+                          className="rounded-lg p-1.5 text-slate-500 dark:text-white/45 transition-colors hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-neon-red"
                           aria-label="Edit rekaman"
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => setDeleting(r)}
-                          className="rounded-lg p-1.5 text-white/45 transition-colors hover:bg-white/[0.06] hover:text-[#FF7C9C]"
+                          className="rounded-lg p-1.5 text-slate-500 dark:text-white/45 transition-colors hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-[#FF7C9C]"
                           aria-label="Hapus rekaman"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -524,11 +524,11 @@ export default function AdminPage() {
         <GlassCardHeader className="flex-col gap-4 sm:flex-row sm:items-center">
           <div>
             <GlassCardTitle>Kelola User</GlassCardTitle>
-            <p className="mt-0.5 text-xs text-white/45">Kelola akun pengguna CodeMentor AI</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-white/45">Kelola akun pengguna CodeMentor AI</p>
           </div>
           <div className="flex w-full gap-2 sm:w-auto">
             <div className="relative flex-1 sm:flex-none">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-white/35" />
               <input
                 value={userSearch}
                 onChange={(e) => {
@@ -536,7 +536,7 @@ export default function AdminPage() {
                   setUserPage(1);
                 }}
                 placeholder="Cari nama atau email..."
-                className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-4 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-neon-red/40 focus:bg-white/[0.06] sm:w-56"
+                className="h-10 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-neon-red/40 focus:bg-white dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:placeholder:text-white/30 dark:focus:bg-white/[0.06] sm:w-56"
               />
             </div>
             <GradientButton
@@ -555,45 +555,45 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/[0.07]">
+              <tr className="border-b border-slate-200 dark:border-white/[0.07]">
                 {["Nama", "Email", "Role", "Terdaftar", "Aksi"].map((h) => (
-                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-white/40 last:pr-0">
+                  <th key={h} className="pb-3 pr-4 font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-white/40 last:pr-0">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-slate-200 dark:divide-white/[0.06]">
               {usersLoading ? (
                 <tr>
-                  <td colSpan={5} className="py-10 text-center text-sm text-white/40">
+                  <td colSpan={5} className="py-10 text-center text-sm text-slate-500 dark:text-white/40">
                     <Loader2 className="mx-auto mb-2 h-5 w-5 animate-spin text-[#FF3B6B]" />
                     Memuat daftar user...
                   </td>
                 </tr>
               ) : pagedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-10 text-center text-sm text-white/40">
+                  <td colSpan={5} className="py-10 text-center text-sm text-slate-500 dark:text-white/40">
                     {userSearch ? "Tidak ada user yang cocok." : "Belum ada user."}
                   </td>
                 </tr>
               ) : (
                 pagedUsers.map((u) => (
-                  <tr key={u.id} className="transition-colors hover:bg-white/[0.02]">
-                    <td className="py-3.5 pr-4 text-white/85">{u.name ?? "-"}</td>
-                    <td className="py-3.5 pr-4 font-mono text-xs text-white/55">{u.email ?? "-"}</td>
+                  <tr key={u.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]">
+                    <td className="py-3.5 pr-4 text-slate-900 dark:text-white/85">{u.name ?? "-"}</td>
+                    <td className="py-3.5 pr-4 font-mono text-xs text-slate-600 dark:text-white/55">{u.email ?? "-"}</td>
                     <td className="py-3.5 pr-4">
                       <span
                         className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider ${
                           u.role === "ADMIN"
-                            ? "bg-violet-500/10 text-violet-400 border-violet-500/20"
-                            : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                            ? "bg-violet-500/10 text-violet-700 border-violet-500/20 dark:text-violet-400"
+                            : "bg-cyan-500/10 text-cyan-700 border-cyan-500/20 dark:text-cyan-400"
                         }`}
                       >
                         {u.role}
                       </span>
                     </td>
-                    <td className="py-3.5 pr-4 text-xs text-white/40">{formatUpdatedAt(u.createdAt)}</td>
+                    <td className="py-3.5 pr-4 text-xs text-slate-500 dark:text-white/40">{formatUpdatedAt(u.createdAt)}</td>
                     <td className="py-3.5">
                       <div className="flex gap-1">
                         <button
@@ -601,14 +601,14 @@ export default function AdminPage() {
                             setEditingUser(u);
                             setUserModalOpen(true);
                           }}
-                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+                          className="rounded-lg p-1.5 text-slate-500 dark:text-zinc-400 transition-colors hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white"
                           aria-label="Edit user"
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => setDeletingUser(u)}
-                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-[#FF3B6B]"
+                          className="rounded-lg p-1.5 text-slate-500 dark:text-zinc-400 transition-colors hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-[#FF3B6B]"
                           aria-label="Hapus user"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -623,8 +623,8 @@ export default function AdminPage() {
         </div>
 
         {filteredUsers.length > USER_PAGE_SIZE && (
-          <div className="mt-4 flex items-center justify-between border-t border-white/[0.07] pt-4">
-            <p className="font-mono text-[11px] text-white/40">
+          <div className="mt-4 flex items-center justify-between border-t border-slate-200 dark:border-white/[0.07] pt-4">
+            <p className="font-mono text-[11px] text-slate-500 dark:text-white/40">
               Menampilkan {pagedUsers.length} dari {filteredUsers.length} user
             </p>
             <div className="flex gap-2">

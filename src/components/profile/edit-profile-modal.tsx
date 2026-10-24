@@ -60,21 +60,97 @@ export function EditProfileModal({ isOpen, onClose, initialData }: EditProfileMo
 
   const handleChooseFile = () => fileInputRef.current?.click();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Compress image using HTML5 Canvas to reduce file size (< 1MB)
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = document.createElement("img");
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return reject(new Error("Canvas context error"));
+
+          // Calculate new dimensions (max 800px on longest side)
+          const MAX_DIMENSION = 800;
+          let { width, height } = img;
+          if (width > height) {
+            if (width > MAX_DIMENSION) {
+              height = (height * MAX_DIMENSION) / width;
+              width = MAX_DIMENSION;
+            }
+          } else {
+            if (height > MAX_DIMENSION) {
+              width = (width * MAX_DIMENSION) / height;
+              height = MAX_DIMENSION;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to blob with quality 0.7 (JPEG) or 0.8 (PNG/WebP)
+          const mimeType = file.type === "image/png" ? "image/png" : "image/jpeg";
+          const quality = mimeType === "image/png" ? 0.8 : 0.7;
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) return reject(new Error("Compression failed"));
+              // Create new File from blob
+              const compressedFile = new File([blob], file.name, {
+                type: mimeType,
+                lastModified: Date.now(),
+              } as FilePropertyBag);
+              resolve(compressedFile);
+            },
+            mimeType,
+            quality
+          );
+        };
+        img.onerror = () => reject(new Error("Image load error"));
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error("File read error"));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
       toast.error("Format harus JPG/PNG/WEBP/GIF");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Ukuran maksimal 2MB");
+    // Allow larger original files (up to 10MB), we'll compress them
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Ukuran file terlalu besar (maks 10MB sebelum kompresi)");
       return;
     }
-    setSelectedFile(file);
-    const reader = new FileReader();
-    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
+
+    try {
+      setIsUploading(true); // reuse uploading state for compression feedback
+      const compressedFile = await compressImage(file);
+      setIsUploading(false);
+
+      // Check compressed size
+      if (compressedFile.size > 2 * 1024 * 1024) {
+        toast.error("Gagal mengompresi gambar di bawah 2MB");
+        return;
+      }
+
+      setSelectedFile(compressedFile);
+      const reader = new FileReader();
+      reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+      reader.readAsDataURL(compressedFile);
+
+      toast.success(`Foto dikompresi: ${(compressedFile.size / 1024).toFixed(0)} KB`);
+    } catch (err) {
+      setIsUploading(false);
+      toast.error("Gagal memproses gambar");
+      console.error("[compressImage]", err);
+    }
   };
 
   const uploadAvatar = async (): Promise<string | null> => {

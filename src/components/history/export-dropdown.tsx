@@ -100,7 +100,7 @@ export function ExportDropdown({ language = "all", searchQuery = "" }: ExportDro
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0A0B14] shadow-2xl"
+            className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40 dark:border-white/[0.08] dark:bg-[#0A0B14] dark:shadow-black/40"
           >
             {OPTIONS.map(({ format, label, desc, icon: Icon }) => (
               <button
@@ -108,14 +108,14 @@ export function ExportDropdown({ language = "all", searchQuery = "" }: ExportDro
                 type="button"
                 onClick={() => handleExport(format)}
                 disabled={!!isExporting}
-                className="flex w-full items-start gap-3 border-b border-white/[0.04] px-4 py-3 text-left transition-colors last:border-0 hover:bg-white/[0.04] disabled:opacity-50"
+                className="flex w-full items-start gap-3 border-b border-slate-200 px-4 py-3 text-left transition-colors last:border-0 hover:bg-slate-100 disabled:opacity-50 dark:border-white/[0.04] dark:hover:bg-white/[0.04]"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FF3B6B]/10">
                   <Icon className="h-4 w-4 text-[#FF3B6B]" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium text-white">{label}</span>
-                  <span className="mt-0.5 block text-xs text-white/40">{desc}</span>
+                  <span className="block text-sm font-medium text-slate-900 dark:text-white">{label}</span>
+                  <span className="mt-0.5 block text-xs text-slate-500 dark:text-white/40">{desc}</span>
                 </span>
               </button>
             ))}

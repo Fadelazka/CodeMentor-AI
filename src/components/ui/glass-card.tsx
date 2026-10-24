@@ -20,9 +20,9 @@ export function GlassCard({
   return (
     <div
       className={cn(
-        "glass-panel relative overflow-hidden rounded-2xl",
+        "relative overflow-hidden rounded-2xl bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-white/10",
         padded && "p-5 sm:p-6",
-        hover && "glass-panel-hover",
+        hover && "transition-all duration-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-lg",
         glow && "shadow-glow-soft",
         className
       )}
@@ -40,7 +40,7 @@ export function GlassCardHeader({ className, ...props }: React.HTMLAttributes<HT
 export function GlassCardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("font-display text-base font-semibold tracking-tight text-white", className)}
+      className={cn("font-display text-base font-semibold tracking-tight text-slate-900 dark:text-white", className)}
       {...props}
     />
   );
@@ -50,7 +50,7 @@ export function GlassCardDescription({
   className,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("mt-0.5 text-xs text-white/45", className)} {...props} />;
+  return <p className={cn("mt-0.5 text-xs text-slate-500 dark:text-slate-400", className)} {...props} />;
 }
 
 export function GlassCardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

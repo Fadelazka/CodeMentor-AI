@@ -27,9 +27,9 @@ const variants: Record<Variant, string> = {
   primary:
     "text-[#050818] bg-[linear-gradient(92deg,#FF3B6B_0%,#FF6B35_100%)] hover:opacity-90 focus-visible:ring-white/40",
   outline:
-    "border border-white/12 bg-white/[0.04] text-white hover:border-neon-red/50 hover:bg-white/[0.07] focus-visible:ring-neon-red/40",
+    "border border-slate-300 bg-white text-slate-700 hover:border-neon-red/50 hover:bg-slate-50 focus-visible:ring-neon-red/40 dark:border-white/12 dark:bg-white/[0.04] dark:text-white dark:hover:bg-white/[0.07]",
   ghost:
-    "bg-transparent text-white/65 hover:bg-white/[0.06] hover:text-white focus-visible:ring-white/20",
+    "bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus-visible:ring-slate-300 dark:text-white/65 dark:hover:bg-white/[0.06] dark:hover:text-white dark:focus-visible:ring-white/20",
   danger:
     "bg-neon-pink/90 text-white hover:bg-neon-pink focus-visible:ring-neon-pink/50",
 };
@@ -48,7 +48,7 @@ export function GradientButton({
 }: GradientButtonProps) {
   const classes = cn(
     "inline-flex select-none items-center justify-center rounded-xl font-medium tracking-tight transition-all duration-200",
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05060A]",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#05060A]",
     "disabled:pointer-events-none disabled:opacity-50",
     sizes[size],
     variants[variant],

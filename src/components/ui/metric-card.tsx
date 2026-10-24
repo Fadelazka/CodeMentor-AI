@@ -43,14 +43,14 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        "glass-panel glass-panel-hover group relative overflow-hidden rounded-2xl p-5",
+        "relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-200 hover:border-slate-300 hover:shadow-lg dark:border-white/10 dark:bg-[#0B0E14] dark:hover:border-white/20",
         className
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">{label}</p>
-          <p className="mt-3 font-display text-3xl font-bold tracking-tight text-white">{value}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500 dark:text-white/45">{label}</p>
+          <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{value}</p>
         </div>
         <span
           className={cn(
@@ -70,7 +70,7 @@ export function MetricCard({
       )}
 
       {change && (
-        <div className="mt-4 flex items-center gap-2 border-t border-white/[0.06] pt-3">
+        <div className="mt-4 flex items-center gap-2 border-t border-slate-200 pt-3 dark:border-white/10">
           <span
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
@@ -84,7 +84,7 @@ export function MetricCard({
             )}
             {change}
           </span>
-          <span className="text-[10px] text-white/35">vs periode lalu</span>
+          <span className="text-[10px] text-slate-500 dark:text-white/35">vs periode lalu</span>
         </div>
       )}
 

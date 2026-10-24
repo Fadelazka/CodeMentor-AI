@@ -223,26 +223,27 @@ export function ChatInterface() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         {/* Left: editor */}
         <div className="space-y-6">
-          <GlassCard>
+          {/* Tambahan bg-white dark:bg-[#0B0E14] agar solid */}
+          <GlassCard className="bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
             <div className="mb-4 flex items-center justify-between gap-3">
               <LanguageDropdown value={language} onChange={setLanguage} />
-              <span className="font-mono text-[11px]" style={{ color: "var(--text-muted)" }}>.{activeLanguage?.extensions}</span>
+              <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">.{activeLanguage?.extensions}</span>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-white/10">
+            <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#06080c]">
               <CodeEditor value={sourceCode} onChange={setSourceCode} language={language} height="320px" />
             </div>
 
-            <div className="mt-4 border-t border-white/[0.07] pt-4">
-              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-white/40">
+            <div className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-4">
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Pesan error (opsional)
               </label>
               <input
                 value={errorInput}
                 onChange={(e) => setErrorInput(e.target.value)}
                 placeholder="Tempel pesan error di sini..."
-                className="w-full rounded-xl border px-3.5 py-2.5 font-mono text-xs outline-none transition-colors focus:border-neon-red/40"
-                style={{ background: "var(--input-bg)", borderColor: "var(--input-border)", color: "var(--input-text)" }}              />
+                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 font-mono text-xs text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-neon-red/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+              />
             </div>
 
             <div className="mt-4 flex gap-3">
@@ -262,12 +263,13 @@ export function ChatInterface() {
             </div>
           </GlassCard>
 
-          <GlassCard>
+          {/* Tambahan bg-white dark:bg-[#0B0E14] agar solid */}
+          <GlassCard className="bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
             <div className="mb-3 flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-neon-amber" strokeWidth={1.75} />
-              <h3 className="font-mono text-[10px] uppercase tracking-wider text-white/60">Tips Penggunaan</h3>
+              <h3 className="font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Tips Penggunaan</h3>
             </div>
-            <ul className="space-y-2 text-sm text-white/50">
+            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
               <li className="flex gap-2"><span className="text-neon-red">•</span> Tempel pesan error lengkap beserta stack trace.</li>
               <li className="flex gap-2"><span className="text-neon-red">•</span> Sertakan kode di sekitar baris yang error.</li>
               <li className="flex gap-2"><span className="text-neon-red">•</span> Beri feedback agar AI semakin akurat.</li>
@@ -276,14 +278,15 @@ export function ChatInterface() {
         </div>
 
         {/* Right: chat panel */}
-        <GlassCard className="flex flex-col lg:sticky lg:top-24 lg:h-fit lg:max-h-[80vh]">
-          <div className="mb-4 flex items-center gap-3 border-b border-white/[0.07] pb-4">
+        {/* Tambahan bg-white dark:bg-[#0B0E14] agar solid */}
+        <GlassCard className="flex flex-col lg:sticky lg:top-24 lg:h-fit lg:max-h-[80vh] bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
+          <div className="mb-4 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#FF3B6B,#FF6B35)] text-[#050818]">
               <Sparkles className="h-4 w-4" strokeWidth={2.25} />
             </span>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-wider text-white">Output</p>
-              <p className="font-mono text-[10px] text-white/35">Respons dalam Bahasa Indonesia</p>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-900 dark:text-white">Output</p>
+              <p className="font-mono text-[10px] text-slate-500 dark:text-slate-400">Respons dalam Bahasa Indonesia</p>
             </div>
           </div>
 
@@ -297,36 +300,31 @@ export function ChatInterface() {
               return (
               <div key={msg.id}>
                 <div className="mb-1.5 flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     {msg.role === "user" ? "> input_" : "// output_"}
                   </span>
                 </div>
                 <div
                   className={
                     msg.role === "user"
-                      ? "rounded-2xl rounded-tr-sm border border-neon-red/20 bg-[linear-gradient(135deg,rgba(255,59,107,0.12),rgba(255,107,53,0.10))] px-4 py-3 text-sm leading-relaxed text-white/90"
-                      : "rounded-2xl rounded-tl-sm border px-4 py-3 text-sm leading-relaxed"
-                  }
-                  style={
-                    msg.role === "assistant"
-                      ? { background: "var(--surface-1)", borderColor: "var(--border)", color: "var(--text-secondary)" }
-                      : undefined
+                      ? "rounded-2xl rounded-tr-sm border border-neon-red/20 bg-[linear-gradient(135deg,rgba(255,59,107,0.12),rgba(255,107,53,0.10))] px-4 py-3 text-sm leading-relaxed text-slate-900 dark:text-white/90"
+                      : "rounded-2xl rounded-tl-sm border px-4 py-3 text-sm leading-relaxed bg-slate-50 dark:bg-[#06080c] border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
                   }
                 >
                   {isCorrect ? (
                     <CorrectCodeBanner explanation={parsed.explanation} />
                   ) : (
                     <>
-                       <div className="prose-sm max-w-none [&_a]:text-neon-red [&_li]:my-0.5 [&_p]:my-1.5" style={{ color: "var(--text-secondary)" }}>
+                      <div className="prose-sm max-w-none text-slate-700 dark:text-slate-300 [&_a]:text-neon-red [&_li]:my-0.5 [&_p]:my-1.5">
                         <ReactMarkdown
                           components={{
                             code: ({ children }) => (
-                               <code className="rounded-md border px-1.5 py-0.5 font-mono text-xs text-neon-red" style={{ background: "var(--editor-bg)", borderColor: "var(--border)" }}>
+                              <code className="rounded-md border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-neon-red dark:border-slate-800 dark:bg-slate-900">
                                 {children}
                               </code>
                             ),
                             pre: ({ children }) => (
-                               <pre className="overflow-x-auto rounded-xl border p-3 font-mono text-xs" style={{ background: "var(--editor-bg)", borderColor: "var(--border)", color: "var(--editor-text)" }}>
+                              <pre className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-100 p-3 font-mono text-xs text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
                                 {children}
                               </pre>
                             ),
@@ -343,7 +341,7 @@ export function ChatInterface() {
                   )}
 
                   {msg.confidence && msg.role === "assistant" && (
-                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-white/[0.07] pt-3">
+                    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-200 dark:border-slate-800 pt-3">
                       <BadgePill tone={msg.confidence >= 80 ? "green" : "amber"}>
                         Confidence {msg.confidence}%
                       </BadgePill>
@@ -352,10 +350,10 @@ export function ChatInterface() {
                   )}
 
                   {msg.role === "assistant" && msg.id !== "welcome" && (
-                    <div className="mt-3 flex items-center gap-2 border-t border-white/[0.07] pt-3">
+                    <div className="mt-3 flex items-center gap-2 border-t border-slate-200 dark:border-slate-800 pt-3">
                       <button
                         onClick={() => handleCopy(msg.content)}
-                        className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[10px] text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
+                        className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[10px] text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
                       >
                         {copied === msg.content.slice(0, 20) ? (
                           <span className="text-neon-green">Tersalin ✓</span>
@@ -381,20 +379,20 @@ export function ChatInterface() {
 
             {isLoading && (
               <div>
-                <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-white/35">{"// processing"}</div>
-                <div className="inline-flex items-center gap-2.5 rounded-2xl rounded-tl-sm border px-4 py-3" style={{ background: "var(--surface-1)", borderColor: "var(--border)" }}>
+                <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">{"// processing"}</div>
+                <div className="inline-flex items-center gap-2.5 rounded-2xl rounded-tl-sm border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-[#06080c]">
                   <Loader2 className="h-4 w-4 animate-spin text-neon-red" />
-                  <span className="font-mono text-xs" style={{ color: "var(--text-muted)" }}>Menganalisis kode &amp; mencari solusi...</span>
+                  <span className="font-mono text-xs text-slate-700 dark:text-slate-300">Menganalisis kode &amp; mencari solusi...</span>
                 </div>
               </div>
             )}
 
             {messages.length === 1 && (
               <div className="flex flex-col items-center justify-center py-10 text-center">
-                <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-neon-red">
+                <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-neon-red dark:border-white/10 dark:bg-white/[0.04]">
                   <Sparkles className="h-5 w-5" strokeWidth={1.75} />
                 </span>
-                <p className="max-w-xs font-mono text-[11px] text-white/40">
+                <p className="max-w-xs font-mono text-[11px] text-slate-500 dark:text-slate-400">
                   Belum ada percakapan. Tempel kode lalu klik &quot;Jelaskan Error&quot; untuk memulai.
                 </p>
               </div>

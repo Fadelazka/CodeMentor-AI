@@ -3,12 +3,14 @@ const nextConfig = {
   output: "standalone",
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: '**' }
+      { protocol: "https", hostname: "**" }
     ]
   },
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverActions: { bodySizeLimit: "4mb" },
+  },
 };
-
 module.exports = nextConfig;

@@ -126,7 +126,7 @@ export default function RiwayatDetailPage() {
           description="Memuat detail riwayat analisis"
         />
         <div className="mt-8 space-y-4">
-          <div className="h-96 animate-pulse bg-white/[0.02] rounded-2xl border border-white/[0.06]" />
+          <div className="h-96 animate-pulse rounded-2xl border border-slate-200 bg-slate-100 dark:border-white/[0.06] dark:bg-white/[0.02]" />
         </div>
       </div>
     );
@@ -198,11 +198,11 @@ export default function RiwayatDetailPage() {
               {history.errorCode && (
                 <BadgePill tone="pink">{history.errorCode}</BadgePill>
               )}
-              <span className="text-[11px] text-white/35">{formatDate(history.createdAt)}</span>
+              <span className="text-[11px] text-slate-500 dark:text-white/35">{formatDate(history.createdAt)}</span>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-white/10">
+          <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-white/10">
             <CodeEditor
               value={history.sourceCode}
               onChange={() => {}}
@@ -213,55 +213,53 @@ export default function RiwayatDetailPage() {
           </div>
 
           {history.errorMessage && (
-            <div className="rounded-xl border border-amber-500/40 bg-amber-500/[0.08] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-amber-400 mb-2">Pesan Error</p>
-              <pre className="font-mono text-xs text-amber-300 whitespace-pre-wrap">{history.errorMessage}</pre>
+            <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-500/40 dark:bg-amber-500/[0.08]">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-amber-700 dark:text-amber-400">Pesan Error</p>
+              <pre className="whitespace-pre-wrap font-mono text-xs text-amber-800 dark:text-amber-300">{history.errorMessage}</pre>
             </div>
           )}
         </GlassCard>
 
         {/* Right: AI Response */}
         <GlassCard className="flex flex-col space-y-6">
-          <div className="flex items-center gap-3 border-b border-white/[0.07] pb-4">
+          <div className="flex items-center gap-3 border-b border-slate-200 pb-4 dark:border-white/[0.07]">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#FF3B6B,#FF6B35)] text-[#050818]">
               <Sparkles className="h-4 w-4" strokeWidth={2.25} />
             </span>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-wider text-white">Output</p>
-              <p className="font-mono text-[10px] text-white/35">Respons dalam Bahasa Indonesia</p>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-slate-900 dark:text-white">Output</p>
+              <p className="font-mono text-[10px] text-slate-500 dark:text-white/35">Respons dalam Bahasa Indonesia</p>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-5 pr-1">
-            <div
-              className="rounded-2xl rounded-tl-sm border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white/80"
-            >
+          <div className="flex-1 space-y-5 overflow-y-auto pr-1">
+            <div className="rounded-2xl rounded-tl-sm border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white/80">
               {history.aiResponse.includes("SUDAH BENAR") || history.aiResponse.includes("100%") || history.aiResponse.includes("kode benar") || history.aiResponse.includes("tidak ada error") ? (
-                <div className="my-4 rounded-lg border border-emerald-500/40 bg-emerald-500/[0.08] p-5">
+                <div className="my-4 rounded-lg border border-emerald-300 bg-emerald-50 p-5 dark:border-emerald-500/40 dark:bg-emerald-500/[0.08]">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                      <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
+                      <svg className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-emerald-400 mb-1">✓ Kode ini sudah benar 100%</h3>
-                      <p className="text-sm text-emerald-100/80 leading-relaxed">{parsed.explanation}</p>
+                      <h3 className="mb-1 text-lg font-semibold text-emerald-700 dark:text-emerald-400">✓ Kode ini sudah benar 100%</h3>
+                      <p className="text-sm leading-relaxed text-emerald-800 dark:text-emerald-100/80">{parsed.explanation}</p>
                     </div>
                   </div>
                 </div>
               ) : (
                 <>
-                  <div className="prose-sm prose-invert max-w-none [&_a]:text-neon-red [&_h2]:text-white [&_h3]:text-white [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-white">
+                  <div className="prose-sm max-w-none text-slate-700 [&_a]:text-neon-red [&_h2]:text-slate-900 [&_h3]:text-slate-900 [&_li]:my-0.5 [&_p]:my-1.5 [&_strong]:text-slate-900 dark:text-slate-300 dark:[&_h2]:text-white dark:[&_h3]:text-white dark:[&_strong]:text-white">
                     <ReactMarkdown
                       components={{
                         code: ({ children }) => (
-                          <code className="rounded-md border border-white/10 bg-[#05060A] px-1.5 py-0.5 font-mono text-xs text-neon-red">
+                          <code className="rounded-md border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-neon-red dark:border-white/10 dark:bg-[#05060A]">
                             {children}
                           </code>
                         ),
                         pre: ({ children }) => (
-                          <pre className="overflow-x-auto rounded-xl border border-white/10 bg-[#05060A] p-3 font-mono text-xs text-white/85">
+                          <pre className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-100 p-3 font-mono text-xs text-slate-800 dark:border-white/10 dark:bg-[#05060A] dark:text-white/85">
                             {children}
                           </pre>
                         ),
@@ -279,7 +277,7 @@ export default function RiwayatDetailPage() {
             </div>
 
             {history.confidence && (
-              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-white/[0.07] pt-3">
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3 dark:border-white/[0.07]">
                 <BadgePill tone={history.confidence >= 80 ? "green" : "amber"}>
                   Confidence {history.confidence}%
                 </BadgePill>

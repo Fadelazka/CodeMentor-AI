@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import { javascript } from "@codemirror/lang-javascript";
@@ -20,6 +20,21 @@ interface CodeEditorProps {
 
 export function CodeEditor({ value, onChange, language, height = "320px", readOnly }: CodeEditorProps) {
   const { theme } = useTheme();
+  const [isLight, setIsLight] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsLight(document.documentElement.classList.contains("light") || 
+        (!document.documentElement.classList.contains("dark") && window.matchMedia("(prefers-color-scheme: light)").matches));
+    };
+    checkTheme();
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+    mediaQuery.addEventListener("change", checkTheme);
+    return () => mediaQuery.removeEventListener("change", checkTheme);
+  }, []);
+
+  // Use context theme (dark/light) which is already resolved from system preference
+  const effectiveTheme = theme;
 
   const extension = useMemo(() => {
     switch (language) {
@@ -43,7 +58,7 @@ export function CodeEditor({ value, onChange, language, height = "320px", readOn
       value={value}
       onChange={onChange}
       extensions={extension}
-      theme={theme === "dark" ? oneDark : "light"}
+      theme={effectiveTheme === "dark" ? oneDark : "light"}
       height={height}
       readOnly={readOnly}
       placeholder="Tempel atau tulis kode Anda di sini..."

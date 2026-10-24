@@ -70,6 +70,7 @@ export const authOptions: NextAuthOptions = {
             image: true,
             favoriteLanguage: true,
             quizCompletedAt: true,
+            createdAt: true,
           },
         });
         if (dbUser) {
@@ -81,6 +82,9 @@ export const authOptions: NextAuthOptions = {
           token.favoriteLanguage = dbUser.favoriteLanguage;
           token.quizCompletedAt = dbUser.quizCompletedAt
             ? dbUser.quizCompletedAt.toISOString()
+            : null;
+          token.createdAt = dbUser.createdAt
+            ? dbUser.createdAt.toISOString()
             : null;
         }
       }
@@ -96,6 +100,8 @@ export const authOptions: NextAuthOptions = {
         (session.user as { favoriteLanguage?: string | null }).favoriteLanguage = token.favoriteLanguage as string | null;
         (session.user as { quizCompletedAt?: string | null }).quizCompletedAt =
           (token.quizCompletedAt as string | null | undefined) ?? null;
+        (session.user as { createdAt?: string | null }).createdAt =
+          (token.createdAt as string | null | undefined) ?? null;
       }
       return session;
     },

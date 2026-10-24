@@ -144,18 +144,18 @@ export default function RiwayatPage() {
 
       <div className="mt-8 grid gap-3 sm:grid-cols-[1fr_200px_auto]">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari error, atau kata kunci dalam kode..."
-            className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-4 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-neon-red/40 focus:bg-white/[0.06]"
+            className="h-11 w-full rounded-xl border border-slate-300 bg-white px-4 pl-10 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-neon-red/40 dark:border-white/10 dark:bg-black/20 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </div>
         <select
           value={langFilter}
           onChange={(e) => setLangFilter(e.target.value)}
-          className="h-11 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-sm text-white/80 outline-none transition-colors focus:border-neon-red/40 [&>option]:bg-[#0A0B14]"
+          className="h-11 rounded-xl border border-slate-300 bg-white px-3.5 text-sm text-slate-900 outline-none transition-colors focus:border-neon-red/40 dark:border-white/10 dark:bg-black/20 dark:text-slate-100"
         >
           <option value="all">Semua Bahasa</option>
           <option value="python">Python</option>
@@ -175,7 +175,7 @@ export default function RiwayatPage() {
             setSearch("");
             setLangFilter("all");
           }}
-          className="mt-3 inline-flex items-center gap-1.5 text-xs text-white/45 transition-colors hover:text-neon-red"
+          className="mt-3 inline-flex items-center gap-1.5 text-xs text-slate-500 transition-colors hover:text-neon-red dark:text-slate-400"
         >
           <X className="h-3.5 w-3.5" /> Reset filter
         </button>
@@ -213,18 +213,16 @@ export default function RiwayatPage() {
                       Confidence {r.confidence}%
                     </BadgePill>
                   )}
-                  <span className="text-[11px] text-white/35">{formatDate(r.createdAt)}</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">{formatDate(r.createdAt)}</span>
                 </div>
-                <pre className="mb-3 line-clamp-2 overflow-hidden rounded-xl border border-white/[0.07] bg-[#05060A]/60 px-3.5 py-2.5 font-mono text-[11px] leading-relaxed text-white/55">
+                <pre className="mb-3 line-clamp-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2.5 font-mono text-[11px] leading-relaxed text-slate-800 dark:border-white/5 dark:bg-[#0A0B14] dark:text-slate-400">
                   {r.sourceCode}
                 </pre>
-                <p className="line-clamp-2 text-sm text-white/50">{r.aiResponse.slice(0, 200)}...</p>
+                <p className="line-clamp-2 text-sm text-slate-700 dark:text-slate-300">{r.aiResponse.slice(0, 200)}...</p>
               </div>
               <div className="flex shrink-0 gap-2 sm:flex-col">
                 <Link href={`/riwayat/${r.id}`}>
-                  <button
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 px-3 py-2 text-xs text-white/45 transition-colors hover:border-neon-red/40 hover:text-white"
-                  >
+                  <button className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-700 transition-colors hover:border-neon-red/40 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white">
                     <Eye className="h-3.5 w-3.5" /> Buka
                   </button>
                 </Link>
@@ -242,7 +240,7 @@ export default function RiwayatPage() {
                       });
                     }
                   }}
-                  className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-white/10 px-3 text-xs text-white/45 transition-colors hover:border-neon-pink/40 hover:text-[#FF7C9C]"
+                  className="inline-flex h-9 items-center justify-center gap-1.5 rounded-xl border border-slate-300 px-3 text-xs text-slate-700 transition-colors hover:border-neon-pink/40 hover:text-neon-pink dark:border-slate-700 dark:text-slate-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" /> Hapus
                 </button>
@@ -261,8 +259,8 @@ export default function RiwayatPage() {
       </div>
 
       {filtered.length > 0 && (
-        <div className="mt-6 flex items-center justify-between border-t border-white/[0.07] pt-5">
-          <p className="font-mono text-[11px] text-white/40">
+        <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-5 dark:border-slate-800">
+          <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
             Menampilkan {filtered.length} dari {rows.length} riwayat
           </p>
           <div className="flex gap-2">

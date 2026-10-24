@@ -57,12 +57,11 @@ export default function PengaturanPage() {
   }) => (
     <button
       onClick={onClick}
-      className="px-4 py-2 rounded-lg text-sm font-medium transition-all border"
-      style={{
-        background: active ? 'rgba(255, 59, 107, 0.1)' : 'var(--surface-2)',
-        borderColor: active ? '#FF3B6B' : 'var(--border)',
-        color: active ? 'var(--text-primary)' : 'var(--text-secondary)',
-      }}
+      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+        active
+          ? "bg-[#FF3B6B]/10 border-[#FF3B6B] text-slate-900 dark:text-white"
+          : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+      }`}
     >
       {children}
     </button>
@@ -76,16 +75,10 @@ export default function PengaturanPage() {
           <p className="text-xs uppercase tracking-wider text-[#FF3B6B] mb-1">
             {'// PENGATURAN'}
           </p>
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Pengaturan
           </h1>
-          <p
-            className="text-sm mt-1"
-            style={{ color: 'var(--text-secondary)' }}
-          >
+          <p className="text-sm mt-1 text-slate-600 dark:text-slate-400">
             Kelola preferensi dan tampilan aplikasi Anda
           </p>
         </div>
@@ -94,44 +87,30 @@ export default function PengaturanPage() {
             resetAll();
             toast.success('Direset ke default');
           }}
-          className="px-4 py-2 rounded-lg text-sm font-medium transition-colors border"
-          style={{
-            background: 'var(--surface-2)',
-            borderColor: 'var(--border)',
-            color: 'var(--text-primary)',
-          }}
+          className="px-4 py-2 rounded-lg text-sm font-medium transition-colors border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
         >
           Kembalikan Default
         </button>
       </div>
 
       {/* Section: Preferensi Tampilan */}
-      <div
-        className="rounded-xl border p-6 space-y-6"
-        style={{ background: 'var(--surface-1)', borderColor: 'var(--border)' }}
-      >
+      <div className="rounded-xl border p-6 space-y-6 bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#FF3B6B]/10 flex items-center justify-center">
             <Palette className="w-5 h-5 text-[#FF3B6B]" />
           </div>
           <div>
-            <h3
-              className="text-base font-semibold"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">
               Preferensi Tampilan
             </h3>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Sesuaikan tema dan tampilan aplikasi
             </p>
           </div>
         </div>
 
         <div>
-          <label
-            className="block text-sm font-medium mb-3"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <label className="block text-sm font-medium mb-3 text-slate-900 dark:text-white">
             Tema Aplikasi
           </label>
           <div className="flex flex-wrap gap-2">
@@ -157,10 +136,7 @@ export default function PengaturanPage() {
         </div>
 
         <div>
-          <label
-            className="block text-sm font-medium mb-3"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <label className="block text-sm font-medium mb-3 text-slate-900 dark:text-white">
             Warna Aksen
           </label>
           <div className="flex flex-wrap gap-2">
@@ -192,10 +168,7 @@ export default function PengaturanPage() {
         </div>
 
         <div>
-          <label
-            className="block text-sm font-medium mb-3"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <label className="block text-sm font-medium mb-3 text-slate-900 dark:text-white">
             Ukuran Font Editor
           </label>
           <div className="flex flex-wrap gap-2">
@@ -222,32 +195,23 @@ export default function PengaturanPage() {
       </div>
 
       {/* Section: Preferensi AI */}
-      <div
-        className="rounded-xl border p-6 space-y-6"
-        style={{ background: 'var(--surface-1)', borderColor: 'var(--border)' }}
-      >
+      <div className="rounded-xl border p-6 space-y-6 bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#FF3B6B]/10 flex items-center justify-center">
             <Bot className="w-5 h-5 text-[#FF3B6B]" />
           </div>
           <div>
-            <h3
-              className="text-base font-semibold"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">
               Preferensi AI
             </h3>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Atur cara AI menjelaskan error
             </p>
           </div>
         </div>
 
         <div>
-          <label
-            className="block text-sm font-medium mb-3"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <label className="block text-sm font-medium mb-3 text-slate-900 dark:text-white">
             Bahasa Penjelasan
           </label>
           <div className="flex flex-wrap gap-2">
@@ -267,10 +231,7 @@ export default function PengaturanPage() {
         </div>
 
         <div>
-          <label
-            className="block text-sm font-medium mb-3"
-            style={{ color: 'var(--text-primary)' }}
-          >
+          <label className="block text-sm font-medium mb-3 text-slate-900 dark:text-white">
             Tingkat Detail Jawaban
           </label>
           <div className="flex flex-wrap gap-2">
@@ -297,13 +258,10 @@ export default function PengaturanPage() {
 
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <p
-              className="text-sm font-medium"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <p className="text-sm font-medium text-slate-900 dark:text-white">
               Auto-save Chat History
             </p>
-            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs mt-1 text-slate-600 dark:text-slate-400">
               Simpan otomatis riwayat percakapan Anda.
             </p>
           </div>
@@ -325,22 +283,16 @@ export default function PengaturanPage() {
       </div>
 
       {/* Section: Notifikasi */}
-      <div
-        className="rounded-xl border p-6 space-y-4"
-        style={{ background: 'var(--surface-1)', borderColor: 'var(--border)' }}
-      >
+      <div className="rounded-xl border p-6 space-y-4 bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#FF3B6B]/10 flex items-center justify-center">
             <Bell className="w-5 h-5 text-[#FF3B6B]" />
           </div>
           <div>
-            <h3
-              className="text-base font-semibold"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">
               Notifikasi
             </h3>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Pilih notifikasi email yang ingin Anda terima
             </p>
           </div>
@@ -351,10 +303,7 @@ export default function PengaturanPage() {
           { key: 'featureUpdates' as const, label: 'Update fitur baru' },
           { key: 'weeklyDigest' as const, label: 'Materi rekomendasi mingguan' },
         ].map((item) => (
-          <label
-            key={item.key}
-            className="flex items-center gap-3 cursor-pointer"
-          >
+          <label key={item.key} className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={settings.emailNotifications?.[item.key] || false}
@@ -366,10 +315,7 @@ export default function PengaturanPage() {
               }
               className="w-4 h-4 rounded accent-[#FF3B6B] cursor-pointer"
             />
-            <span
-              className="text-sm"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <span className="text-sm text-slate-900 dark:text-white">
               {item.label}
             </span>
           </label>
@@ -377,22 +323,16 @@ export default function PengaturanPage() {
       </div>
 
       {/* Section: Akun */}
-      <div
-        className="rounded-xl border p-6 space-y-4"
-        style={{ background: 'var(--surface-1)', borderColor: 'var(--border)' }}
-      >
+      <div className="rounded-xl border p-6 space-y-4 bg-white dark:bg-[#0B0E14] border-slate-200 dark:border-slate-800">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-[#FF3B6B]/10 flex items-center justify-center">
             <UserIcon className="w-5 h-5 text-[#FF3B6B]" />
           </div>
           <div>
-            <h3
-              className="text-base font-semibold"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">
               Akun
             </h3>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs text-slate-600 dark:text-slate-400">
               Kelola keamanan dan data akun Anda
             </p>
           </div>
@@ -401,12 +341,7 @@ export default function PengaturanPage() {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setIsChangePasswordOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border"
-            style={{
-              background: 'var(--surface-2)',
-              borderColor: 'var(--border)',
-              color: 'var(--text-primary)',
-            }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             <KeyRound className="w-4 h-4" />
             Ubah Password
@@ -415,28 +350,20 @@ export default function PengaturanPage() {
           <button
             onClick={handleDownloadData}
             disabled={isDownloading}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border disabled:opacity-50"
-            style={{
-              background: 'var(--surface-2)',
-              borderColor: 'var(--border)',
-              color: 'var(--text-primary)',
-            }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border disabled:opacity-50 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             <Download className="w-4 h-4" />
             {isDownloading ? 'Mengunduh...' : 'Unduh Data Saya'}
           </button>
         </div>
 
-        <div className="p-4 rounded-lg bg-[#FF3B6B]/[0.04] border border-[#FF3B6B]/20">
+        <div className="p-4 rounded-lg bg-[#FF3B6B]/[0.04] border border-[#FF3B6B]/30">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <h4
-                className="text-sm font-semibold mb-1"
-                style={{ color: 'var(--text-primary)' }}
-              >
+              <h4 className="text-sm font-semibold mb-1 text-slate-900 dark:text-white">
                 Hapus Akun
               </h4>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
                 Tindakan ini permanen dan tidak dapat dibatalkan.
               </p>
             </div>

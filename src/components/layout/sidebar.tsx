@@ -121,15 +121,20 @@ export function SidebarLink({ item, collapsed, onNavigate }: SidebarLinkProps) {
         "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
         collapsed && "justify-center px-0",
         active
-          ? "bg-neon-red/[0.08] text-white"
-          : "text-white/55 hover:bg-white/[0.03] hover:text-white"
+          ? "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white"
+          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white"
       )}
     >
       {active && (
         <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-[#FF3B6B]" />
       )}
       <item.icon
-        className={cn("h-[18px] w-[18px] shrink-0", active ? "text-neon-red" : "text-white/50 group-hover:text-neon-red")}
+        className={cn(
+          "h-[18px] w-[18px] shrink-0",
+          active
+            ? "text-neon-red"
+            : "text-slate-400 group-hover:text-neon-red dark:text-slate-500 dark:group-hover:text-neon-red"
+        )}
         strokeWidth={1.75}
       />
       {!collapsed && <span className="flex-1 truncate font-medium tracking-tight">{item.label}</span>}
@@ -164,7 +169,7 @@ export function SidebarSection({
   return (
     <div className="mb-5">
       {!collapsed && (
-        <p className="mb-2 px-3 font-mono text-[9px] uppercase tracking-[0.28em] text-white/30">
+        <p className="mb-2 px-3 font-mono text-[9px] uppercase tracking-[0.28em] text-slate-400 dark:text-slate-500">
           {section.label}
         </p>
       )}
@@ -183,7 +188,7 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
       <LogoMark className="h-9 w-9 shrink-0" size={36} />
       {!collapsed && (
         <span className="leading-tight">
-          <span className="block font-display text-sm font-bold tracking-tight text-white">
+          <span className="block font-display text-sm font-bold tracking-tight text-slate-900 dark:text-white">
             CodeMentor
           </span>
           <span className="block font-mono text-[9px] uppercase tracking-[0.3em] text-neon-red">
@@ -201,7 +206,7 @@ function SidebarFooter({ collapsed, onNavigate }: { collapsed: boolean; onNaviga
     { href: "/pengaturan", label: "Pengaturan", icon: Settings },
   ];
   return (
-    <div className="space-y-1 border-t border-white/[0.06] pt-4">
+    <div className="space-y-1 border-t border-slate-200 pt-4 dark:border-white/20">
       {links.map((item) => (
         <SidebarLink key={item.href} item={item} collapsed={collapsed} onNavigate={onNavigate} />
       ))}
@@ -218,18 +223,17 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-40 hidden flex-col border-r backdrop-blur-xl transition-[width] duration-300 lg:flex",
+        "fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-slate-200 bg-white backdrop-blur-xl transition-[width] duration-300 dark:border-white/20 dark:bg-[#12141D] lg:flex",
         collapsed ? "w-[72px]" : "w-[260px]"
       )}
-      style={{ background: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
     >
-      <div className="flex h-16 items-center justify-between border-b border-white/[0.06] px-3">
+      <div className="flex h-16 items-center justify-between border-b border-slate-200 px-3 dark:border-white/20">
         <SidebarBrand collapsed={collapsed} />
         {!collapsed && (
           <button
             onClick={toggleCollapsed}
             aria-label="Tutup sidebar"
-            className="rounded-lg p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-white/40 dark:hover:bg-white/[0.06] dark:hover:text-white"
           >
             <PanelLeftClose className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </button>
@@ -247,7 +251,7 @@ export function Sidebar() {
           <button
             onClick={toggleCollapsed}
             aria-label="Buka sidebar"
-            className="mb-3 flex w-full items-center justify-center rounded-lg p-2 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="mb-3 flex w-full items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-white/40 dark:hover:bg-white/[0.06] dark:hover:text-white"
           >
             <PanelLeftOpen className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </button>
@@ -287,17 +291,16 @@ export function MobileSidebar() {
       />
       <aside
         className={cn(
-          "absolute inset-y-0 left-0 flex w-[268px] flex-col border-r transition-transform duration-300",
+          "absolute inset-y-0 left-0 flex w-[268px] flex-col border-r border-slate-200 bg-white transition-transform duration-300 dark:border-white/20 dark:bg-[#12141D]",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
-        style={{ background: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
       >
-        <div className="flex h-16 items-center justify-between border-b border-white/[0.06] px-4">
+        <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4 dark:border-white/20">
           <SidebarBrand collapsed={false} />
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Tutup menu"
-            className="rounded-lg p-1.5 text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-white/50 dark:hover:bg-white/[0.06] dark:hover:text-white"
           >
             <X className="h-5 w-5" strokeWidth={1.75} />
           </button>

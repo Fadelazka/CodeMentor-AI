@@ -13,11 +13,11 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={cn(
-        "dashboard-shell relative min-h-screen",
-        resolvedTheme === "dark" ? "dark text-white" : "theme-light"
+        "dashboard-shell dashboard-grid-bg relative min-h-screen",
+        // HAPUS "text-white" di sini agar tidak menimpa warna teks komponen lain
+        resolvedTheme === "dark" ? "dark" : "theme-light"
       )}
     >
-      <div className="dashboard-grid-bg pointer-events-none fixed inset-0" aria-hidden />
       <Sidebar />
       <MobileSidebar />
       <div
