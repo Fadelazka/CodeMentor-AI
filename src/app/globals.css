@@ -173,7 +173,6 @@
   }
   html {
     scroll-behavior: smooth;
-    /* Navbar fixed (h-16) — beri jarak agar target anchor tidak tertutup */
     scroll-padding-top: 5rem;
   }
   body {
@@ -301,7 +300,7 @@ code {
   background: #ffffff44;
 }
 
-/* â”€â”€ Glitch text (Hero "Error") â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── Glitch text (Hero "Error") ─────────────────────────────── */
 .glitch-text .glitch-layer {
   pointer-events: none;
   opacity: 0;
@@ -392,7 +391,7 @@ code {
   }
 }
 
-/* â”€â”€ Hero marquee divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── Hero marquee divider ───────────────────────────────────── */
 @keyframes marquee {
   0% {
     transform: translateX(0);
@@ -418,11 +417,21 @@ code {
   }
 }
 
-/* â”€â”€ Futuristic dashboard shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── Futuristic dashboard shell ─────────────────────────────── */
 .dashboard-shell {
   background-color: transparent;
   background-image: none;
   background-attachment: fixed;
+}
+
+/* Animasi Grid Bergerak ke Bawah */
+@keyframes grid-scroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 44px; /* 44px sesuai background-size */
+  }
 }
 
 .dashboard-grid-bg {
@@ -430,6 +439,7 @@ code {
     linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
   background-size: 44px 44px;
+  animation: grid-scroll 5s linear infinite;
 }
 
 /* Dark mode: grid background dengan kontras lebih tinggi */
@@ -437,6 +447,13 @@ code {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+}
+
+/* Hormati preferensi pengguna: matikan animasi grid saat reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-grid-bg {
+    animation: none !important;
+  }
 }
 
 .glass-panel {
@@ -487,4 +504,3 @@ code {
     animation: none;
   }
 }
-
