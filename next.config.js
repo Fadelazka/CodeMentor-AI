@@ -3,7 +3,10 @@ const nextConfig = {
   output: "standalone",
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "**" }
+      // Tetap izinkan semua domain (opsional, bisa dihapus jika ingin lebih ketat)
+      { protocol: "https", hostname: "**" },
+      // Tambahkan domain khusus untuk Vercel Blob
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" }
     ]
   },
   typescript: {

@@ -38,6 +38,7 @@
     "@remotion/cli": "^4.0.535",
     "@tarquinen/opencode-dcp": "^3.2.0",
     "@uiw/react-codemirror": "^4.23.0",
+    "@vercel/blob": "^2.8.2",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

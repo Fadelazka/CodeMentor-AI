@@ -1,9 +1,7 @@
 ﻿import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
+import { put } from "@vercel/blob";
 
 export const dynamic = "force-dynamic";
 
@@ -29,18 +27,16 @@ export async function POST(req: Request) {
       return Response.json({ error: "Ukuran maksimal 2MB" }, { status: 400 });
     }
 
-    const ext = file.name.split(".").pop() || "jpg";
-    const filename = `${session.user.id}-${Date.now()}.${ext}`;
-    const uploadDir = join(process.cwd(), "public", "uploads", "avatars");
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
+    // --- BAGIAN YANG DIUBAH (Vercel Blob) ---
+    // Upload langsung ke Vercel Blob
+    const blob = await put(`avatars/${session.user.id}-${Date.now()}-${file.name}`, file, {
+      access: "public",
+      addRandomSuffix: true,
+    });
 
-    const bytes = await file.arrayBuffer();
-    await writeFile(join(uploadDir, filename), Buffer.from(bytes));
+    const imageUrl = blob.url; // Ambil URL publik dari Vercel Blob
 
-    const imageUrl = `/uploads/avatars/${filename}`;
-
+    // Simpan URL baru ke database
     await prisma.user.update({
       where: { id: session.user.id },
       data: { image: imageUrl },
