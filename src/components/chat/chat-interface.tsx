@@ -47,24 +47,64 @@ interface ParsedAIResponse {
   language?: string;
 }
 
+/**
+ * Judul section yang diterima. AI sering tidak konsisten menulis judul
+ * ("Dibenarkan" vs "Diperbaiki" vs "Perbaikan"), jadi semua variasi diterima.
+ */
+const FIXED_HEADING_KEYWORD =
+  "(?:Sudah\\s+)?(?:Dibenarkan|Diperbaiki|Diperbaharui|Dibetulkan|Perbaikan|Benar|Corrected|Fixed)";
+
+const BROKEN_HEADING_KEYWORD =
+  "(?:Bermasalah|Salah|Rusak|Bermasalah|Problematic|Original|Asli)";
+
+/** Heading markdown (#..######) atau bold (**...**) diikuti code fence. */
+function sectionPatterns(keyword: string, requireClosingFence: boolean): RegExp[] {
+  const heading = `(?:^|\\n)[ \\t]*(?:#{1,6}[ \\t]*|\\*\\*[ \\t]*|__[ \\t]*)Kode[ \\t]+(?:yang[ \\t]+)?${keyword}[^\\n]*\\n+[ \\t]*\`\`\`[ \\t]*(\\w+)?[ \\t]*\\n`;
+  const body = requireClosingFence ? "([\\s\\S]*?)```" : "([\\s\\S]*)$";
+  return [new RegExp(heading + body, "i")];
+}
+
+function firstMatch(text: string, patterns: RegExp[]): RegExpMatchArray | null {
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match) return match;
+  }
+  return null;
+}
+
 function parseAIResponse(text: string): ParsedAIResponse {
   let remaining = text;
   let fixedCode: string | undefined;
   let language: string | undefined;
 
-  const fixedMatch = remaining.match(
-    /(?:^|\n)#{1,6}\s*Kode yang Sudah Dibenarkan\s*\n+```(\w+)?\n([\s\S]*?)```/i
-  );
+  // 1) Cari blok kode perbaikan: heading standar, variasi kata,
+  //    atau code fence yang belum tertutup karena jawaban terpotong.
+  const fixedMatch =
+    firstMatch(remaining, sectionPatterns(FIXED_HEADING_KEYWORD, true)) ??
+    firstMatch(remaining, sectionPatterns(FIXED_HEADING_KEYWORD, false));
+
   if (fixedMatch) {
     language = fixedMatch[1] || undefined;
     fixedCode = fixedMatch[2].trim();
     remaining = remaining.replace(fixedMatch[0], "\n");
   }
 
-  const brokenMatch = remaining.match(
-    /(?:^|\n)#{1,6}\s*Kode yang Bermasalah\s*\n+```(\w+)?\n([\s\S]*?)```/i
-  );
+  const brokenMatch = firstMatch(remaining, sectionPatterns(BROKEN_HEADING_KEYWORD, true));
   const brokenCode = brokenMatch ? brokenMatch[2].trim() : undefined;
+
+  // 2) Fallback: AI mengganti judul section. Ambil blok kode TERAKHIR
+  //    sebagai kode perbaikan (hanya jika ada lebih dari satu blok kode).
+  if (!fixedCode) {
+    const blocks = Array.from(
+      remaining.matchAll(/```[ \t]*(\w+)?[ \t]*\n([\s\S]*?)```/g)
+    );
+    if (blocks.length >= 2) {
+      const last = blocks[blocks.length - 1];
+      fixedCode = last[2].trim();
+      language = last[1] || language;
+      remaining = remaining.replace(last[0], "\n");
+    }
+  }
 
   return { explanation: remaining.trim(), brokenCode, fixedCode, language };
 }

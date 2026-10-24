@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "experimental": {
+    "mcp_timeout": 300000
+  },
+  "mcp": {
+    "canva": {
+      "type": "remote",
+      "url": "https://mcp.canva.com/mcp",
+      "enabled": true
+    },
+    "figma": {
+      "type": "remote",
+      "url": "https://mcp.figma.com/mcp",
+      "enabled": true
+    },
+    "unity-mcp": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--with",
+        "mcp==1.29.0",
+        "unity-mcp-server"
+      ],
+      "enabled": true
+    }
+  }
+}

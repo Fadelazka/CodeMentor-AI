@@ -183,7 +183,14 @@ ATURAN PENTING:
 - Kode yang sudah dibenarkan harus lengkap, benar, dan langsung siap dijalankan.
 - Selalu gunakan bahasa pemrograman yang sama dengan kode user (${payload.language}).
 - Prioritaskan jawaban berdasarkan konteks knowledge base bila tersedia.
-- Akhiri jawaban dengan baris "**Confidence:** <angka>%".`;
+- Akhiri jawaban dengan baris "**Confidence:** <angka>%".
+
+ATURAN PANJANG JAWABAN (SANGAT PENTING):
+- Jika kode user panjang atau errornya banyak (lebih dari 3), RINGKAS bagian "## Penjelasan Error" menjadi maksimal 5 poin singkat.
+- JANGAN pernah memotong bagian "## Kode yang Sudah Dibenarkan". Utamakan menulis kode perbaikan LENGKAP daripada penjelasan panjang.
+- Tulis heading persis seperti ini (jangan diganti, jangan diterjemahkan, jangan ditambah kata lain):
+  "## Kode yang Sudah Dibenarkan"
+- Posisi blok kode perbaikan HARUS di akhir jawaban, tepat sebelum baris "**Confidence:**".`;
 
   const systemPrompt = `Kamu adalah CodeMentor AI, asisten debugging kode.
 ${langInstruction}
@@ -206,6 +213,7 @@ ${contextPrompt || "Tidak ada konteks tambahan."}`;
 
   for (const model of GROQ_MODELS) {
     try {
+      const isOssModel = model.startsWith("openai/gpt-oss");
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         cache: "no-store",
@@ -220,7 +228,11 @@ ${contextPrompt || "Tidak ada konteks tambahan."}`;
             { role: "user", content: userPrompt },
           ],
           temperature: 0.2,
-          max_tokens: 1200,
+          // Batas lama (1200) membuat jawaban terpotong sebelum blok kode
+          // perbaikan selesai ditulis. Naikkan agar kode panjang tetap utuh.
+          ...(isOssModel
+            ? { max_completion_tokens: 4096 }
+            : { max_tokens: 4096 }),
         }),
       });
 
