@@ -154,14 +154,16 @@ export function QuizClient() {
         </div>
 
         {!finished ? (
-          <GlassCard hover={false} className="p-6 sm:p-8">
+          <GlassCard hover={false} className="border-slate-800 bg-[#0f1119] p-6 text-white sm:p-8">
             {/* Progress */}
             <div className="mb-6">
-              <div className="mb-2 flex items-center justify-between text-xs text-white/50">
+              <div className="mb-2 flex items-center justify-between text-xs text-white/60">
                 <span>
                   Soal {current + 1} dari {QUIZ_TOTAL}
                 </span>
-                <span>{answeredCount}/{QUIZ_TOTAL} terjawab</span>
+                <span>
+                  {answeredCount}/{QUIZ_TOTAL} terjawab
+                </span>
               </div>
               <div
                 className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]"
@@ -182,13 +184,13 @@ export function QuizClient() {
               <BadgePill tone="outline">Pilihan ganda</BadgePill>
             </div>
 
-            <h1 className="font-display text-lg font-semibold tracking-tight text-white">
+            <h1 className="font-display text-lg font-semibold tracking-tight text-white drop-shadow-sm">
               {question.question}
             </h1>
 
             {question.code && (
-              <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.08] bg-black/40 p-4 font-mono text-xs leading-relaxed text-cyan-100">
-                <code className="whitespace-pre">{question.code}</code>
+              <pre className="mt-4 overflow-x-auto rounded-xl border border-white/[0.12] bg-black/60 p-4 font-mono text-xs leading-relaxed text-cyan-200 shadow-inner">
+                <code className="whitespace-pre text-cyan-200">{question.code}</code>
               </pre>
             )}
 
@@ -203,10 +205,10 @@ export function QuizClient() {
                     aria-checked={active}
                     onClick={() => selectOption(index)}
                     className={cn(
-                      "flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-all duration-200",
+                      "flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/60 focus-visible:ring-offset-0",
                       active
-                        ? "border-neon-red/60 bg-neon-red/[0.10] text-white"
-                        : "border-white/[0.08] bg-white/[0.02] text-white/70 hover:border-white/20 hover:bg-white/[0.04] hover:text-white"
+                        ? "border-neon-red/70 bg-neon-red/[0.16] text-white shadow-[0_0_0_1px_rgba(255,59,107,0.25)]"
+                        : "border-slate-700 bg-slate-800/50 text-slate-100 hover:bg-slate-800 hover:text-white"
                     )}
                   >
                     <span
@@ -214,12 +216,12 @@ export function QuizClient() {
                         "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold",
                         active
                           ? "border-neon-red bg-neon-red text-white"
-                          : "border-white/25 text-white/50"
+                          : "border-white/40 bg-white/[0.02] text-white"
                       )}
                     >
                       {String.fromCharCode(65 + index)}
                     </span>
-                    <span className="flex-1">{option}</span>
+                    <span className="flex-1 text-white">{option}</span>
                   </button>
                 );
               })}
@@ -248,7 +250,7 @@ export function QuizClient() {
             </div>
           </GlassCard>
         ) : (
-          <GlassCard glow className="text-center">
+          <GlassCard glow className="border-slate-800 bg-[#0f1119] text-center text-white">
             <div className="flex flex-col items-center">
               <div className="relative h-36 w-36">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
@@ -271,7 +273,7 @@ export function QuizClient() {
                     cy="60"
                     r="52"
                     fill="none"
-                    stroke="url(#grad)"
+                    stroke="url(#quizScoreGrad)"
                     strokeWidth="10"
                     strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * 52}
@@ -297,7 +299,7 @@ export function QuizClient() {
               <h2 className="mt-5 font-display text-xl font-semibold tracking-tight text-white">
                 Preferensi AI kamu: {PREFERENCE_INFO[preference].label}
               </h2>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-white/55">
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-white/60">
                 {PREFERENCE_INFO[preference].description}
               </p>
 
